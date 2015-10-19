@@ -23,4 +23,7 @@ cat "$HOME/.dotfiles/ssh/config" "$HOME/.dotfiles/local/dotfiles/ssh_config" > "
 mkdir -p "$HOME/.subversion"
 ln -sf "$HOME/.dotfiles/subversion/config" "$HOME/.subversion/config"
 
+mkdir -p "$HOME/.vim/colors"
+ln -sf "$HOME/.dotfiles/vim/jellybeans.vim" "$HOME/.vim/colors/jellybeans.vim"
+
 source "$HOME/.bashrc"
