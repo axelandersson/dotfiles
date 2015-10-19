@@ -1,0 +1,29 @@
+# bash/bash_path
+
+PATH0="/bin:/sbin"
+
+test -d "/usr/sbin" && PATH0="/usr/sbin:$PATH0"
+test -d "/usr/bin" && PATH0="/usr/bin:$PATH0"
+test -d "/usr/libexec" && PATH0="/usr/libexec:$PATH0"
+test -d "/usr/local/sbin" && PATH0="/usr/local/sbin:$PATH0"
+test -d "/usr/local/bin" && PATH0="/usr/local/bin:$PATH0"
+test -d "/opt/local/sbin" && PATH0="/opt/local/sbin:$PATH0"
+test -d "/opt/local/bin" && PATH0="/opt/local/bin:$PATH0"
+
+if [ -n "$DISPLAY" ]; then
+    test -d "/usr/X11R6" && PATH0="/usr/X11R6/bin:$PATH0"
+fi
+
+test -d "/usr/local/wired" && PATH0="/usr/local/wired:$PATH0"
+test -d "/opt/aws/bin" && PATH0="/opt/aws/bin:$PATH0"
+
+if [ "$(uname -s)" = "Darwin" ]; then
+    test -d "/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support" && PATH0="/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support:$PATH0"
+    test -d "/Applications/Xcode.app/Contents/SharedFrameworks/DTDeviceKitBase.framework/Resources" && PATH0="/Applications/Xcode.app/Contents/SharedFrameworks/DTDeviceKitBase.framework/Resources:$PATH0"
+fi
+
+test -d "$HOME/.dotfiles/bin" && PATH0="$HOME/.dotfiles/bin:$PATH0"
+test -d "$HOME/.dotfiles/local/bin" && PATH0="$HOME/.dotfiles/local/bin:$PATH0"
+test -d "$HOME/.dotfiles/local/ruby-gems/bin" && PATH0="$HOME/.dotfiles/local/ruby-gems/bin:$PATH0"
+
+export PATH=".:$PATH0"

@@ -1,0 +1,8 @@
+# sqlite/sqliterc
+
+.mode tabs
+.headers on
+.nullvalue NULL
+
+.show
+.tables

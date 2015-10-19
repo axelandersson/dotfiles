@@ -1,0 +1,49 @@
+#!/usr/bin/perl -w
+#
+# replace
+# Sed-like text replacer.
+#
+# Copyright (c) 2015 Axel Andersson
+#
+
+use strict;
+use File::Basename;
+use File::Copy;
+use File::Temp;
+use Getopt::Long;
+
+my $BINARY = basename($0);
+my $CASEINSENSITIVE = 0;
+
+my $r = GetOptions("i|ignore-case" => \$CASEINSENSITIVE);
+
+die "Usage: $BINARY [-i] [pattern] [file ...]\n" if $r == 0 || @ARGV < 1;
+
+my $pattern = shift @ARGV;
+my $flags = $CASEINSENSITIVE ? "i" : "";
+my @files = @ARGV ? @ARGV : ("-");
+
+foreach my $file (@files) {
+    open(FH, $file) or die "$BINARY: $file: $!\n";
+
+    my $th;
+    my $tempfile;
+
+    if(-e $file) {
+        ($th, $tempfile) = File::Temp::tempfile();
+    } else {
+        $th = *STDOUT;
+    }
+
+    while(<FH>) {
+        my $new = $_;
+
+        eval("\$new =~ $pattern$flags;");
+
+        print $th $new;
+    }
+
+    move($tempfile, $file) if $tempfile;
+
+    close(FH);
+}

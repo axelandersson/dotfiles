@@ -1,0 +1,22 @@
+# bash/functions/cd
+
+function cd() {
+    directory=$@
+
+    if [ "$directory" = "-l" -o "$directory" = "-h" ]; then
+        echo $CDMAP | perl -ne 'foreach(sort split(";")) { if(/(\w+):(.+)/) { printf "%-7s %s\n", $1, $2; } }'
+        return
+    fi
+
+    if [ "$directory" != ".." ]; then
+        if [[ $CDMAP =~ (^|;)${directory}:([^;]*)(;|$) ]]; then
+            directory=${BASH_REMATCH[2]}
+        fi
+    fi
+
+    if [ -z "$directory" ]; then
+        builtin cd "$HOME"
+    else
+        builtin cd "$directory"
+    fi
+}

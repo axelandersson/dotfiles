@@ -1,0 +1,5 @@
+# bash/bash_login
+
+if [ -f "$HOME/.bashrc" ]; then
+    source "$HOME/.bashrc"
+fi

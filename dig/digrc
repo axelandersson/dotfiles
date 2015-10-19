@@ -1,0 +1,3 @@
+# dig/digrc
+
++nocmd +nocomments +nostats +noquestion

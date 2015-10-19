@@ -1,0 +1,51 @@
+" .vimrc
+
+" Behaviour
+set nocompatible
+set autowrite
+set backupcopy=yes
+set clipboard=unnamed
+set ttyfast
+
+" Interface
+syntax on
+set showmode
+set showmatch
+set showcmd
+set ruler
+set number
+set numberwidth=5
+set title
+set scrolloff=3
+
+" Formatting
+set expandtab
+set shiftwidth=4
+set softtabstop=4
+set shiftround
+set formatoptions=tcrqn
+filetype on
+filetype indent on
+filetype plugin on
+colorscheme jellybeans
+
+" Searches
+set ignorecase
+set smartcase
+set gdefault
+set hlsearch
+
+" Key mappings
+set whichwrap=<,>,[,]
+set matchpairs+=<:>
+set backspace=eol,start,indent
+
+noremap <Space> <PageDown>
+noremap <BS> <PageUp>
+noremap - <PageUp>
+
+nnoremap <C-N> :next<CR>
+nnoremap <C-P> :prev<CR>
+
+" Remember line position
+au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal g'\"" | endif

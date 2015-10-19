@@ -1,0 +1,31 @@
+# bash/bash_config
+
+# Shell: prompt
+export PS1='\u@\h:\w$(__git_ps1 ":%s")> '
+
+# Shell: increase size of history
+export HISTSIZE="100000"
+export HISTFILESIZE="100000"
+
+# Shell: after each command, append to history and reread it
+if [ "$TERM_PROGRAM" = "Apple_Terminal" ]; then
+    export PROMPT_COMMAND="history -a; history -c; history -r; update_terminal_cwd"
+else
+    export PROMPT_COMMAND="history -a; history -c; history -r"
+fi
+
+# Shell: append to history instead of overwriting
+shopt -s histappend
+
+# Shell: notify about background job statuses immediately
+set -o notify
+
+# Shell: enable extensive glob patterns
+shopt -s extglob
+
+# Shell: disable ! style history substitution
+set +H
+
+# Shell: bind up/down to history search
+bind '"[A":history-search-backward'
+bind '"[B":history-search-forward'

@@ -1,0 +1,92 @@
+# git/gitconfig
+
+[user]
+    name = Axel Andersson
+
+[alias]
+    diffraw = diff --no-textconv
+    diffst = diff --staged
+    pullall = up
+    pushall = push --set-upstream --all
+    mergenoff = merge --no-ff
+    co = checkout
+    st = status
+
+[color]
+    branch = auto
+    diff = auto
+    grep = auto
+    interactive = auto
+    showbranch = auto
+    status = auto
+    ui = auto
+
+[color "branch"]
+    current = green
+    local = yellow
+    remote = red
+
+[color "diff"]
+    frag = cyan bold
+    meta = yellow bold
+    new = green bold
+    old = red bold
+    whitespace = red reverse
+
+[color "grep"]
+    match = green
+
+[color "status"]
+    added = yellow
+    branch = magenta
+    changed = green
+    untracked = cyan
+
+[core]
+    autocrlf = input
+    editor = vim
+    pager = cat
+    symlinks = true
+    attributesfile = ~/.gitattributes
+
+[credential]
+    helper = osxkeychain
+
+[diff]
+    renames = copies
+
+[diff "plist"]
+    textconv = plutil -convert xml1 -o -
+
+[difftool]
+    prompt = false
+
+[difftool "Kaleidoscope"]
+    cmd = ksdiff --partial-changeset --relative-path \"$MERGED\" -- \"$LOCAL\" \"$REMOTE\"
+
+[format]
+    pretty = medium
+
+[log]
+    date = local
+    decorate = short
+
+[merge]
+    log = true
+    stat = true
+
+[merge "plist"]
+    textconv = plutil -convert xml1 -o -
+
+[mergetool]
+    prompt = false
+
+[mergetool "Kaleidoscope"]
+    cmd = ksdiff --merge --output \"$MERGED\" --base \"$BASE\" -- \"$LOCAL\" --snapshot \"$REMOTE\" --snapshot
+    trustExitCode = true
+
+[pack]
+    threads = 0
+
+[push]
+    default = tracking

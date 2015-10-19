@@ -1,0 +1,27 @@
+#!/usr/bin/perl -w
+#
+# trash
+# Move files to the Mac OS X trash folder.
+#
+# Copyright (c) 2015 Axel Andersson
+#
+
+use strict;
+use File::Basename;
+use File::Copy;
+
+my $BINARY = basename($0);
+my $trashpath = "$ENV{'HOME'}/.Trash";
+
+foreach (@ARGV) {
+    my $basename = basename($_);
+    my $destination = "$trashpath/$basename";
+    my $number = 1;
+
+    while(-e $destination) {
+        $destination = "$trashpath/$basename copy $number";
+        $number++;
+    }
+
+    move($_, $destination) or die "$BINARY: $_: $!\n";
+}

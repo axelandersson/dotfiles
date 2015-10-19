@@ -1,0 +1,64 @@
+# bash/functions/ff
+
+function ff() {
+    name="$@"
+
+    if [ -z "$name" ]; then
+        echo "Usage: ff <name>"
+        return
+    fi
+
+    find . -iname "*$name*"
+}
+
+function ffd() {
+    name="$@"
+
+    if [ -z "$name" ]; then
+        echo "Usage: ffd <name>"
+        return
+    fi
+
+    find . -iname "*$name*" -type d
+}
+
+function ffx() {
+    name="$@"
+
+    if [ -z "$name" ]; then
+        echo "Usage: ffd <name>"
+        return
+    fi
+
+    find . -iname "*$name*" -type f -perm +111
+}
+
+function fl() {
+    directory="$@"
+
+    if [ -n "$directory" ]; then
+        find "$directory"
+    else
+        find .
+    fi
+}
+
+function fld() {
+    directory="$@"
+
+    if [ -n "$directory" ]; then
+        find "$directory" -type d
+    else
+        find . -type d
+    fi
+}
+
+function flx() {
+    directory="$@"
+
+    if [ -n "$directory" ]; then
+        find "$directory" -type f -perm +111
+    else
+        find . -type f -perm +111
+    fi
+}

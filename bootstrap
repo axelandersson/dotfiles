@@ -1,0 +1,26 @@
+#!/bin/bash
+
+set -e
+
+ln -sf "$HOME/.dotfiles/bash/bashrc" "$HOME/.bashrc"
+ln -sf "$HOME/.dotfiles/bash/bash_login" "$HOME/.bash_login"
+ln -sf "$HOME/.dotfiles/bash/bash_logout" "$HOME/.bash_logout"
+ln -sf "$HOME/.dotfiles/dig/digrc" "$HOME/.digrc"
+ln -sf "$HOME/.dotfiles/forward/forward" "$HOME/.forward"
+ln -sf "$HOME/.dotfiles/gem/gemrc" "$HOME/.gemrc"
+ln -sf "$HOME/.dotfiles/git/gitattributes" "$HOME/.gitattributes"
+ln -sf "$HOME/.dotfiles/git/gitconfig" "$HOME/.gitconfig"
+ln -sf "$HOME/.dotfiles/input/inputrc" "$HOME/.inputrc"
+ln -sf "$HOME/.dotfiles/lldb/lldbinit" "$HOME/.lldbinit"
+ln -sf "$HOME/.dotfiles/plan/plan" "$HOME/.plan"
+ln -sf "$HOME/.dotfiles/sqlite/sqliterc" "$HOME/.sqliterc"
+ln -sf "$HOME/.dotfiles/vim/vimrc" "$HOME/.vimrc"
+
+mkdir -p "$HOME/.ssh"
+rm -f "$HOME/.ssh/config"
+cat "$HOME/.dotfiles/ssh/config" "$HOME/.dotfiles/local/dotfiles/ssh_config" > "$HOME/.ssh/config"
+
+mkdir -p "$HOME/.subversion"
+ln -sf "$HOME/.dotfiles/subversion/config" "$HOME/.subversion/config"
+
+source "$HOME/.bashrc"
