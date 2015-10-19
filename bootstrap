@@ -17,8 +17,12 @@ ln -sf "$HOME/.dotfiles/sqlite/sqliterc" "$HOME/.sqliterc"
 ln -sf "$HOME/.dotfiles/vim/vimrc" "$HOME/.vimrc"
 
 mkdir -p "$HOME/.ssh"
-rm -f "$HOME/.ssh/config"
-cat "$HOME/.dotfiles/ssh/config" "$HOME/.dotfiles/local/dotfiles/ssh_config" > "$HOME/.ssh/config"
+
+if [ -f "$HOME/.dotfiles/local/dotfiles/ssh_config" ]; then
+    rm -f "$HOME/.ssh/config" && cat "$HOME/.dotfiles/ssh/config" "$HOME/.dotfiles/local/dotfiles/ssh_config" > "$HOME/.ssh/config"
+else
+    ln -sf "$HOME/.dotfiles/ssh/config" "$HOME/.ssh/config"
+fi
 
 mkdir -p "$HOME/.subversion"
 ln -sf "$HOME/.dotfiles/subversion/config" "$HOME/.subversion/config"
