@@ -1,4 +1,4 @@
-# bash/functions/grepar
+#!/bin/bash
 
 function grepar() {
     pattern="$1"

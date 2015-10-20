@@ -16,18 +16,33 @@ ln -sfn "$HOME/.dotfiles/plan/plan" "$HOME/.plan"
 ln -sfn "$HOME/.dotfiles/sqlite/sqliterc" "$HOME/.sqliterc"
 ln -sfn "$HOME/.dotfiles/vim/vimrc" "$HOME/.vimrc"
 
-mkdir -p "$HOME/.ssh"
-
+# ssh
 if [ -f "$HOME/.dotfiles/local/dotfiles/ssh_config" ]; then
-    rm -f "$HOME/.ssh/config" && cat "$HOME/.dotfiles/ssh/config" "$HOME/.dotfiles/local/dotfiles/ssh_config" > "$HOME/.ssh/config"
+    mkdir -p "$HOME/.ssh"
+    rm -f "$HOME/.ssh/config"
+    cat "$HOME/.dotfiles/ssh/ssh_config" "$HOME/.dotfiles/local/dotfiles/ssh_config" > "$HOME/.ssh/config"
 else
-    ln -sfn "$HOME/.dotfiles/ssh/config" "$HOME/.ssh/config"
+    mkdir -p "$HOME/.ssh"
+    ln -sfn "$HOME/.dotfiles/ssh/config" "$HOME/.ssh/ssh_config"
 fi
 
+# subversion
 mkdir -p "$HOME/.subversion"
-ln -sfn "$HOME/.dotfiles/subversion/config" "$HOME/.subversion/config"
+ln -sfn "$HOME/.dotfiles/subversion/subversion_config" "$HOME/.subversion/config"
 
+# vim
 mkdir -p "$HOME/.vim"
 ln -sfn "$HOME/.dotfiles/vim/colors" "$HOME/.vim/colors"
 ln -sfn "$HOME/.dotfiles/vim/doc" "$HOME/.vim/doc"
 ln -sfn "$HOME/.dotfiles/vim/plugin" "$HOME/.vim/plugin"
+
+# Xcode
+if [ "$(uname -s)" = "Darwin" -a -x $(which xcode-select 2>/dev/null) ]; then
+    mkdir -p "$HOME/Library/Developer/Xcode/UserData/FontAndColorThemes"
+    ln -sfn "$HOME/.dotfiles/xcode/Tomorrow-Night.dvtcolortheme" "$HOME/Library/Developer/Xcode/UserData/FontAndColorThemes/Tomorrow-Night.dvtcolortheme"
+fi
+
+# Mac OS X defaults
+if [ "$(uname -s)" = "Darwin" ]; then
+    source "$HOME/.dotfiles/defaults/defaultsrc"
+fi

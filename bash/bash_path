@@ -1,4 +1,4 @@
-# bash/bash_path
+#!/bin/bash
 
 PATH0="/bin:/sbin"
 

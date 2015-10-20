@@ -1,4 +1,4 @@
-# bash/functions/lsar
+#!/bin/bash
 
 function lsar() {
     archives="$@"

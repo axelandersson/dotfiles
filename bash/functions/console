@@ -1,4 +1,4 @@
-# bash/functions/console
+#!/bin/bash
 
 if [ "$(uname -s)" != "Darwin" ]; then
     return

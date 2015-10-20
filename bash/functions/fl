@@ -1,4 +1,4 @@
-# bash/functions/fl
+#!/bin/bash
 
 function fl() {
     directory="$@"

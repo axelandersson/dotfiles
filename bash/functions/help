@@ -1,4 +1,4 @@
-# bash/functions/help
+#!/bin/bash
 
 function help() {
     _help_print_commands "Shell" "resource"

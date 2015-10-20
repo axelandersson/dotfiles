@@ -1,4 +1,4 @@
-# bash/functions/resource
+#!/bin/bash
 
 function resource() {
     source "$HOME/.bashrc"

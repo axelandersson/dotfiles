@@ -1,4 +1,4 @@
-# bash/functions/ff
+#!/bin/bash
 
 function ff() {
     name="$@"

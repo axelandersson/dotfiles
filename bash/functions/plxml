@@ -1,4 +1,4 @@
-# bash/functions/plxml
+#!/bin/bash
 
 if [ ! -x "$(which plutil 2>/dev/null)" ]; then
     return

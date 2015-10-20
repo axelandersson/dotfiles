@@ -1,4 +1,4 @@
-# bash/functions/greppar
+#!/bin/bash
 
 if [ ! -x "$(which pcre2grep 2>/dev/null)" ]; then
     echo "warning: 'greppar' is not available, use 'grepar' instead"

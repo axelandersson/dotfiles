@@ -1,4 +1,4 @@
-# bash/functions/cd
+#!/bin/bash
 
 function cd() {
     directory=$@

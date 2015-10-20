@@ -1,5 +1,3 @@
-" .vimrc
-
 " Behaviour
 set nocompatible
 set autowrite
@@ -27,7 +25,7 @@ set formatoptions=tcrqn
 filetype on
 filetype indent on
 filetype plugin on
-colorscheme jellybeans
+colorscheme Tomorrow-Night
 
 " Searches
 set ignorecase
