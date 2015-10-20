@@ -37,6 +37,13 @@ function help() {
         _help_print_commands "HFS Write" "setcomment" "setlabel" "settype" "setcreator" "sethidden" "setunhidden"
         _help_print_commands "HFS Read" "lscomment" "lslabel" "lskind" "lstype" "lscreator"
     fi
+
+    for i in $(echo "$CDMAP" | perl -ne 'print join("\n", split(";"));' | sort); do
+        shortcut=$(echo "$i" | cut -d ":" -f1)
+        directory=$(echo "$i" | cut -d ":" -f2)
+
+        _help_print_directories "Directory \"$shortcut\"" "$directory"
+    done
 }
 
 function _help_print_commands() {
@@ -52,3 +59,15 @@ function _help_print_commands() {
     printf "\n"
 }
 
+function _help_print_directories() {
+    b="\e[0;32m"
+    n="\e[0m"
+
+    printf "%-18s" "$1"
+
+    for i in ${@:2}; do
+        printf "$b%s$n " "$i"
+    done
+
+    printf "\n"
+}

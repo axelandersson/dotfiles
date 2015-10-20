@@ -4,7 +4,7 @@ function cd() {
     directory=$@
 
     if [ "$directory" = "-l" -o "$directory" = "-h" ]; then
-        echo $CDMAP | perl -ne 'foreach(sort split(";")) { if(/(\w+):(.+)/) { printf "%-7s %s\n", $1, $2; } }'
+        echo $CDMAP | perl -ne 'foreach(sort split(";")) { if(/(\w+):(.+)/) { printf "%-18s %s\n", $1, $2; } }'
         return
     fi
 
