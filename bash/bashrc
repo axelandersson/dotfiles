@@ -16,10 +16,19 @@ source "$HOME/.dotfiles/bash/bash_config"
 source "$HOME/.dotfiles/bash/bash_path"
 source "$HOME/.dotfiles/bash/bash_env"
 source "$HOME/.dotfiles/bash/bash_alias"
-source "$HOME/.dotfiles/bash/bash_completion"
 source "$HOME/.dotfiles/bash/bash_git_completion"
 source "$HOME/.dotfiles/bash/bash_git_prompt"
 
-for i in $(find "$HOME/.dotfiles/bash/functions" -type f -maxdepth 1 -not -name ".*"); do
+for i in "$HOME/.dotfiles/bash/functions"/*; do
     source "$i"
 done
+
+version=${BASH_VERSION%.*}
+major=${version%.*}
+minor=${version#*.}
+
+if [ $major -gt 4 ] || [ $major -eq 4 -a $minor -ge 1 ]; then
+    source "$HOME/.dotfiles/bash/completion-2.1/bash_completion"
+else
+    source "$HOME/.dotfiles/bash/completion-1.1/bash_completion"
+fi

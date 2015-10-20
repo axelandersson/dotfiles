@@ -2,34 +2,32 @@
 
 set -e
 
-ln -sfh "$HOME/.dotfiles/bash/bashrc" "$HOME/.bashrc"
-ln -sfh "$HOME/.dotfiles/bash/bash_login" "$HOME/.bash_login"
-ln -sfh "$HOME/.dotfiles/bash/bash_logout" "$HOME/.bash_logout"
-ln -sfh "$HOME/.dotfiles/dig/digrc" "$HOME/.digrc"
-ln -sfh "$HOME/.dotfiles/forward/forward" "$HOME/.forward"
-ln -sfh "$HOME/.dotfiles/gem/gemrc" "$HOME/.gemrc"
-ln -sfh "$HOME/.dotfiles/git/gitattributes" "$HOME/.gitattributes"
-ln -sfh "$HOME/.dotfiles/git/gitconfig" "$HOME/.gitconfig"
-ln -sfh "$HOME/.dotfiles/input/inputrc" "$HOME/.inputrc"
-ln -sfh "$HOME/.dotfiles/lldb/lldbinit" "$HOME/.lldbinit"
-ln -sfh "$HOME/.dotfiles/plan/plan" "$HOME/.plan"
-ln -sfh "$HOME/.dotfiles/sqlite/sqliterc" "$HOME/.sqliterc"
-ln -sfh "$HOME/.dotfiles/vim/vimrc" "$HOME/.vimrc"
+ln -sfn "$HOME/.dotfiles/bash/bashrc" "$HOME/.bashrc"
+ln -sfn "$HOME/.dotfiles/bash/bash_login" "$HOME/.bash_login"
+ln -sfn "$HOME/.dotfiles/bash/bash_logout" "$HOME/.bash_logout"
+ln -sfn "$HOME/.dotfiles/dig/digrc" "$HOME/.digrc"
+ln -sfn "$HOME/.dotfiles/forward/forward" "$HOME/.forward"
+ln -sfn "$HOME/.dotfiles/gem/gemrc" "$HOME/.gemrc"
+ln -sfn "$HOME/.dotfiles/git/gitattributes" "$HOME/.gitattributes"
+ln -sfn "$HOME/.dotfiles/git/gitconfig" "$HOME/.gitconfig"
+ln -sfn "$HOME/.dotfiles/input/inputrc" "$HOME/.inputrc"
+ln -sfn "$HOME/.dotfiles/lldb/lldbinit" "$HOME/.lldbinit"
+ln -sfn "$HOME/.dotfiles/plan/plan" "$HOME/.plan"
+ln -sfn "$HOME/.dotfiles/sqlite/sqliterc" "$HOME/.sqliterc"
+ln -sfn "$HOME/.dotfiles/vim/vimrc" "$HOME/.vimrc"
 
 mkdir -p "$HOME/.ssh"
 
 if [ -f "$HOME/.dotfiles/local/dotfiles/ssh_config" ]; then
     rm -f "$HOME/.ssh/config" && cat "$HOME/.dotfiles/ssh/config" "$HOME/.dotfiles/local/dotfiles/ssh_config" > "$HOME/.ssh/config"
 else
-    ln -sfh "$HOME/.dotfiles/ssh/config" "$HOME/.ssh/config"
+    ln -sfn "$HOME/.dotfiles/ssh/config" "$HOME/.ssh/config"
 fi
 
 mkdir -p "$HOME/.subversion"
-ln -sfh "$HOME/.dotfiles/subversion/config" "$HOME/.subversion/config"
+ln -sfn "$HOME/.dotfiles/subversion/config" "$HOME/.subversion/config"
 
 mkdir -p "$HOME/.vim"
-ln -sfh "$HOME/.dotfiles/vim/colors" "$HOME/.vim/colors"
-ln -sfh "$HOME/.dotfiles/vim/doc" "$HOME/.vim/doc"
-ln -sfh "$HOME/.dotfiles/vim/plugin" "$HOME/.vim/plugin"
-
-source "$HOME/.bashrc"
+ln -sfn "$HOME/.dotfiles/vim/colors" "$HOME/.vim/colors"
+ln -sfn "$HOME/.dotfiles/vim/doc" "$HOME/.vim/doc"
+ln -sfn "$HOME/.dotfiles/vim/plugin" "$HOME/.vim/plugin"
