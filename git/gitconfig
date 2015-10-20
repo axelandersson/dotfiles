@@ -6,7 +6,6 @@
 [alias]
     diffraw = diff --no-textconv
     diffst = diff --staged
-    pullall = up
     pushall = push --set-upstream --all
     mergenoff = merge --no-ff
     what = wtf
