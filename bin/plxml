@@ -1,7 +1,0 @@
-#!/bin/sh
-
-if [ "$1" ]; then
-    plutil -convert xml1 -o - "$1"
-else
-    plutil -convert xml1 -o - -
-fi

@@ -1,0 +1,21 @@
+# bash/functions/plxml
+
+if [ ! -x "$(which plutil 2>/dev/null)" ]; then
+    return
+fi
+
+function plxml() {
+    plists="$@"
+
+    if [ -z "$plists" ]; then
+        plists="-"
+    fi
+
+    for i in $plists; do
+        if [ -f "$i" -o "$i" = "-" ]; then
+            plutil -convert xml1 -o - "$i"
+        else
+            echo "plxml: $i: No such file"
+        fi
+    done
+}

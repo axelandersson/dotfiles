@@ -1,0 +1,5 @@
+# bash/functions/resource
+
+function resource() {
+    source "$HOME/.bashrc"
+}

@@ -20,6 +20,6 @@ source "$HOME/.dotfiles/bash/bash_completion"
 source "$HOME/.dotfiles/bash/bash_git_completion"
 source "$HOME/.dotfiles/bash/bash_git_prompt"
 
-for i in $(find "$HOME/.dotfiles/bash/functions" -type f -maxdepth 1); do
+for i in $(find "$HOME/.dotfiles/bash/functions" -type f -maxdepth 1 -not -name ".*"); do
     source "$i"
 done

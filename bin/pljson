@@ -1,7 +1,0 @@
-#!/bin/sh
-
-if [ "$1" ]; then
-    plutil -convert json -o - "$1"
-else
-    plutil -convert json -o - -
-fi

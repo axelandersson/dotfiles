@@ -39,6 +39,7 @@ set hlsearch
 set whichwrap=<,>,[,]
 set matchpairs+=<:>
 set backspace=eol,start,indent
+let mapleader=","
 
 noremap <Space> <PageDown>
 noremap <BS> <PageUp>

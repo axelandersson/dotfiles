@@ -1,0 +1,13 @@
+# bash/functions/grepar
+
+function grepar() {
+    pattern="$1"
+    archive="$2"
+
+    if [ -z "$pattern" -o -z "$archive" ]; then
+        echo "Usage: grepar <pattern> <archive>"
+        return
+    fi
+
+    lsar "$archive" | grep "$pattern"
+}

@@ -1,6 +1,5 @@
 # bash/bash_alias
 
-# Aliases: basic
 alias ll="ls -l"
 alias la="ls -Al"
 alias du="du -h"
@@ -8,16 +7,16 @@ alias df="df -h"
 alias host="host -a"
 alias less="less -x4 -i"
 
-# Aliases: perl
-alias calc="perl -wlne 'print eval;'"
+# perl
+#alias calc="perl -wlne 'print eval;'"
 
-# Aliases: tar
+# tar
 alias tgz="tar -czf"
 alias untgz="tar -xzvf"
 alias untbz="tar -xjvf"
 alias untar="tar -xvf"
 
-# Aliases: ls
+# ls
 if [ "$(uname -s)" = "Darwin" ]; then
     alias ls="ls -phGO"
 elif [ "$(uname -s)" = "Linux" ]; then
@@ -30,8 +29,7 @@ elif [ "$(uname -s)" = "SunOS" ]; then
     alias ls="ls -p"
 fi
 
-# Aliases: ps
-alias psg="psa | grep -i"
+# ps
 alias psc="psa -r | awk '{if(\$3 > 0.5 || NR == 1) print \$0}'"
 
 if [ "$(uname -s)" = "Darwin" ]; then
@@ -51,7 +49,13 @@ elif [ "$(uname -s)" = "SunOS" ]; then
     alias psa="command ps -e -o pid,user,pcpu,pmem,args"
 fi
 
-# Aliases: top
+if [ -x "$(which pcre2grep 2>/dev/null)" ]; then
+    alias psg="psa | pcre2grep --color=auto --ignore-case"
+else
+    alias psg="psa | command grep --extended-grep --color=auto --ignore-case"
+fi
+
+# top
 if [ "$(uname -s)" = "Darwin" ]; then
     alias top="top -s 1 -S -u"
 elif [ "$(uname -s)" = "Linux" ]; then
@@ -64,20 +68,36 @@ elif [ "$(uname -s)" = "SunOS" ]; then
     alias top="top -s 1"
 fi
 
-# Aliases: grep
+# grep
 if [ -x "$(which pcre2grep 2>/dev/null)" ]; then
-    alias grepp="pcre2grep --buffer-size=1048576 --color=auto --recursive"
+    alias grepp="command pcre2grep --buffer-size=1048576 --color=auto --recursive"
     alias greppcode="command pcre2grep --buffer-size=1048576 --color=auto --recursive -H --line-number --binary-files=without-match --exclude-dir=.svn --exclude-dir=.git --include='\.(c|h|pch|m|mm|swift|cpp|hpp|cs|java|rb|pl|py|lua|sh|js)$'"
 else
-    alias grep="grep --extended-grep --color=auto --recursive"
+    alias grep="command grep --extended-grep --color=auto --recursive"
     alias grepcode="command grep --extended-regexp --color=auto --recursive -H --line-number --binary-files=without-match --exclude-dir=.svn --exclude-dir=.git --include='*.c' --include='*.h' --include='*.pch' --include='*.m' --include='*.mm' --include='*.swift' --include='*.cpp' --include='*.hpp' --include='*.cs' --include='*.java' --include='*.rb' --include='*.pl' --include='*.py' --include='*.lua' --include='*.sh' --include='*.js'"
 
-    echo ".bashrc: warning: 'grepp' is not available, use 'grep' instead"
+    echo "warning: 'grepp' is not available, use 'grep' instead"
 fi
 
-# Aliases: Mac OS X 
-if [ "$(uname -s)" = "Darwin" ]; then
-    alias console="open -fa Console"
-    alias hfshide="SetFile -a V"
-    alias hfsunhide="SetFile -a v"
+# HFS commands
+if [ -x "$(which hfsdata 2>/dev/null)" ]; then
+    alias lscomment="hfsdata -o"
+    alias lscreator="hfsdata -C"
+    alias lskind="hfsdata -k"
+    alias lslabel="hfsdata -L"
+    alias lstype="hfsdata -T"
+fi
+
+if [ -x "$(which setfcomment)" ]; then
+    alias setcomment="setfcomment"
+fi
+
+if [ -x "$(which setfctypes)" ]; then
+    alias settype="settype"
+    alias setcreator="setcreator"
+fi
+
+if [ -x "$(which setfflags)" ]; then
+    alias sethidden="setfflags -i true"
+    alias setunhidden="setfflags -i false"
 fi

@@ -1,0 +1,21 @@
+# bash/functions/pljson
+
+if [ ! -x "$(which plutil 2>/dev/null)" ]; then
+    return
+fi
+
+function pljson() {
+    plists="$@"
+
+    if [ -z "$plists" ]; then
+        plists="-"
+    fi
+
+    for i in $plists; do
+        if [ -f "$i" -o "$i" = "-" ]; then
+            plutil -convert json -o - "$i"
+        else
+            echo "pljson: $i: No such file"
+        fi
+    done
+}

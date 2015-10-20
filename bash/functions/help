@@ -1,0 +1,54 @@
+# bash/functions/help
+
+function help() {
+    _help_print_commands "Shell" "resource"
+    _help_print_commands "File" "rename"
+    _help_print_commands "Directory List" "ll" "la"
+    _help_print_commands "Directory Tree" "fl" "fld" "flx"
+    _help_print_commands "Directory Find" "ff" "ffd" "ffx"
+    _help_print_commands "Processes" "psc" "psa" "psg"
+    _help_print_commands "Archive Pack" "lsar"
+    _help_print_commands "Archive Pack" "tgz"
+
+    if [ -x "$(which unrar 2>/dev/null)" ]; then
+        _help_print_commands "Archive Unpack" "untgz" "untbz" "untar" "unrar"
+    else
+        _help_print_commands "Archive Unpack" "untgz" "untbz" "untar"
+    fi
+
+    if [ -x "$(which pcre2grep 2>/dev/null)" ]; then
+        _help_print_commands "Grep" "grepp" "greppcode" "greppar"
+    else
+        _help_print_commands "Grep" "grepcode" "greppar"
+    fi
+
+    _help_print_commands "Sed" "replace"
+    _help_print_commands "Git" "diffraw" "diffst" "pullall" "pushall" "mergenoff" "what" "co" "st"
+
+    if [ -x "$(which jq 2>/dev/null)" ]; then
+        _help_print_commands "JSON" "jq"
+    fi
+
+    if [ "$(uname -s)" = "Darwin" ]; then
+        _help_print_commands "Mac OS X" "console" "plxml" "pljson" "trash"
+    fi
+
+    if [ -x "$(which hfsdata 2>/dev/null)" ]; then
+        _help_print_commands "HFS Write" "setcomment" "setlabel" "settype" "setcreator" "sethidden" "setunhidden"
+        _help_print_commands "HFS Read" "lscomment" "lslabel" "lskind" "lstype" "lscreator"
+    fi
+}
+
+function _help_print_commands() {
+    b="\e[1;35m"
+    n="\e[0m"
+
+    printf "%-18s" "$1"
+
+    for i in ${@:2}; do
+        printf "$b%s$n " "$i"
+    done
+
+    printf "\n"
+}
+

@@ -1,0 +1,18 @@
+# bash/functions/lsar
+
+function lsar() {
+    archives="$@"
+
+    if [ -z "$archives" ]; then
+        echo "Usage: lsar <archive> ..."
+        return
+    fi
+
+    for i in $archives; do
+        if [ -f "$i" ]; then
+            nm -A "$i" 2>/dev/null | replace 's/^(\(for architecture \w+\):)?(.+?):(.+?): (.+?)$/$3 $4/' | c++filt
+        else
+            echo "lsar: $i: No such file"
+        fi
+    done
+}

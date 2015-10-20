@@ -9,6 +9,7 @@
     pullall = up
     pushall = push --set-upstream --all
     mergenoff = merge --no-ff
+    what = wtf
     co = checkout
     st = status
 

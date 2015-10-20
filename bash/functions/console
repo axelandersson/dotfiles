@@ -1,0 +1,23 @@
+# bash/functions/console
+
+if [ "$(uname -s)" != "Darwin" ]; then
+    return
+fi
+
+function console() {
+    logs="$@"
+
+    if [ -z "$logs" ]; then
+        logs="-"
+    fi
+
+    for i in $logs; do
+        if [ -f "$i" ]; then
+            open -a Console "$i"
+        elif [ "$i" = "-" ]; then
+            open -a Console -f
+        else
+            echo "console: $i: No such file"
+        fi
+    done
+}
