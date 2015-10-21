@@ -1,13 +1,18 @@
 #!/bin/bash
 
 function grepar() {
-    pattern="$1"
-    archive="$2"
-
-    if [ -z "$pattern" -o -z "$archive" ]; then
-        echo "Usage: grepar <pattern> <archive>"
+    if [ -x "$(which pcre2grep 2>/dev/null)" ]; then
+        echo "$FUNCNAME: Use \"greppar\""
         return
     fi
 
-    lsar "$archive" | grep "$pattern"
+    pattern="$1"
+    archives="${@:2}"
+
+    if [ -z "$pattern" -o -z "$archives" ]; then
+        echo "Usage: $FUNCNAME <pattern> <archive> [<archive> ...]"
+        return
+    fi
+
+    lsar $archives | grep "$pattern"
 }

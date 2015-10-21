@@ -4,15 +4,27 @@ function lsar() {
     archives="$@"
 
     if [ -z "$archives" ]; then
-        echo "Usage: lsar <archive> ..."
+        echo "Usage: $FUNCNAME <archive> [<archive> ...]"
         return
     fi
 
+    count=0
+
+    for i in $archives; do
+        count=$(($count + 1))
+    done
+
     for i in $archives; do
         if [ -f "$i" ]; then
-            nm -A "$i" 2>/dev/null | replace 's/^(\(for architecture \w+\):)?(.+?):(.+?): (.+?)$/$3 $4/' | c++filt
+            if [ $count -gt 1 ]; then
+                pattern='s/^(\(for architecture \w+\):)?(.+?):(.+?): (.+?)$/$2 $3 $4/'
+            else
+                pattern='s/^(\(for architecture \w+\):)?(.+?):(.+?): (.+?)$/$3 $4/'
+            fi
+
+            nm -A "$i" 2>/dev/null | replace "$pattern" | c++filt
         else
-            echo "lsar: $i: No such file"
+            echo "$FUNCNAME: $i: No such file"
         fi
     done
 }

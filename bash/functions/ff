@@ -4,7 +4,7 @@ function ff() {
     name="$@"
 
     if [ -z "$name" ]; then
-        echo "Usage: ff <name>"
+        echo "Usage: $FUNCNAME <name>"
         return
     fi
 
@@ -15,7 +15,7 @@ function ffd() {
     name="$@"
 
     if [ -z "$name" ]; then
-        echo "Usage: ffd <name>"
+        echo "Usage: $FUNCNAME <name>"
         return
     fi
 
@@ -26,7 +26,7 @@ function ffx() {
     name="$@"
 
     if [ -z "$name" ]; then
-        echo "Usage: ffd <name>"
+        echo "Usage: $FUNCNAME <name>"
         return
     fi
 

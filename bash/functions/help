@@ -1,73 +1,95 @@
 #!/bin/bash
 
 function help() {
-    _help_print_commands "Shell" "resource"
-    _help_print_commands "File" "rename"
-    _help_print_commands "Directory List" "ll" "la"
-    _help_print_commands "Directory Tree" "fl" "fld" "flx"
-    _help_print_commands "Directory Find" "ff" "ffd" "ffx"
-    _help_print_commands "Processes" "psc" "psa" "psg"
-    _help_print_commands "Archive Pack" "lsar"
-    _help_print_commands "Archive Pack" "tgz"
+    _help_print_commands "Shell" "resource" "\n"
+    _help_print_commands "File" "rename" "\n"
+    _help_print_commands "Directory List" "ll" "la" "\n"
+    _help_print_commands "Directory Tree" "fl" "fld" "flx" "\n"
+    _help_print_commands "Directory Find" "ff" "ffd" "ffx" "\n"
+    _help_print_commands "Processes" "psc" "psa" "psg" "\n"
+    _help_print_commands "Archive Pack" "lsar" "\n"
+    _help_print_commands "Archive Pack" "tgz" "\n"
+
+    _help_print_commands "Archive Unpack" "untgz" "untbz" "untar"
 
     if [ -x "$(which unrar 2>/dev/null)" ]; then
-        _help_print_commands "Archive Unpack" "untgz" "untbz" "untar" "unrar"
-    else
-        _help_print_commands "Archive Unpack" "untgz" "untbz" "untar"
+        _help_print_command "unrar"
     fi
+
+    _help_print_newline
 
     if [ -x "$(which pcre2grep 2>/dev/null)" ]; then
-        _help_print_commands "Grep" "grepp" "greppcode" "greppar"
+        _help_print_commands "Grep" "grepp" "greppcode" "greppar" "\n"
     else
-        _help_print_commands "Grep" "grepcode" "greppar"
+        _help_print_commands "Grep" "grepcode" "grepar" "\n"
     fi
 
-    _help_print_commands "Sed" "replace"
-    _help_print_commands "Git" "diffraw" "diffst" "pullall" "pushall" "mergenoff" "what" "co" "st"
+    _help_print_commands "Sed" "replace" "\n"
+    _help_print_commands "Git" "diffraw" "diffst" "pullall" "pushall" "mergenoff" "what" "co" "st" "\n"
 
     if [ -x "$(which jq 2>/dev/null)" ]; then
-        _help_print_commands "JSON" "jq"
+        _help_print_commands "JSON" "jq" "\n"
     fi
 
     if [ "$(uname -s)" = "Darwin" ]; then
-        _help_print_commands "Mac OS X" "console" "plxml" "pljson" "trash"
+        _help_print_commands "Mac OS X" "console" "plxml" "pljson" "trash" "\n"
     fi
 
     if [ -x "$(which hfsdata 2>/dev/null)" ]; then
-        _help_print_commands "HFS Write" "setcomment" "setlabel" "settype" "setcreator" "sethidden" "setunhidden"
-        _help_print_commands "HFS Read" "lscomment" "lslabel" "lskind" "lstype" "lscreator"
+        _help_print_commands "HFS Write" "setcomment" "setlabel" "settype" "setcreator" "sethidden" "setunhidden" "\n"
+        _help_print_commands "HFS Read" "lscomment" "lslabel" "lskind" "lstype" "lscreator" "\n"
     fi
 
     for i in $(echo "$CDMAP" | perl -ne 'print join("\n", split(";"));' | sort); do
         shortcut=$(echo "$i" | cut -d ":" -f1)
         directory=$(echo "$i" | cut -d ":" -f2)
 
-        _help_print_directories "Directory \"$shortcut\"" "$directory"
+        _help_print_directories "Directory \"$shortcut\"" "$directory" "\n"
     done
+}
+
+function _help_print_label() {
+    printf "%-18s" "$1"
+}
+
+function _help_print_newline() {
+    printf "\n"
 }
 
 function _help_print_commands() {
+    _help_print_label "$1"
+
+    for i in ${@:2}; do
+        if [ "$i" = "\n" ]; then
+            _help_print_newline
+        else
+            _help_print_command "$i"
+        fi
+    done
+}
+
+function _help_print_command() {
     b="\e[1;35m"
     n="\e[0m"
 
-    printf "%-18s" "$1"
-
-    for i in ${@:2}; do
-        printf "$b%s$n " "$i"
-    done
-
-    printf "\n"
+    printf "$b%s$n " "$1"
 }
 
 function _help_print_directories() {
+    _help_print_label "$1"
+
+    for i in ${@:2}; do
+        if [ "$i" = "\n" ]; then
+            _help_print_newline
+        else
+            _help_print_directory "$i"
+        fi
+    done
+}
+
+function _help_print_directory() {
     b="\e[0;32m"
     n="\e[0m"
 
-    printf "%-18s" "$1"
-
-    for i in ${@:2}; do
-        printf "$b%s$n " "$i"
-    done
-
-    printf "\n"
+    printf "$b%s$n " "$1"
 }

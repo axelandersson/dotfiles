@@ -17,7 +17,7 @@ function console() {
         elif [ "$i" = "-" ]; then
             open -a Console -f
         else
-            echo "console: $i: No such file"
+            echo "$FUNCNAME: $i: No such file"
         fi
     done
 }

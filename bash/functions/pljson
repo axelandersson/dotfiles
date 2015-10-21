@@ -1,10 +1,11 @@
 #!/bin/bash
 
-if [ ! -x "$(which plutil 2>/dev/null)" ]; then
-    return
-fi
-
 function pljson() {
+    if [ ! -x "$(which plutil 2>/dev/null)" ]; then
+        echo "$FUNCNAME: plutil: No such command"
+        return
+    fi
+
     plists="$@"
 
     if [ -z "$plists" ]; then
@@ -15,7 +16,7 @@ function pljson() {
         if [ -f "$i" -o "$i" = "-" ]; then
             plutil -convert json -o - "$i"
         else
-            echo "pljson: $i: No such file"
+            echo "$FUNCNAME: $i: No such file"
         fi
     done
 }

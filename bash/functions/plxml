@@ -1,10 +1,11 @@
 #!/bin/bash
 
-if [ ! -x "$(which plutil 2>/dev/null)" ]; then
-    return
-fi
-
 function plxml() {
+    if [ ! -x "$(which plutil 2>/dev/null)" ]; then
+        echo "$FUNCNAME: plutil: No such command"
+        return
+    fi
+
     plists="$@"
 
     if [ -z "$plists" ]; then
@@ -15,7 +16,7 @@ function plxml() {
         if [ -f "$i" -o "$i" = "-" ]; then
             plutil -convert xml1 -o - "$i"
         else
-            echo "plxml: $i: No such file"
+            echo "$FUNCNAME: $i: No such file"
         fi
     done
 }

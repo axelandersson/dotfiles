@@ -8,7 +8,7 @@
     diffst = diff --staged
     pushall = push --set-upstream --all
     mergenoff = merge --no-ff
-    what = wtf
+    what = wtf -A
     co = checkout
     st = status
 

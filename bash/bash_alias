@@ -8,7 +8,7 @@ alias host="host -a"
 alias less="less -x4 -i"
 
 # perl
-#alias calc="perl -wlne 'print eval;'"
+alias calc="perl -wlne 'print eval;'"
 
 # tar
 alias tgz="tar -czf"

@@ -1,18 +1,18 @@
 #!/bin/bash
 
-if [ ! -x "$(which pcre2grep 2>/dev/null)" ]; then
-    echo "warning: 'greppar' is not available, use 'grepar' instead"
-    return
-fi
-
 function greppar() {
-    pattern="$1"
-    archive="$2"
-
-    if [ -z "$pattern" -o -z "$archive" ]; then
-        echo "Usage: greppar <pattern> <archive>"
+    if [ ! -x "$(which pcre2grep 2>/dev/null)" ]; then
+        echo "$FUNCNAME: Use \"grepar\""
         return
     fi
 
-    lsar "$archive" | grepp "$pattern"
+    pattern="$1"
+    archives="${@:2}"
+
+    if [ -z "$pattern" -o -z "$archives" ]; then
+        echo "Usage: $FUNCNAME <pattern> <archive> [<archive> ...]"
+        return
+    fi
+
+    lsar $archives | grepp "$pattern"
 }
