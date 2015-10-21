@@ -2,7 +2,7 @@
 
 function help() {
     _help_print_commands "Shell" "resource" "\n"
-    _help_print_commands "File" "rename" "\n"
+    _help_print_commands "File" "lsdump" "rename" "\n"
     _help_print_commands "Directory List" "ll" "la" "\n"
     _help_print_commands "Directory Tree" "fl" "fld" "flx" "\n"
     _help_print_commands "Directory Find" "ff" "ffd" "ffx" "\n"
@@ -18,14 +18,10 @@ function help() {
 
     _help_print_newline
 
-    if [ -x "$(which pcre2grep 2>/dev/null)" ]; then
-        _help_print_commands "Grep" "grepp" "greppcode" "greppar" "\n"
-    else
-        _help_print_commands "Grep" "grepcode" "grepar" "\n"
-    fi
-
+    _help_print_commands "Grep" "grepp" "greppar" "greppcode" "\n"
     _help_print_commands "Sed" "replace" "\n"
-    _help_print_commands "Git" "diffraw" "diffst" "pullall" "pushall" "mergenoff" "what" "co" "st" "\n"
+    _help_print_commands "Git" "diffraw" "diffst" "pullall" "pushall" "mergenoff" "what" "\n"
+    _help_print_commands "Git" "co" "st" "\n"
 
     if [ -x "$(which jq 2>/dev/null)" ]; then
         _help_print_commands "JSON" "jq" "\n"

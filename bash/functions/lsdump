@@ -10,11 +10,11 @@ function lsdump() {
 
     for i in $files; do
         if [ -e "$i" ]; then
-            _help_print_command "file"
+            _lsdump_print_command "file"
 
             file --brief "$i" | replace 's/^\s*(.+)$/  $1/'
 
-            _help_print_command "stat"
+            _lsdump_print_command "stat"
 
             stat -x "$i" | replace 's/^\s*(.+)$/  $1/'
 
@@ -22,7 +22,7 @@ function lsdump() {
                 attributes=$(xattr "$i")
 
                 if [ -n "$attributes" ]; then
-                    _help_print_command "xattr"
+                    _lsdump_print_command "xattr"
 
                     for j in $attributes; do
                         printf "  $j\n"
@@ -32,13 +32,13 @@ function lsdump() {
             fi
 
             if [ -x "$(which hfsdata 2>/dev/null)" ]; then
-                _help_print_command "hfsdata"
+                _lsdump_print_command "hfsdata"
 
-                printf "  Type: %s\n" $(hfsdata -T "$i")
-                printf "  Creator: %s\n" $(hfsdata -C "$i")
-                printf "  Kind: %s\n" $(hfsdata -k "$i")
-                printf "  Label: %s (%u)\n" $(hfsdata -L "$i") $(hfsdata -l "$i")
-                printf "  Comment: \"%s\"\n" $(hfsdata -o "$i")
+                printf "  Type: %s\n" $(hfsdata -T "$i" 2>/dev/null)
+                printf "  Creator: %s\n" $(hfsdata -C "$i" 2>/dev/null)
+                printf "  Kind: %s\n" $(hfsdata -k "$i" 2>/dev/null)
+                printf "  Label: %s (%u)\n" $(hfsdata -L "$i" 2>/dev/null) $(hfsdata -l "$i" 2>/dev/null)
+                printf "  Comment: \"%s\"\n" $(hfsdata -o "$i" 2>/dev/null)
             fi
         else
             echo "$FUNCNAME: $i: No such file or directory"
@@ -46,7 +46,7 @@ function lsdump() {
     done
 }
 
-function _help_print_command() {
+function _lsdump_print_command() {
     b="\e[1;35m"
     n="\e[0m"
 

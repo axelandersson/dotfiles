@@ -1,0 +1,9 @@
+#!/bin/bash
+
+function grepp() {
+    if [ -x "$(which pcre2grep 2>/dev/null)" ]; then
+        pcre2grep --buffer-size=1048576 --color=auto --recursive $@
+    else
+        grep --extended-regexp --color=auto --recursive $@
+    fi
+}

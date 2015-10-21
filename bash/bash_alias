@@ -31,6 +31,7 @@ fi
 
 # ps
 alias psc="psa -r | awk '{if(\$3 > 0.5 || NR == 1) print \$0}'"
+alias psg="psa | grepp --ignore-case"
 
 if [ "$(uname -s)" = "Darwin" ]; then
     alias ps="command ps -ww -o pid,%cpu,%mem,command"
@@ -49,12 +50,6 @@ elif [ "$(uname -s)" = "SunOS" ]; then
     alias psa="command ps -e -o pid,user,pcpu,pmem,args"
 fi
 
-if [ -x "$(which pcre2grep 2>/dev/null)" ]; then
-    alias psg="psa | pcre2grep --color=auto --ignore-case"
-else
-    alias psg="psa | command grep --extended-regexp --color=auto --ignore-case"
-fi
-
 # top
 if [ "$(uname -s)" = "Darwin" ]; then
     alias top="top -s 1 -S -u"
@@ -66,17 +61,6 @@ elif [ "$(uname -s)" = "OpenBSD" ]; then
     alias top="top -s 1"
 elif [ "$(uname -s)" = "SunOS" ]; then
     alias top="top -s 1"
-fi
-
-# grep
-if [ -x "$(which pcre2grep 2>/dev/null)" ]; then
-    alias grepp="command pcre2grep --buffer-size=1048576 --color=auto --recursive"
-    alias greppcode="command pcre2grep --buffer-size=1048576 --color=auto --recursive -H --line-number --binary-files=without-match --exclude-dir=.svn --exclude-dir=.git --include='\.(c|h|pch|m|mm|swift|cpp|hpp|cs|java|rb|pl|py|lua|sh|js)$'"
-else
-    alias grep="command grep --extended-regexp --color=auto --recursive"
-    alias grepcode="command grep --extended-regexp --color=auto --recursive -H --line-number --binary-files=without-match --exclude-dir=.svn --exclude-dir=.git --include='*.c' --include='*.h' --include='*.pch' --include='*.m' --include='*.mm' --include='*.swift' --include='*.cpp' --include='*.hpp' --include='*.cs' --include='*.java' --include='*.rb' --include='*.pl' --include='*.py' --include='*.lua' --include='*.sh' --include='*.js'"
-
-    echo "warning: 'grepp' is not available, use 'grep' instead"
 fi
 
 # HFS commands

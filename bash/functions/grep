@@ -1,0 +1,6 @@
+#!/bin/bash
+
+function grep() {
+    echo "$FUNCNAME: Use \"grepp\""
+    return
+}
