@@ -14,6 +14,10 @@ function lsdump() {
 
             file --brief "$i" | replace 's/^\s*(.+)$/  $1/'
 
+            _lsdump_print_command "du"
+
+            du "$i" | replace 's/^\s*([\w\.]+).*$/  $1/'
+
             _lsdump_print_command "stat"
 
             stat -x "$i" | replace 's/^\s*(.+)$/  $1/'
