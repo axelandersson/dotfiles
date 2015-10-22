@@ -12,12 +12,15 @@ if [ -f "$HOME/.bash_local" ]; then
     source "$HOME/.bash_local"
 fi
 
+GIT_PS1_SHOWUPSTREAM="auto"
+GIT_PS1_SHOWDIRTYSTATE="1"
+source "$HOME/.dotfiles/bash/bash_git_prompt"
+
 source "$HOME/.dotfiles/bash/bash_config"
 source "$HOME/.dotfiles/bash/bash_path"
 source "$HOME/.dotfiles/bash/bash_env"
 source "$HOME/.dotfiles/bash/bash_alias"
 source "$HOME/.dotfiles/bash/bash_git_completion"
-source "$HOME/.dotfiles/bash/bash_git_prompt"
 
 for i in "$HOME/.dotfiles/bash/functions"/*; do
     source "$i"

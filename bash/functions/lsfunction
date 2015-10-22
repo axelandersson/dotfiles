@@ -1,0 +1,13 @@
+#!/bin/bash
+
+function lsfunction() {
+    functions="$@"
+
+    if [ -n "$functions" ]; then
+        for i in $functions; do
+            declare -f "$i"
+        done
+    else
+        declare -F | replace 's/^declare -f //' | sort
+    fi
+}

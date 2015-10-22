@@ -1,93 +1,70 @@
 #!/bin/bash
 
 function help() {
-    _help_print_commands "Shell" "resource" "\n"
-    _help_print_commands "File" "lsdump" "rename" "\n"
-    _help_print_commands "Directory List" "ll" "la" "\n"
-    _help_print_commands "Directory Tree" "fl" "fld" "flx" "\n"
-    _help_print_commands "Directory Find" "ff" "ffd" "ffx" "\n"
-    _help_print_commands "Processes" "psc" "psa" "psg" "\n"
-    _help_print_commands "Archive Pack" "lsar" "\n"
-    _help_print_commands "Archive Pack" "tgz" "\n"
+    print_label "Shell"
+    print_magenta_bold "resource" "lsalias" "lsenv" "lsfunction" "rmalias" "rmenv" "rmfunction" "\n"
+    print_label "File"
+    print_magenta_bold "rename" "lsdump" "\n"
+    print_label "Directory List"
+    print_magenta_bold "ll" "la" "\n"
+    print_label "Directory Tree"
+    print_magenta_bold "fl" "fld" "flx" "\n"
+    print_label "Directory Find"
+    print_magenta_bold "ff" "ffd" "ffx" "\n"
+    print_label "Process"
+    print_magenta_bold "psc" "psa" "psg" "\n"
+    print_label "Archive List"
+    print_magenta_bold "lsar" "\n"
+    print_label "Archive Pack"
+    print_magenta_bold "tgz" "\n"
 
-    _help_print_commands "Archive Unpack" "untgz" "untbz" "untar"
+    print_label "Archive Unpack"
+    print_magenta_bold "untgz" "untbz" "untar"
 
     if [ -x "$(which unrar 2>/dev/null)" ]; then
-        _help_print_command "unrar"
+        print_magenta_bold "unrar"
     fi
 
-    _help_print_newline
+    print_newline
 
-    _help_print_commands "Grep" "grepp" "greppar" "greppcode" "\n"
-    _help_print_commands "Sed" "replace" "\n"
-    _help_print_commands "Git" "u=pullall" "m=mergenoff" "p=pushall" "\n"
-    _help_print_commands "Git" "a=stage" "aa=stageall" "u=unstage" "c=checkin" "\n"
-    _help_print_commands "Git" "l=log" "ll=loglong" "d=diff" "dr=diffraw" "ds=diffstaged" "\n"
-    _help_print_commands "Git" "e=editconfig" "\n"
+    print_label "Grep"
+    print_magenta_bold "grepp" "greppar" "greppcode" "\n"
+    print_label "Sed"
+    print_magenta_bold "replace" "\n"
+    print_label "Git"
+    print_magenta_bold "u=pullall" "m=mergenoff" "p=pushall" "\n"
+    print_label "Git"
+    print_magenta_bold "a=stage" "aa=stageall" "u=unstage" "c=checkin" "\n"
+    print_label "Git"
+    print_magenta_bold "l=log" "ll=loglong" "d=diff" "dr=diffraw" "ds=diffstaged" "\n"
+    print_label "Git"
+    print_magenta_bold "v=viconfig" "\n"
 
     if [ -x "$(which jq 2>/dev/null)" ]; then
-        _help_print_commands "JSON" "jq" "\n"
+        print_label "JSON"
+        print_magenta_bold "jq" "\n"
     fi
 
     if [ "$(uname -s)" = "Darwin" ]; then
-        _help_print_commands "Mac OS X" "console" "plxml" "pljson" "trash" "\n"
+        print_label "Mac OS X"
+        print_magenta_bold "console" "plxml" "pljson" "trash" "\n"
     fi
 
     if [ -x "$(which hfsdata 2>/dev/null)" ]; then
-        _help_print_commands "HFS Write" "setcomment" "setlabel" "settype" "setcreator" "sethidden" "setunhidden" "\n"
-        _help_print_commands "HFS Read" "lscomment" "lslabel" "lskind" "lstype" "lscreator" "\n"
+        print_label "HFS Write"
+        print_magenta_bold "setcomment" "setlabel" "settype" "setcreator" "sethidden" "setunhidden" "\n"
+        print_label "HFS Read"
+        print_magenta_bold "lscomment" "lslabel" "lskind" "lstype" "lscreator" "\n"
     fi
 
     for i in $(echo "$CDMAP" | perl -ne 'print join("\n", split(";"));' | sort); do
         shortcut=$(echo "$i" | cut -d ":" -f1)
         directory=$(echo "$i" | cut -d ":" -f2)
 
-        _help_print_directories "Directory \"$shortcut\"" "$directory" "\n"
+        print_label "Directory"
+        print_green "\"$shortcut\"" "$directory" "\n"
     done
-}
 
-function _help_print_label() {
-    printf "%-18s" "$1"
-}
-
-function _help_print_newline() {
-    printf "\n"
-}
-
-function _help_print_commands() {
-    _help_print_label "$1"
-
-    for i in ${@:2}; do
-        if [ "$i" = "\n" ]; then
-            _help_print_newline
-        else
-            _help_print_command "$i"
-        fi
-    done
-}
-
-function _help_print_command() {
-    b="\e[1;35m"
-    n="\e[0m"
-
-    printf "$b%s$n " "$1"
-}
-
-function _help_print_directories() {
-    _help_print_label "$1"
-
-    for i in ${@:2}; do
-        if [ "$i" = "\n" ]; then
-            _help_print_newline
-        else
-            _help_print_directory "$i"
-        fi
-    done
-}
-
-function _help_print_directory() {
-    b="\e[0;32m"
-    n="\e[0m"
-
-    printf "$b%s$n " "$1"
+    print_label "Prompt"
+    print_blue "*unstaged" "+staged" "<behind" ">ahead" "=sync" "\n"
 }

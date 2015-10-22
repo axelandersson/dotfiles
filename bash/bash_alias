@@ -7,6 +7,12 @@ alias df="df -h"
 alias host="host -a"
 alias less="less -x4 -i"
 
+# bash
+alias resource="source $HOME/.bashrc"
+alias rmfunction="unset -f"
+alias rmalias="unalias"
+alias rmenv="unset -v"
+
 # perl
 alias calc="perl -wlne 'print eval;'"
 
@@ -28,6 +34,9 @@ elif [ "$(uname -s)" = "OpenBSD" ]; then
 elif [ "$(uname -s)" = "SunOS" ]; then
     alias ls="ls -p"
 fi
+
+# grep
+alias greppr="grepp --recursive"
 
 # ps
 alias psc="psa -r | awk '{if(\$3 > 0.5 || NR == 1) print \$0}'"

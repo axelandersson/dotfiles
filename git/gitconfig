@@ -4,7 +4,7 @@
     name = Axel Andersson
 
 [alias]
-    editconfig = config --global --edit
+    viconfig = config --global --edit
     diffraw = diff --no-textconv
     diffst = diff --staged
     pullall = up-or-pull
@@ -14,7 +14,7 @@
     unstage = reset --quiet
     checkin = commit --verbose
     logpatch = log --patch
-    e = editconfig
+    v = viconfig
     d = diff
     dr = diff --no-textconv
     ds = diff --staged

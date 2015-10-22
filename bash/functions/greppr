@@ -1,5 +1,0 @@
-#!/bin/bash
-
-function greppr() {
-    grepp --recursive $@
-}

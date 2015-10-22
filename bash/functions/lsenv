@@ -1,0 +1,17 @@
+#!/bin/bash
+
+function lsenv() {
+    variables="$@"
+
+    if [ -n "$variables" ]; then
+        pattern=""
+
+        for i in $variables; do
+            pattern=" --regexp=$i= $pattern "
+        done
+
+        env | grepp $pattern | sort
+    else
+        env | sort
+    fi
+}

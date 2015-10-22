@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Prompt
-export PS1='\u@\h:\w$(__git_ps1 ":%s")> '
+export PS1='\u@\h:\w$(__git_ps1 ":\e[0;34m%s\e[0m")> '
 
 # Increase size of history
 export HISTSIZE="100000"

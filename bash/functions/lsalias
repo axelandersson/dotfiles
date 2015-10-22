@@ -1,0 +1,13 @@
+#!/bin/bash
+
+function lsalias() {
+    aliases="$@"
+
+    if [ -n "$aliases" ]; then
+        for i in $aliases; do
+            alias "$i"
+        done
+    else
+        alias -p | replace 's/^alias //' | sort
+    fi
+}
