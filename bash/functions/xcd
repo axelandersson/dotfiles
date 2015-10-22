@@ -1,0 +1,19 @@
+#!/bin/bash
+
+function xcd() {
+    if [ ! -x "$(which osascript)" ]; then
+        echo "$FUNCNAME: osascript: No such command"
+        return
+    fi
+
+    path=$(osascript -e "tell application id \"com.apple.dt.Xcode\" to return path of text document 1 whose name ends with (word -1 of (get name of window 1))" 2>/dev/null)
+
+    if [ -z "$path" ]; then
+        echo "$FUNCNAME: No path found"
+        return
+    fi
+
+    directory=$(dirname "$path")
+
+    cd "$directory"
+}

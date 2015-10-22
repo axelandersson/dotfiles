@@ -2,7 +2,14 @@
 
 function help() {
     print_label "Shell"
-    print_magenta_bold "resource" "lsalias" "lsenv" "lsfunction" "rmalias" "rmenv" "rmfunction" "\n"
+    print_magenta_bold "resource" "lsalias" "lsenv" "lsfunction" "rmalias" "rmenv" "rmfunction"
+
+    if [ -x "$(which osascript)" ]; then
+        print_magenta_bold "xcd"
+    fi
+
+    print_newline
+
     print_label "File"
     print_magenta_bold "rename" "lsdump" "\n"
     print_label "Directory List"

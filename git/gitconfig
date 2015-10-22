@@ -28,6 +28,7 @@
     c = commit --verbose
     l = log --perl-regexp
     ll = log --patch --perl-regexp
+    b = checkout --track -b
 
 [color]
     branch = auto
