@@ -23,6 +23,7 @@ if [ "$(uname -s)" = "Darwin" ]; then
 fi
 
 test -d "$HOME/.dotfiles/bin" && PATH0="$HOME/.dotfiles/bin:$PATH0"
+test -d "$HOME/.dotfiles/git/bin" && PATH0="$HOME/.dotfiles/git/bin:$PATH0"
 test -d "$HOME/.dotfiles/local/bin" && PATH0="$HOME/.dotfiles/local/bin:$PATH0"
 test -d "$HOME/.dotfiles/local/ruby-gems/bin" && PATH0="$HOME/.dotfiles/local/ruby-gems/bin:$PATH0"
 

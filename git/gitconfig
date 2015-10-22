@@ -4,13 +4,30 @@
     name = Axel Andersson
 
 [alias]
+    editconfig = config --global --edit
     diffraw = diff --no-textconv
     diffst = diff --staged
+    pullall = up-or-pull
     pushall = push --set-upstream --all
     mergenoff = merge --no-ff
-    what = wtf -A
-    co = checkout
-    st = status
+    stageall = stage --all
+    unstage = reset --quiet
+    checkin = commit --verbose
+    logpatch = log --patch
+    e = editconfig
+    d = diff
+    dr = diff --no-textconv
+    ds = diff --staged
+    u = up-or-pull
+    p = push --set-upstream --all
+    m = merge -no-ff
+    s = status
+    a = stage
+    aa = stage --all
+    u = reset --quiet
+    c = commit --verbose
+    l = log --perl-regexp
+    ll = log --patch --perl-regexp
 
 [color]
     branch = auto
@@ -90,3 +107,6 @@
 
 [push]
     default = tracking
+
+[status]
+    short = true

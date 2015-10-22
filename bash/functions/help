@@ -20,8 +20,10 @@ function help() {
 
     _help_print_commands "Grep" "grepp" "greppar" "greppcode" "\n"
     _help_print_commands "Sed" "replace" "\n"
-    _help_print_commands "Git" "diffraw" "diffst" "pullall" "pushall" "mergenoff" "what" "\n"
-    _help_print_commands "Git" "co" "st" "\n"
+    _help_print_commands "Git" "u=pullall" "m=mergenoff" "p=pushall" "\n"
+    _help_print_commands "Git" "a=stage" "aa=stageall" "u=unstage" "c=checkin" "\n"
+    _help_print_commands "Git" "l=log" "ll=loglong" "d=diff" "dr=diffraw" "ds=diffstaged" "\n"
+    _help_print_commands "Git" "e=editconfig" "\n"
 
     if [ -x "$(which jq 2>/dev/null)" ]; then
         _help_print_commands "JSON" "jq" "\n"
