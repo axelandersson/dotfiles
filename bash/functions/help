@@ -39,7 +39,7 @@ function help() {
     print_label "Sed"
     print_magenta_bold "replace" "\n"
     print_label "Git"
-    print_magenta_bold "u=pullall" "m=mergenoff" "p=pushall" "\n"
+    print_magenta_bold "u=pullall" "b=branch" "m=mergenoff" "p=pushall" "\n"
     print_label "Git"
     print_magenta_bold "a=stage" "aa=stageall" "u=unstage" "c=checkin" "\n"
     print_label "Git"

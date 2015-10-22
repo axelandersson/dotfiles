@@ -14,6 +14,7 @@
     unstage = reset --quiet
     checkin = commit --verbose
     logpatch = log --patch
+    branch = checkout --track -b
     v = viconfig
     d = diff
     dr = diff --no-textconv
