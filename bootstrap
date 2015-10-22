@@ -13,6 +13,7 @@ ln -sfn "$HOME/.dotfiles/git/gitconfig" "$HOME/.gitconfig"
 ln -sfn "$HOME/.dotfiles/input/inputrc" "$HOME/.inputrc"
 ln -sfn "$HOME/.dotfiles/lldb/lldbinit" "$HOME/.lldbinit"
 ln -sfn "$HOME/.dotfiles/plan/plan" "$HOME/.plan"
+ln -sfn "$HOME/.dotfiles/screen/screenrc" "$HOME/.screenrc"
 ln -sfn "$HOME/.dotfiles/sqlite/sqliterc" "$HOME/.sqliterc"
 ln -sfn "$HOME/.dotfiles/vim/vimrc" "$HOME/.vimrc"
 

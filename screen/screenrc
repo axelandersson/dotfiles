@@ -1,0 +1,4 @@
+# screen/screenrc
+
+defscrollback 10000
+termcapinfo xterm* ti@:te@
