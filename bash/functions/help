@@ -43,7 +43,7 @@ function help() {
     print_label "Git"
     print_magenta_bold "a=stage" "aa=stageall" "r=unstage" "c=checkin" "\n"
     print_label "Git"
-    print_magenta_bold "l=log" "ll=loglong" "d=diff" "dr=diffraw" "ds=diffstaged" "\n"
+    print_magenta_bold "l=log" "ll=loglong" "d=diff" "dr=diffraw" "ds=diffstaged" "dc=diffcommit" "\n"
     print_label "Git"
     print_magenta_bold "v=viconfig" "\n"
 

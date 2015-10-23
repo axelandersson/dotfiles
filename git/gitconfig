@@ -7,21 +7,24 @@
     viconfig = config --global --edit
     diffraw = diff --no-textconv
     diffst = diff --staged
+    diffcommit = diff origin
     pullall = up-or-pull
     pushall = push --set-upstream --all
     mergenoff = merge --no-ff
     stageall = stage --all
     unstage = reset --quiet
     checkin = commit --verbose
-    logpatch = log --patch
+    logpatch = log --patch --perl-regexp
+    logcommit = log --perl-regexp origin..HEAD
     branch = checkout --track -b
     v = config --global --edit
     d = diff
     dr = diff --no-textconv
     ds = diff --staged
+    dc = diff origin
     u = up-or-pull
     p = push --set-upstream --all
-    m = merge -no-ff
+    m = merge --no-ff
     s = status
     a = stage
     aa = stage --all
@@ -29,6 +32,7 @@
     c = commit --verbose
     l = log --perl-regexp
     ll = log --patch --perl-regexp
+    lc = log --perl-regexp origin..HEAD
     b = checkout --track -b
 
 [color]
