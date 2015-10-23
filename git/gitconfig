@@ -15,7 +15,7 @@
     checkin = commit --verbose
     logpatch = log --patch
     branch = checkout --track -b
-    v = viconfig
+    v = config --global --edit
     d = diff
     dr = diff --no-textconv
     ds = diff --staged
@@ -25,7 +25,7 @@
     s = status
     a = stage
     aa = stage --all
-    u = reset --quiet
+    r = reset --quiet
     c = commit --verbose
     l = log --perl-regexp
     ll = log --patch --perl-regexp
