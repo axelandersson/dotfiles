@@ -31,9 +31,9 @@ GIT_PS1_STATESEPARATOR=""
 
 source "$HOME/.dotfiles/bash/contrib/git_prompt"
 
-PS_ID="\[$cbwhi\]\u@\h\[$cres\]"
+PS_ID="\[$cwhi\]\u@\h\[$cres\]"
 PS_PATH='$(_prompt_path "\[$cbgre\]%s\[$cres\]" "\[$cbwhi\]%s\[$cres\]")'
 PS_GIT='$(__git_ps1 " \[$cblu\]%s\[$cres\]")'
-PS_ARROW="\[$cbwhi\]>\[$cres\]"
+PS_ARROW="\[$cwhi\]>\[$cres\]"
 
 export PS1="$PS_ID $PS_PATH$PS_GIT$PS_ARROW "
