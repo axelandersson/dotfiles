@@ -6,7 +6,7 @@
 [alias]
     viconfig = config --global --edit
     diffraw = diff --no-textconv
-    diffst = diff --staged
+    diffstaged = diff --staged
     diffcommit = diff origin
     pullall = up-or-pull
     pushall = push --set-upstream --all
@@ -14,9 +14,13 @@
     stageall = stage --all
     unstage = reset --quiet
     checkin = commit --verbose
-    logpatch = log --patch --perl-regexp
+    log5 = log --perl-regexp -5
+    loglong = log --perl-regexp --patch
+    loglong5 = log --perl-regexp --patch -5
     logcommit = log --perl-regexp origin..HEAD
+    loglongcommit = log --perl-regexp --patch origin..HEAD
     branch = checkout --track -b
+    resethard = reset --hard
     v = config --global --edit
     d = diff
     dr = diff --no-textconv
@@ -31,9 +35,13 @@
     r = reset --quiet
     c = commit --verbose
     l = log --perl-regexp
-    ll = log --patch --perl-regexp
+    l5 = log --perl-regexp -5
+    ll = log --perl-regexp --patch
+    ll5 = log --perl-regexp --patch -5
     lc = log --perl-regexp origin..HEAD
+    llc = log --perl-regexp --patch origin..HEAD
     b = checkout --track -b
+    h = reset --hard
 
 [color]
     branch = auto
