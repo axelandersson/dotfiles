@@ -1,9 +1,27 @@
 #!/bin/bash
 
+function _prompt_path {
+    local IFS="/"
+
+    if [ "$PWD" = "/" ]; then
+        echo -n "/"
+        return
+    fi
+
+    pwd="${PWD/$HOME/~}"
+
+    for path in $pwd; do
+        result+=$(printf "$1" "$path")
+        result+="/"
+    done
+
+    echo -en "${result/%\//}"
+}
+
 GIT_PS1_SHOWUPSTREAM="auto"
 GIT_PS1_SHOWDIRTYSTATE="1"
 GIT_PS1_STATESEPARATOR=""
 
 source "$HOME/.dotfiles/bash/contrib/git_prompt"
 
-export PS1='\u@\h:\w$(__git_ps1 ":\[$cblu\]%s\[$cres\]")> '
+export PS1='\u@\h $(_prompt_path "\[$cgre\]%s\[$cres\]")$(__git_ps1 " \[$cblu\]%s\[$cres\]")> '
