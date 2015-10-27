@@ -7,7 +7,7 @@ set ttyfast
 
 " Interface
 syntax on
-set showmode
+set noshowmode
 set showmatch
 set showcmd
 set ruler
@@ -48,3 +48,16 @@ nnoremap <C-P> :prev<CR>
 
 " Remember line position
 au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal g'\"" | endif
+
+" Status line
+set laststatus=2
+
+let g:lightline = {
+    \ 'colorscheme': 'jellybeans',
+    \ 'component': {
+    \   'readonly': '%{&readonly?"x":""}',
+    \   'modified': '%{&filetype=="help"?"":&modified?"+":&modifiable?"":"-"}'
+    \   },
+    \ 'separator': { 'left': '', 'right': '' },
+    \ 'subseparator': { 'left': '|', 'right': '|' },
+    \ }

@@ -16,7 +16,7 @@ function lsdump() {
 
             printf "$cboldmag%s$cres\n" "du"
 
-            du "$i" | replace 's/^\s*([\w\.]+).*$/  $1/'
+            du -hs "$i" | replace 's/^\s*([\w\.]+).*$/  $1/'
 
             printf "$cboldmag%s$cres\n" "stat"
 

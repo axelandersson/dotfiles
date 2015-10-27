@@ -33,6 +33,7 @@ ln -sfn "$HOME/.dotfiles/subversion/subversion_config" "$HOME/.subversion/config
 
 # vim
 mkdir -p "$HOME/.vim"
+ln -sfn "$HOME/.dotfiles/vim/autoload" "$HOME/.vim/autoload"
 ln -sfn "$HOME/.dotfiles/vim/colors" "$HOME/.vim/colors"
 ln -sfn "$HOME/.dotfiles/vim/doc" "$HOME/.vim/doc"
 ln -sfn "$HOME/.dotfiles/vim/plugin" "$HOME/.vim/plugin"
