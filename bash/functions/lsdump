@@ -10,15 +10,15 @@ function lsdump() {
 
     for i in $files; do
         if [ -e "$i" ]; then
-            _lsdump_print_command "file"
+            printf "$cboldmag%s$cres\n" "file"
 
             file --brief "$i" | replace 's/^\s*(.+)$/  $1/'
 
-            _lsdump_print_command "du"
+            printf "$cboldmag%s$cres\n" "du"
 
             du "$i" | replace 's/^\s*([\w\.]+).*$/  $1/'
 
-            _lsdump_print_command "stat"
+            printf "$cboldmag%s$cres\n" "stat"
 
             stat -x "$i" | replace 's/^\s*(.+)$/  $1/'
 
@@ -26,7 +26,7 @@ function lsdump() {
                 attributes=$(xattr "$i")
 
                 if [ -n "$attributes" ]; then
-                    _lsdump_print_command "xattr"
+                    printf "$cboldmag%s$cres\n" "xattr"
 
                     for j in $attributes; do
                         printf "  $j\n"
@@ -36,7 +36,7 @@ function lsdump() {
             fi
 
             if [ -x "$(which hfsdata 2>/dev/null)" ]; then
-                _lsdump_print_command "hfsdata"
+                printf "$cboldmag%s$cres\n" "hfsdata"
 
                 printf "  Type: %s\n" $(hfsdata -T "$i" 2>/dev/null)
                 printf "  Creator: %s\n" $(hfsdata -C "$i" 2>/dev/null)
@@ -49,11 +49,3 @@ function lsdump() {
         fi
     done
 }
-
-function _lsdump_print_command() {
-    b="\e[1;35m"
-    n="\e[0m"
-
-    printf "$b%s$n\n" "$1"
-}
-

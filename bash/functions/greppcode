@@ -2,8 +2,8 @@
 
 function greppcode() {
     if [ -x "$(which pcre2grep 2>/dev/null)" ]; then
-        pcre2grep --buffer-size=1048576 --color=auto --recursive -H --line-number --binary-files=without-match --exclude-dir=.svn --exclude-dir=.git --include='\.(c|h|pch|m|mm|swift|cpp|hpp|cs|java|rb|pl|py|lua|sh|js)$'
+        pcre2grep --buffer-size=1048576 --color=auto --recursive -H --line-number --binary-files=without-match --exclude-dir=.svn --exclude-dir=.git --include='\.(c|h|pch|m|mm|swift|cpp|hpp|cs|java|rb|pl|py|lua|sh|js)$' $@ .
     else
-        grep --extended-regexp --color=auto --recursive -H --line-number --binary-files=without-match --exclude-dir=.svn --exclude-dir=.git --include='*.c' --include='*.h' --include='*.pch' --include='*.m' --include='*.mm' --include='*.swift' --include='*.cpp' --include='*.hpp' --include='*.cs' --include='*.java' --include='*.rb' --include='*.pl' --include='*.py' --include='*.lua' --include='*.sh' --include='*.js'
+        grep --extended-regexp --color=auto --recursive -H --line-number --binary-files=without-match --exclude-dir=.svn --exclude-dir=.git --include='*.c' --include='*.h' --include='*.pch' --include='*.m' --include='*.mm' --include='*.swift' --include='*.cpp' --include='*.hpp' --include='*.cs' --include='*.java' --include='*.rb' --include='*.pl' --include='*.py' --include='*.lua' --include='*.sh' --include='*.js' $@ .
     fi
 }

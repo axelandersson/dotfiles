@@ -1,77 +1,128 @@
 #!/bin/bash
 
 function help() {
-    print_label "Shell"
-    print_magenta_bold "resource" "lsalias" "lsenv" "lsfunction" "rmalias" "rmenv" "rmfunction"
+    _help_print_label "Shell"
+    _help_print_commands "resource" "lsalias" "lsenv" "lsfunction" "rmalias" "rmenv" "rmfunction"
+    test -x "$(which osascript 2>/dev/null)" && _help_print_commands "xcd"
+    _help_print_newline
 
-    if [ -x "$(which osascript)" ]; then
-        print_magenta_bold "xcd"
-    fi
+    _help_print_label "File"
+    _help_print_commands "rename" "lsdump"
+    _help_print_newline
 
-    print_newline
+    _help_print_label "Directory List"
+    _help_print_commands "ll" "la"
+    _help_print_newline
 
-    print_label "File"
-    print_magenta_bold "rename" "lsdump" "\n"
-    print_label "Directory List"
-    print_magenta_bold "ll" "la" "\n"
-    print_label "Directory Tree"
-    print_magenta_bold "fl" "fld" "flx" "\n"
-    print_label "Directory Find"
-    print_magenta_bold "ff" "ffd" "ffx" "\n"
-    print_label "Process"
-    print_magenta_bold "psc" "psa" "psg" "\n"
-    print_label "Archive List"
-    print_magenta_bold "lsar" "\n"
-    print_label "Archive Pack"
-    print_magenta_bold "tgz" "\n"
+    _help_print_label "Directory Tree"
+    _help_print_commands "fl" "fld" "flx"
+    _help_print_newline
 
-    print_label "Archive Unpack"
-    print_magenta_bold "untgz" "untbz" "untar"
+    _help_print_label "Directory Find"
+    _help_print_commands "ff" "ffd" "ffx"
+    _help_print_newline
 
-    if [ -x "$(which unrar 2>/dev/null)" ]; then
-        print_magenta_bold "unrar"
-    fi
+    _help_print_label "Process"
+    _help_print_commands "psc" "psa" "psg"
+    _help_print_newline
 
-    print_newline
+    _help_print_label "Archive List"
+    _help_print_commands "lsar"
+    _help_print_newline
 
-    print_label "Grep"
-    print_magenta_bold "grepp" "greppar" "greppcode" "\n"
-    print_label "Sed"
-    print_magenta_bold "replace" "\n"
-    print_label "Git"
-    print_magenta_bold "u=pullall" "b=branch" "m=mergenoff" "p=pushall" "\n"
-    print_label "Git"
-    print_magenta_bold "a=stage" "aa=stageall" "r=unstage" "c=checkin" "\n"
-    print_label "Git"
-    print_magenta_bold "l=log" "ll=loglong" "d=diff" "dr=diffraw" "ds=diffstaged" "dc=diffcommit" "\n"
-    print_label "Git"
-    print_magenta_bold "v=viconfig" "\n"
+    _help_print_label "Archive Pack"
+    _help_print_commands "tgz"
+    _help_print_newline
+
+    _help_print_label "Archive Unpack"
+    _help_print_commands "untgz" "untbz" "untar"
+    test -x "$(which unrar 2>/dev/null)" && _help_print_commands "unrar"
+    _help_print_newline
+
+    _help_print_label "Grep"
+    _help_print_commands "grepp" "greppr" "greppar" "greppcode"
+    _help_print_newline
+
+    _help_print_label "Sed"
+    _help_print_commands "replace"
+    _help_print_newline
 
     if [ -x "$(which jq 2>/dev/null)" ]; then
-        print_label "JSON"
-        print_magenta_bold "jq" "\n"
+        _help_print_label "JSON"
+        _help_print_commands "jq"
+        _help_print_newline
     fi
 
     if [ "$(uname -s)" = "Darwin" ]; then
-        print_label "Mac OS X"
-        print_magenta_bold "console" "plxml" "pljson" "trash" "\n"
+        _help_print_label "Mac OS X"
+        _help_print_commands "console" "plxml" "pljson" "trash"
+        _help_print_newline
     fi
 
     if [ -x "$(which hfsdata 2>/dev/null)" ]; then
-        print_label "HFS Write"
-        print_magenta_bold "setcomment" "setlabel" "settype" "setcreator" "sethidden" "setunhidden" "\n"
-        print_label "HFS Read"
-        print_magenta_bold "lscomment" "lslabel" "lskind" "lstype" "lscreator" "\n"
+        _help_print_label "HFS Write"
+        _help_print_commands "setcomment" "setlabel" "settype" "setcreator" "sethidden" "setunhidden"
+        _help_print_newline
+
+        _help_print_label "HFS Read"
+        _help_print_commands "lscomment" "lslabel" "lskind" "lstype" "lscreator"
+        _help_print_newline
     fi
 
     for i in $(echo "$CDMAP" | perl -ne 'print join("\n", split(";"));' | sort); do
         shortcut=$(echo "$i" | cut -d ":" -f1)
         directory=$(echo "$i" | cut -d ":" -f2)
 
-        print_label "Directory"
-        print_green "\"$shortcut\"" "$directory" "\n"
+        _help_print_label "Directory"
+        _help_print_directory "$shortcut" "$directory"
+        _help_print_newline
     done
 
-    print_label "Prompt"
-    print_blue "*unstaged" "+staged" "<behind" ">ahead" "=sync" "\n"
+    _help_print_label "Git Remote"
+    _help_print_git "u=pullall" "b=branch" "m=mergenoff" "p=pushall"
+    _help_print_newline
+
+    _help_print_label "Git Change"
+    _help_print_git "a=stage" "aa=stageall" "r=unstage" "h=resethard" "c=checkin"
+    _help_print_newline
+
+    _help_print_label "Git Status"
+    _help_print_git "s=status" "d=diff" "dr=diffraw" "ds=diffstaged" "dc=diffcommit"
+    _help_print_newline
+
+    _help_print_label "Git Status"
+    _help_print_git "l=log" "l5=log5" "ll=loglong" "ll5=loglong5" "lc=logcommit" "llc=loglongcommit"
+    _help_print_newline
+
+    _help_print_label "Git Config"
+    _help_print_git "v=viconfig"
+    _help_print_newline
+
+    _help_print_label "Git Prompt"
+    _help_print_git "*unstaged" "+staged" "<behind" ">ahead" "=sync"
+    _help_print_newline
+}
+
+function _help_print_label() {
+    printf "%-18s" "$1"
+}
+
+function _help_print_commands() {
+    for i in $@; do
+        printf "$cboldmag%s$cres " "$i"
+    done
+}
+
+function _help_print_directory() {
+    printf "$cgre\"%s\"$cres $cgre%s$cres" "$1" "$2"
+}
+
+function _help_print_newline() {
+    printf "\n"
+}
+
+function _help_print_git() {
+    for i in $@; do
+        printf "$cblu%s$cres " "$i"
+    done
 }

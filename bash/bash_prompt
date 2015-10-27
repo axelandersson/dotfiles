@@ -1,0 +1,9 @@
+#!/bin/bash
+
+GIT_PS1_SHOWUPSTREAM="auto"
+GIT_PS1_SHOWDIRTYSTATE="1"
+GIT_PS1_STATESEPARATOR=""
+
+source "$HOME/.dotfiles/bash/contrib/git_prompt"
+
+export PS1='\u@\h:\w$(__git_ps1 ":\[$cblu\]%s\[$cres\]")> '

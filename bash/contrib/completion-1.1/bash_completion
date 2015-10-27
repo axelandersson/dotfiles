@@ -39,9 +39,9 @@ fi
 
 # Alter the following to reflect the location of this file.
 #
-[ -n "$BASH_COMPLETION" ] || BASH_COMPLETION=$HOME/.dotfiles/bash/completion-1.1/bash_completion
-[ -n "$BASH_COMPLETION_DIR" ] || BASH_COMPLETION_DIR=$HOME/.dotfiles/bash/completion-1.1/completions
-[ -n "$BASH_COMPLETION_COMPAT_DIR" ] || BASH_COMPLETION_COMPAT_DIR=$HOME/.dotfiles/bash/completion-1.1/completions
+[ -n "$BASH_COMPLETION" ] || BASH_COMPLETION=$HOME/.dotfiles/bash/contrib/completion-1.1/bash_completion
+[ -n "$BASH_COMPLETION_DIR" ] || BASH_COMPLETION_DIR=$HOME/.dotfiles/bash/contrib/completion-1.1/completions
+[ -n "$BASH_COMPLETION_COMPAT_DIR" ] || BASH_COMPLETION_COMPAT_DIR=$HOME/.dotfiles/bash/contrib/completion-1.1/completions
 readonly BASH_COMPLETION BASH_COMPLETION_DIR BASH_COMPLETION_COMPAT_DIR
 
 # Set a couple of useful vars

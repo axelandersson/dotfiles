@@ -1,0 +1,13 @@
+#!/bin/bash
+
+source "$HOME/.dotfiles/bash/contrib/git_completion"
+
+version=${BASH_VERSION%.*}
+major=${version%.*}
+minor=${version#*.}
+
+if [ $major -gt 4 ] || [ $major -eq 4 -a $minor -ge 1 ]; then
+    source "$HOME/.dotfiles/bash/contrib/completion-2.1/bash_completion"
+else
+    source "$HOME/.dotfiles/bash/contrib/completion-1.1/bash_completion"
+fi
