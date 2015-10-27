@@ -1,6 +1,6 @@
 #!/bin/bash
 
-function _prompt_path {
+function _prompt_path() {
     local IFS="/"
 
     if [ "$PWD" = "/" ]; then
@@ -8,14 +8,21 @@ function _prompt_path {
         return
     fi
 
-    pwd="${PWD/$HOME/~}"
+    path="${PWD/$HOME/~}"
+    components=($path)
+    number=1
 
-    for path in $pwd; do
-        result+=$(printf "$1" "$path")
-        result+="/"
+    for i in ${components[@]}; do
+        result+=$(printf "$1" "$i")
+
+        if [ $number -lt ${#components[@]} ]; then
+            result+=$(printf "$2" "/")
+        fi
+
+        number=$(expr $number + 1)
     done
 
-    echo -en "${result/%\//}"
+    echo -en "$result"
 }
 
 GIT_PS1_SHOWUPSTREAM="auto"
@@ -24,4 +31,9 @@ GIT_PS1_STATESEPARATOR=""
 
 source "$HOME/.dotfiles/bash/contrib/git_prompt"
 
-export PS1='\u@\h $(_prompt_path "\[$cgre\]%s\[$cres\]")$(__git_ps1 " \[$cblu\]%s\[$cres\]")> '
+PS_ID="\[$cbwhi\]\u@\h\[$cres\]"
+PS_PATH='$(_prompt_path "\[$cbgre\]%s\[$cres\]" "\[$cbwhi\]%s\[$cres\]")'
+PS_GIT='$(__git_ps1 " \[$cblu\]%s\[$cres\]")'
+PS_ARROW="\[$cbwhi\]>\[$cres\]"
+
+export PS1="$PS_ID $PS_PATH$PS_GIT$PS_ARROW "
