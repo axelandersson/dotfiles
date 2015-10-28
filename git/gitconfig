@@ -41,14 +41,14 @@
     h = reset --hard
 
 [color]
-    branch = auto
-    diff = auto
-    grep = auto
-    interactive = auto
+    branch = always
+    diff = always
+    grep = always
+    interactive = always
     pager = true
-    showbranch = auto
-    status = auto
-    ui = auto
+    showbranch = always
+    status = always
+    ui = always
 
 [color "branch"]
     current = blue
@@ -81,7 +81,7 @@
 [core]
     autocrlf = input
     editor = vim
-    pager = cat
+    pager = less -EimrX
     symlinks = true
     attributesfile = ~/.gitattributes
 
