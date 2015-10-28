@@ -81,7 +81,7 @@
     attributesfile = ~/.gitattributes
 
 [credential]
-    helper = osxkeychain
+    helper = dynamic
 
 [diff]
     renames = copies
