@@ -14,12 +14,11 @@
     stageall = stage --all
     unstage = reset --quiet
     checkin = commit --verbose
-    log5 = log --perl-regexp -5
-    loglong = log --perl-regexp --patch
-    loglong5 = log --perl-regexp --patch -5
-    logcommit = log --perl-regexp origin..HEAD
-    loglongcommit = log --perl-regexp --patch origin..HEAD
+    logshort = log --pretty=format:'%C(magenta)%cn%C(reset)%C(auto)%d%C(reset) %ar%n%C(cyan)%h%C(reset) %C(white bold)%s%+b%C(reset)' -10 --name-status
+    loglong = log --pretty=format:'%C(magenta)%cn%C(reset)%C(auto)%d%C(reset) %ar%n%C(cyan)%h%C(reset) %C(white bold)%s%+b%C(reset)' -10 --patch
+    logcommit = log --pretty=format:'%C(magenta)%cn%C(reset)%C(auto)%d%C(reset) %ar%n%C(cyan)%h%C(reset) %C(white bold)%s%+b%C(reset)' -10 --name-status origin..HEAD
     branch = checkout --track -b
+    whichbranch = branch --contains
     resethard = reset --hard
     v = config --global --edit
     d = diff
@@ -34,13 +33,11 @@
     aa = stage --all
     r = reset --quiet
     c = commit --verbose
-    l = log --perl-regexp
-    l5 = log --perl-regexp -5
-    ll = log --perl-regexp --patch
-    ll5 = log --perl-regexp --patch -5
-    lc = log --perl-regexp origin..HEAD
-    llc = log --perl-regexp --patch origin..HEAD
+    l = log --pretty=format:'%C(magenta)%cn%C(reset)%C(auto)%d%C(reset) %ar%n%C(cyan)%h%C(reset) %C(white bold)%s%+b%C(reset)' -10 --name-status
+    ll = log --pretty=format:'%C(magenta)%cn%C(reset)%C(auto)%d%C(reset) %ar%n%C(cyan)%h%C(reset) %C(white bold)%s%+b%C(reset)' -10 --patch
+    lc = log --pretty=format:'%C(magenta)%cn%C(reset)%C(auto)%d%C(reset) %ar%n%C(cyan)%h%C(reset) %C(white bold)%s%+b%C(reset)' -10 --name-status origin..HEAD
     b = checkout --track -b
+    wb = branch --contains
     h = reset --hard
 
 [color]
@@ -48,30 +45,38 @@
     diff = auto
     grep = auto
     interactive = auto
+    pager = true
     showbranch = auto
     status = auto
     ui = auto
 
 [color "branch"]
-    current = green
-    local = yellow
+    current = blue
+    local = green
     remote = red
+    plain = white
+
+[color "decorate"]
+    branch = blue
+    remoteBranch = red
+    tag = yellow
+    HEAD = blue
 
 [color "diff"]
-    frag = cyan bold
-    meta = yellow bold
-    new = green bold
-    old = red bold
-    whitespace = red reverse
+    meta = white bold black
+    frag = white bold black
+    func = white bold black
+    new = green
+    old = red
+    commit = cyan
 
 [color "grep"]
-    match = green
+    match = red bold
 
 [color "status"]
-    added = yellow
-    branch = magenta
+    added = green
     changed = green
-    untracked = cyan
+    untracked = red
 
 [core]
     autocrlf = input
@@ -96,7 +101,10 @@
     cmd = ksdiff --partial-changeset --relative-path \"$MERGED\" -- \"$LOCAL\" \"$REMOTE\"
 
 [format]
-    pretty = medium
+    pretty = %C(cyan)%h%Creset %C(magenta)%cd%Creset %d %s
+
+[grep]
+    patternType = perl
 
 [log]
     date = local
