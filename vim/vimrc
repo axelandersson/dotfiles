@@ -1,57 +1,83 @@
-" Behaviour
+" Setup
 set nocompatible
-set autowrite
-set backupcopy=yes
-set clipboard=unnamed
+set encoding=utf-8
+set fenc=utf-8
+set termencoding=utf-8
 set ttyfast
 
-" Interface
-syntax on
+" Colors
+set background=light
+colorscheme Tomorrow-Night
+
+" Behaviour
+set writebackup
+set backupdir=~/.vimtmp/backup
+set undofile
+set undodir=~/.vimtmp/undo
+set directory=~/.vimtmp/swap
+
+" Display
+set display=lastline
+set laststatus=2
 set noshowmode
-set showmatch
-set showcmd
-set ruler
+set noruler
+set title
+set titlestring=%t
 set number
 set numberwidth=5
-set title
-set scrolloff=3
+set shortmess=atToOI
 
-" Formatting
+" Editing
+set showmatch
+set showcmd
+set scrolloff=4
+set whichwrap=<,>,[,]
+set matchpairs+=<:>
+set backspace=eol,start,indent
+
+" Completion
+set wildmenu
+set wildmode=list:longest
+
+" Indentation
 set expandtab
 set shiftwidth=4
 set softtabstop=4
 set shiftround
 set formatoptions=tcrqn
+
+" Searching
+set ignorecase
+set smartcase
+set incsearch
+set hlsearch
+
+" Syntax
+syntax on
 filetype on
 filetype indent on
 filetype plugin on
-colorscheme Tomorrow-Night
 
-" Searches
-set ignorecase
-set smartcase
-set gdefault
-set hlsearch
-
-" Key mappings
-set whichwrap=<,>,[,]
-set matchpairs+=<:>
-set backspace=eol,start,indent
+" Key Bindings
 let mapleader=","
-
 noremap <Space> <PageDown>
 noremap <BS> <PageUp>
-noremap - <PageUp>
+noremap <Up> gk
+noremap <Down> gj
+noremap m ]m
+noremap M [m
+noremap ' :call NERDComment(0, "toggle")<CR>
+noremap ä >>
+noremap ö <<
+noremap å =<CR>
 
-nnoremap <C-N> :next<CR>
-nnoremap <C-P> :prev<CR>
+" sudo
+cmap w! %!sudo tee >/dev/null %
 
-" Remember line position
+" Line Position
 au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal g'\"" | endif
 
-" Status line
-set laststatus=2
-
+" Status Line
 let g:lightline = {
     \ 'colorscheme': 'jellybeans',
     \ 'component': {
