@@ -81,7 +81,7 @@
 [core]
     autocrlf = input
     editor = vim
-    pager = less -EimrX
+    pager = less
     symlinks = true
     attributesfile = ~/.gitattributes
 

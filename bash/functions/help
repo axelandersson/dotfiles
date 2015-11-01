@@ -112,7 +112,7 @@ function _help_print_label() {
 }
 
 function _help_print_commands() {
-    for i in $@; do
+    for i in "$@"; do
         printf "$cboldmag%s$cres " "$i"
     done
 }
@@ -126,7 +126,7 @@ function _help_print_newline() {
 }
 
 function _help_print_git() {
-    for i in $@; do
+    for i in "$@"; do
         printf "$cblu%s$cres " "$i"
     done
 }

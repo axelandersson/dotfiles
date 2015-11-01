@@ -1,0 +1,22 @@
+#!/bin/bash
+
+if [ ! -x "$(which osascript 2>/dev/null)" ]; then
+    echo "$BASH_SOURCE: osascript: No such command"
+    exit 1
+fi
+
+path=$(osascript -e "tell application id \"com.apple.dt.Xcode\" to return path of text document 1 whose name ends with (word -1 of (get name of window 1))" 2>/dev/null)
+
+if [ -z "$path" ]; then
+    echo "$BASH_SOURCE: No file found"
+    exit 1
+fi
+
+directory=$(dirname "$path")
+
+if [ -z "$directory" ]; then
+    echo "$BASH_SOURCE: No directory found"
+    exit 1
+fi
+
+echo "$directory"

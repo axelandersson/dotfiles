@@ -8,9 +8,11 @@ if [ -f "/etc/bashrc" ]; then
     source "/etc/bashrc"
 fi
 
-if [ -f "$HOME/.bash_local" ]; then
-    source "$HOME/.bash_local"
-fi
+for i in "$HOME/.bash_local_"*; do
+    if [ -f "$i" ]; then
+        source $i
+    fi
+done
 
 source "$HOME/.dotfiles/bash/bash_prompt"
 source "$HOME/.dotfiles/bash/bash_config"

@@ -1,13 +1,11 @@
 #!/bin/bash
 
 function lsalias() {
-    aliases="$@"
-
-    if [ -n "$aliases" ]; then
-        for i in $aliases; do
-            alias "$i"
-        done
-    else
+    if [ $# -eq 1 ]; then
+        alias "$1" | replace "s/^alias $1='//" | replace "s/'$//"
+    elif [ $# -eq 0 ]; then
         alias -p | replace 's/^alias //' | sort
+    else
+        echo "Usage: $FUNCNAME [<alias>]"
     fi
 }

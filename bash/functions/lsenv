@@ -1,17 +1,11 @@
 #!/bin/bash
 
 function lsenv() {
-    variables="$@"
-
-    if [ -n "$variables" ]; then
-        pattern=""
-
-        for i in $variables; do
-            pattern=" --regexp=$i= $pattern "
-        done
-
-        env | grepp $pattern | sort
-    else
+    if [ $# -eq 1 ]; then
+        env | grepp "^$1=" | replace "s/^$1=//"
+    elif [ $# -eq 0 ]; then
         env | sort
+    else
+        echo "Usage: $FUNCNAME [<variable>]"
     fi
 }

@@ -1,17 +1,30 @@
 #!/bin/bash
 
 function cd() {
-    directory=$@
-
-    if [ "$directory" != ".." ]; then
-        if [[ $CDMAP =~ (^|;)${directory}:([^;]*)(;|$) ]]; then
-            directory=${BASH_REMATCH[2]}
-        fi
-    fi
-
-    if [ -z "$directory" ]; then
+    if [ $# -eq 0 ]; then
         builtin cd "$HOME"
-    else
+    elif [ $# -eq 1 ]; then
+        directory="$1"
+
+        if [ "$directory" != ".." ]; then
+            if [[ $CDMAP =~ (^|;)${directory}:([^;]*)(;|$) ]]; then
+                directory=${BASH_REMATCH[2]}
+            fi
+        fi
+
+        if [ "${directory:0:1}" = "+" ]; then
+            command="${directory:1}"
+
+            if ! output=$($command); then
+                echo "$FUNCNAME: $command: Command failed"
+                return
+            fi
+
+            directory="$output"
+        fi
+
         builtin cd "$directory"
+    else
+        echo "Usage: $FUNCNAME [<directory>]"
     fi
 }

@@ -1,14 +1,12 @@
 #!/bin/bash
 
 function lsdump() {
-    files="$@"
-
-    if [ -z "$files" ]; then
+    if [ $# -eq 0 ]; then
         echo "Usage: $FUNCNAME <file> [<file> ...]"
         return
     fi
 
-    for i in $files; do
+    for i in "$@"; do
         if [ -e "$i" ]; then
             printf "$cboldmag%s$cres\n" "file"
 

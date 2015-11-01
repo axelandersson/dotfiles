@@ -1,13 +1,11 @@
 #!/bin/bash
 
 function lsfunction() {
-    functions="$@"
-
-    if [ -n "$functions" ]; then
-        for i in $functions; do
-            declare -f "$i"
-        done
-    else
+    if [ $# -eq 1 ]; then
+        declare -f "$1"
+    elif [ $# -eq 0 ]; then
         declare -F | replace 's/^declare -f //' | sort
+    else
+        echo "Usage: $FUNCNAME [<function>]"
     fi
 }

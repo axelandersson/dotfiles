@@ -3,7 +3,15 @@
 export LESSCHARSET="latin1"
 export MAILCHECK="0"
 export PAGER="less"
-export LESS="-imrX"
+
+if [ -n "$LINES" ]; then
+    halflines=$(expr $LINES / 2)
+
+    export LESS="-FiMRX -z-$halflines"
+else
+    export LESS="-FiMRX"
+fi
+
 export LSCOLORS="cxGxahahFxExExHFHGHCHC"
 export LS_COLORS="di=32;40:ln=1;36;40:so=0;47:pi=0;47:ex=1;35;40:bd=1;34;40:cd=1;34;40:su=1;37;1;45:sg=1;37;1;46:tw=1;37;1;42:ow=1;37;1;42:"
 export HISTIGNORE="&"

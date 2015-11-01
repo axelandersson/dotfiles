@@ -35,9 +35,6 @@ elif [ "$(uname -s)" = "SunOS" ]; then
     alias ls="ls -p"
 fi
 
-# grep
-alias greppr="grepp --recursive"
-
 # ps
 alias psc="psa -r | awk '{if(\$3 > 0.5 || NR == 1) print \$0}'"
 alias psg="psa | grepp --ignore-case"

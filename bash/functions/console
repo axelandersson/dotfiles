@@ -5,19 +5,15 @@ if [ "$(uname -s)" != "Darwin" ]; then
 fi
 
 function console() {
-    logs="$@"
-
-    if [ -z "$logs" ]; then
-        logs="-"
+    if [ $# -gt 0 ]; then
+        for i in "$@"; do
+            if [ -f "$i" ]; then
+                echo open -a "Console" "$i"
+            else
+                echo "$FUNCNAME: $i: No such file"
+            fi
+        done
+    else
+        open -a "Console" -f
     fi
-
-    for i in $logs; do
-        if [ -f "$i" ]; then
-            open -a Console "$i"
-        elif [ "$i" = "-" ]; then
-            open -a Console -f
-        else
-            echo "$FUNCNAME: $i: No such file"
-        fi
-    done
 }

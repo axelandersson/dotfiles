@@ -1,22 +1,14 @@
 #!/bin/bash
 
 function lsar() {
-    archives="$@"
-
-    if [ -z "$archives" ]; then
+    if [ $# -eq 0 ]; then
         echo "Usage: $FUNCNAME <archive> [<archive> ...]"
         return
     fi
 
-    count=0
-
-    for i in $archives; do
-        count=$(($count + 1))
-    done
-
-    for i in $archives; do
+    for i in "$@"; do
         if [ -f "$i" ]; then
-            if [ $count -gt 1 ]; then
+            if [ $# -gt 1 ]; then
                 pattern='s/^(\(for architecture \w+\):)?(.+?):(.+?): (.+?)$/$2 $3 $4/'
             else
                 pattern='s/^(\(for architecture \w+\):)?(.+?):(.+?): (.+?)$/$3 $4/'
