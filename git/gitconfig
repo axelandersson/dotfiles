@@ -103,6 +103,9 @@
 [format]
     pretty = %C(cyan)%h%Creset %C(magenta)%cd%Creset %d %s
 
+[git-up "rebase"]
+    arguments = --preserve-merges
+
 [grep]
     patternType = perl
 
