@@ -23,7 +23,7 @@ function cd() {
             directory="$output"
         fi
 
-        if [ ! -d "$directory" ]; then
+        if [ -f "$directory" ]; then
             directory=$(dirname "$directory")
         fi
 
