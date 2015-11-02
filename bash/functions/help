@@ -90,7 +90,7 @@ function help() {
     _help_print_newline
 
     _help_print_label "Git Log"
-    _help_print_git "l=logshort" "ll=loglong" "lc=logcommit" "lg=loggraph"
+    _help_print_git "l(c)=logshort(commit)" "ll(c)=loglong(commit)" "lg=loggraph"
     _help_print_newline
 
     _help_print_label "Git Search"
