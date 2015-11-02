@@ -71,6 +71,7 @@ noremap ' :call NERDComment(0, "toggle")<CR>
 noremap ä >>
 noremap ö <<
 noremap å =<CR>
+noremap U :redo<CR>
 
 " sudo
 cmap w! %!sudo tee >/dev/null %
