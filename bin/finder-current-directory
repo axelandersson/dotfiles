@@ -7,7 +7,11 @@ if [ ! -x "$(which osascript 2>/dev/null)" ]; then
     exit 1
 fi
 
-path=$(osascript -e "tell application id \"com.apple.finder\" to return POSIX path of (selection as alias)")
+path=$(osascript -e "tell application id \"com.apple.finder\" to return POSIX path of (selection as alias)" 2>/dev/null)
+
+if [ -z "$path" ]; then
+    path=$(osascript -e "tell application id \"com.apple.finder\" to return POSIX path of (target of window 1 as alias)" 2>/dev/null)
+fi
 
 if [ -z "$path" ]; then
     echo "$binname: No file found"
