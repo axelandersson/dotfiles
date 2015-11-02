@@ -23,6 +23,10 @@ function cd() {
             directory="$output"
         fi
 
+        if [ ! -d "$directory" ]; then
+            directory=$(dirname "$directory")
+        fi
+
         builtin cd "$directory"
     else
         echo "Usage: $FUNCNAME [<directory>]"

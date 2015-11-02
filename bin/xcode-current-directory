@@ -5,7 +5,7 @@ if [ ! -x "$(which osascript 2>/dev/null)" ]; then
     exit 1
 fi
 
-path=$(osascript -e "tell application id \"com.apple.dt.Xcode\" to return path of text document 1 whose name ends with (word -1 of (get name of window 1))" 2>/dev/null)
+path=$(osascript -e "tell application id \"com.apple.dt.Xcode\" to return path of text document 1 whose name ends with (word -1 of (get name of window 1))")
 
 if [ -z "$path" ]; then
     echo "$BASH_SOURCE: No file found"

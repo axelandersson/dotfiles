@@ -1,0 +1,28 @@
+#!/bin/bash
+
+binname=$(basename "$0")
+
+if [ ! -x "$(which osascript 2>/dev/null)" ]; then
+    echo "$binname: osascript: No such command"
+    exit 1
+fi
+
+path=$(osascript -e "tell application id \"com.apple.finder\" to return POSIX path of (selection as alias)")
+
+if [ -z "$path" ]; then
+    echo "$binname: No file found"
+    exit 1
+fi
+
+if [ -d "$path" ]; then
+    directory="$path"
+else
+    directory=$(dirname "$path")
+
+    if [ -z "$directory" ]; then
+        echo "$binname: No directory found"
+        exit 1
+    fi
+fi
+
+echo "$directory"

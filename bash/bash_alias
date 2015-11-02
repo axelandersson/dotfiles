@@ -37,7 +37,7 @@ fi
 
 # ps
 alias psc="psa -r | awk '{if(\$3 > 0.5 || NR == 1) print \$0}'"
-alias psg="psa | grepp --ignore-case"
+alias psg="psa | grep --ignore-case"
 
 if [ "$(uname -s)" = "Darwin" ]; then
     alias ps="command ps -ww -o pid,%cpu,%mem,command"
