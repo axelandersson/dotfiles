@@ -37,8 +37,6 @@ fi
 
 # grep
 alias grepi="grep --ignore-case"
-alias grepr="grep --recursive"
-alias grepri="grep --recursive --ignore-case"
 
 # ps
 if [ "$(uname -s)" = "Darwin" ]; then

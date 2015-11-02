@@ -1,10 +1,11 @@
 #!/bin/bash
 
-if [ "$(uname -s)" != "Darwin" ]; then
-    return
-fi
-
 function console() {
+    if [ "$(uname -s)" != "Darwin" ]; then
+        echo "$FUNCNAME: Console: No such application"
+        return
+    fi
+
     if [ $# -gt 0 ]; then
         for i in "$@"; do
             if [ -f "$i" ]; then

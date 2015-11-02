@@ -39,7 +39,7 @@ ln -sfn "$HOME/.dotfiles/vim/doc" "$HOME/.vim/doc"
 ln -sfn "$HOME/.dotfiles/vim/plugin" "$HOME/.vim/plugin"
 
 # Xcode
-if [ "$(uname -s)" = "Darwin" -a -x "$(which xcode-select 2>/dev/null)" ]; then
+if [ "$(uname -s)" = "Darwin"] && [ -x "$(which xcode-select 2>/dev/null)" ]; then
     mkdir -p "$HOME/Library/Developer/Xcode/UserData/FontAndColorThemes"
     ln -sfn "$HOME/.dotfiles/xcode/Tomorrow-Night.dvtcolortheme" "$HOME/Library/Developer/Xcode/UserData/FontAndColorThemes/Tomorrow-Night.dvtcolortheme"
 fi

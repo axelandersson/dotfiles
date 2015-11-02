@@ -54,7 +54,7 @@ function help() {
 
     if [ "$(uname -s)" = "Darwin" ]; then
         _help_print_label "Mac OS X"
-        _help_print_commands "console" "plxml" "pljson" "trash"
+        _help_print_commands "ql" "console" "plxml" "pljson" "trash"
         _help_print_newline
     fi
 

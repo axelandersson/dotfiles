@@ -1,0 +1,9 @@
+#!/bin/bash
+
+function grepr() {
+    grep --recursive $@ .
+}
+
+function grepri() {
+    grep --recursive --ignore-case $@ .
+}
