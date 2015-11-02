@@ -3,7 +3,6 @@
 function help() {
     _help_print_label "Shell"
     _help_print_commands "resource" "lsalias" "lsenv" "lsfunction" "rmalias" "rmenv" "rmfunction"
-    test -x "$(which osascript 2>/dev/null)" && _help_print_commands "xcd"
     _help_print_newline
 
     _help_print_label "File"
@@ -23,7 +22,7 @@ function help() {
     _help_print_newline
 
     _help_print_label "Process"
-    _help_print_commands "psc" "psa" "psg"
+    _help_print_commands "psv" "psvv" "psa" "psav" "psavv" "psg"
     _help_print_newline
 
     _help_print_label "Archive List"
@@ -40,7 +39,7 @@ function help() {
     _help_print_newline
 
     _help_print_label "Grep"
-    _help_print_commands "grepp" "greppr" "greppar" "greppcode"
+    _help_print_commands "grepi" "grepr" "grepri" "grepar" "grepcode"
     _help_print_newline
 
     _help_print_label "Sed"

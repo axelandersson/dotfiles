@@ -2,7 +2,7 @@
 
 function lsenv() {
     if [ $# -eq 1 ]; then
-        env | grepp "^$1=" | replace "s/^$1=//"
+        env | grep "^$1=" | replace "s/^$1=//"
     elif [ $# -eq 0 ]; then
         env | sort
     else

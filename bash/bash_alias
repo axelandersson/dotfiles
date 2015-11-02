@@ -35,26 +35,46 @@ elif [ "$(uname -s)" = "SunOS" ]; then
     alias ls="ls -p"
 fi
 
+# grep
+alias grepi="grep --ignore-case"
+alias grepr="grep --recursive"
+alias grepri="grep --recursive --ignore-case"
+
 # ps
-alias psc="psa -r | awk '{if(\$3 > 0.5 || NR == 1) print \$0}'"
-alias psg="psa | grep --ignore-case"
+if [ "$(uname -s)" = "Darwin" ]; then
+    alias _psme="command ps -x -ww -o 'pid,%cpu,%mem,command'"
+    alias _psall="command ps -ax -ww -o 'pid,user,%cpu,%mem,command'"
+elif [ "$(uname -s)" = "Linux" ]; then
+    alias _psme="command ps x -ww -o 'pid,%cpu,%mem,command'"
+    alias _psall="command ps ax -ww -o 'pid,user,%cpu,%mem,command'"
+elif [ "$(uname -s)" = "FreeBSD" ]; then
+    alias _psme="command ps -x -ww -o 'pid,%cpu,%mem,command'"
+    alias _psall="command ps -ax -ww -o 'pid,user,%cpu,%mem,command'"
+elif [ "$(uname -s)" = "OpenBSD" ]; then
+    alias _psme="command ps -x -ww -o 'pid,%cpu,%mem,command'"
+    alias _psall="command ps -ax -ww -o 'pid,user,%cpu,%mem,command'"
+elif [ "$(uname -s)" = "SunOS" ]; then
+    alias _psme="command ps -o 'pid,pcpu,pmem,args'"
+    alias _psall="command ps -e -o 'pid,user,pcpu,pmem,args'"
+fi
 
 if [ "$(uname -s)" = "Darwin" ]; then
-    alias ps="command ps -ww -o pid,%cpu,%mem,command"
-    alias psa="command ps -ax -ww -o pid,user,%cpu,%mem,command"
-elif [ "$(uname -s)" = "Linux" ]; then
-    alias ps="command ps -ww -o pid,%cpu,%mem,command"
-    alias psa="command ps ax -ww -o pid,user,%cpu,%mem,command"
-elif [ "$(uname -s)" = "FreeBSD" ]; then
-    alias ps="command ps -ww -o pid,%cpu,%mem,command"
-    alias psa="command ps -ax -ww -o pid,user,%cpu,%mem,command"
-elif [ "$(uname -s)" = "OpenBSD" ]; then
-    alias ps="command ps -ww -o pid,%cpu,%mem,command"
-    alias psa="command ps -ax -ww -o pid,user,%cpu,%mem,command"
-elif [ "$(uname -s)" = "SunOS" ]; then
-    alias ps="command ps -o pid,pcpu,pmem,args"
-    alias psa="command ps -e -o pid,user,pcpu,pmem,args"
+    alias ps="_psme | grep -v '(/System/Library/|/Applications/)' | sort -n"
+    alias psv="_psme | grep -v '(/System/Library/)' | sort -n"
+    alias psvv="_psme | sort -n"
+    alias psa="_psall | grep -v '(/System/Library/|/Applications/)' | sort -n"
+    alias psav="_psall | grep -v '(/System/Library/)' | sort -n"
+    alias psavv="_psall | sort -n"
+else
+    alias ps="_psme | sort -n"
+    alias psv="ps"
+    alias psvv="ps"
+    alias psa="_psall | sort -n"
+    alias psav="psa"
+    alias psavv="psa"
 fi
+
+alias psg="psavv | grepi"
 
 # top
 if [ "$(uname -s)" = "Darwin" ]; then
