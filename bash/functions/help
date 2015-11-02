@@ -86,11 +86,11 @@ function help() {
     _help_print_newline
 
     _help_print_label "Git Status"
-    _help_print_git "s=status" "d=diff" "dr=diffraw" "ds=diffstaged" "dc=diffcommit"
+    _help_print_git "s=status" "d(t)=diff(tool)" "d(t)s=diff(tool)staged" "d(t)c=diff(tool)commit"
     _help_print_newline
 
     _help_print_label "Git Log"
-    _help_print_git "l=logshort" "ll=loglong" "lc=logcommit"
+    _help_print_git "l=logshort" "ll=loglong" "lc=logcommit" "lg=loggraph"
     _help_print_newline
 
     _help_print_label "Git Search"

@@ -5,26 +5,30 @@
 
 [alias]
     viconfig = config --global --edit
-    diffraw = diff --no-textconv
     diffstaged = diff --staged
     diffcommit = diff origin
+    difftoolstaged = difftool --staged
+    difftoolcommit = difftool origin
     pullall = up-or-pull
     pushall = push --set-upstream --all
     mergenoff = merge --no-ff
     stageall = stage --all
     unstage = reset --quiet
     checkin = commit --verbose
-    logshort = log --pretty=format:'%C(magenta)%cn%C(reset)%C(auto)%d%C(reset) %ar%n%C(cyan)%h%C(reset) %C(white bold)%s%+b%C(reset)' -10 --name-status
-    loglong = log --pretty=format:'%C(magenta)%cn%C(reset)%C(auto)%d%C(reset) %ar%n%C(cyan)%h%C(reset) %C(white bold)%s%+b%C(reset)' -10 --patch
-    logcommit = log --pretty=format:'%C(magenta)%cn%C(reset)%C(auto)%d%C(reset) %ar%n%C(cyan)%h%C(reset) %C(white bold)%s%+b%C(reset)' -10 --name-status origin..HEAD
+    logshort = log --pretty=format:'%C(magenta)%an%C(reset)%C(auto)%d%C(reset) %ar%n%C(cyan)%h%C(reset) %C(white bold)%s%+b%C(reset)' -10 --name-status
+    loglong = log --pretty=format:'%C(magenta)%an%C(reset)%C(auto)%d%C(reset) %ar%n%C(cyan)%h%C(reset) %C(white bold)%s%+b%C(reset)' -10 --patch
+    logcommit = log --pretty=format:'%C(magenta)%an%C(reset)%C(auto)%d%C(reset) %ar%n%C(cyan)%h%C(reset) %C(white bold)%s%+b%C(reset)' -10 --name-status origin..HEAD
+    loggraph = log --pretty=tformat:'%C(magenta)%an%C(reset)%C(auto)%d%C(reset) %ar %C(cyan)%h%C(reset) %C(white bold)%s%C(reset)' -20 --all --graph --simplify-by-decoration
     branch = checkout --track -b
     whichbranch = branch --contains
     resethard = reset --hard
     v = config --global --edit
     d = diff
-    dr = diff --no-textconv
     ds = diff --staged
     dc = diff origin
+    dt = difftool
+    dts = difftool --staged
+    dtc = difftool origin
     u = up-or-pull
     p = push --set-upstream --all
     m = merge --no-ff
@@ -33,9 +37,10 @@
     aa = stage --all
     r = reset --quiet
     c = commit --verbose
-    l = log --pretty=format:'%C(magenta)%cn%C(reset)%C(auto)%d%C(reset) %ar%n%C(cyan)%h%C(reset) %C(white bold)%s%+b%C(reset)' -10 --name-status
-    ll = log --pretty=format:'%C(magenta)%cn%C(reset)%C(auto)%d%C(reset) %ar%n%C(cyan)%h%C(reset) %C(white bold)%s%+b%C(reset)' -10 --patch
-    lc = log --pretty=format:'%C(magenta)%cn%C(reset)%C(auto)%d%C(reset) %ar%n%C(cyan)%h%C(reset) %C(white bold)%s%+b%C(reset)' -10 --name-status origin..HEAD
+    l = log --pretty=format:'%C(magenta)%an%C(reset)%C(auto)%d%C(reset) %ar%n%C(cyan)%h%C(reset) %C(white bold)%s%+b%C(reset)' -10 --name-status
+    ll = log --pretty=format:'%C(magenta)%an%C(reset)%C(auto)%d%C(reset) %ar%n%C(cyan)%h%C(reset) %C(white bold)%s%+b%C(reset)' -10 --patch
+    lc = log --pretty=format:'%C(magenta)%an%C(reset)%C(auto)%d%C(reset) %ar%n%C(cyan)%h%C(reset) %C(white bold)%s%+b%C(reset)' -10 --name-status origin..HEAD
+    lg = log --pretty=tformat:'%C(magenta)%an%C(reset)%C(auto)%d%C(reset) %ar %C(cyan)%h%C(reset) %C(white bold)%s%C(reset)' -20 --all --graph --simplify-by-decoration
     b = checkout --track -b
     wb = branch --contains
     h = reset --hard
@@ -90,6 +95,7 @@
 
 [diff]
     renames = copies
+    tool = Kaleidoscope
 
 [diff "plist"]
     textconv = plutil -convert xml1 -o -
@@ -116,6 +122,7 @@
 [merge]
     log = true
     stat = true
+    tool = Kaleidoscope
 
 [merge "plist"]
     textconv = plutil -convert xml1 -o -
