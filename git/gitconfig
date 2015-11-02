@@ -15,13 +15,13 @@
     stageall = stage --all
     unstage = reset --quiet
     checkin = commit --verbose
-    logshort = log --pretty=format:'%C(magenta)%an%C(reset)%C(auto)%d%C(reset) %ar%n%C(cyan)%h%C(reset) %C(white bold)%s%+b%C(reset)' -10 --name-status
-    loglong = log --pretty=format:'%C(magenta)%an%C(reset)%C(auto)%d%C(reset) %ar%n%C(cyan)%h%C(reset) %C(white bold)%s%+b%C(reset)' -10 --patch
-    logcommit = log --pretty=format:'%C(magenta)%an%C(reset)%C(auto)%d%C(reset) %ar%n%C(cyan)%h%C(reset) %C(white bold)%s%+b%C(reset)' -10 --name-status origin..HEAD
-    loggraph = log --pretty=tformat:'%C(magenta)%an%C(reset)%C(auto)%d%C(reset) %ar %C(cyan)%h%C(reset) %C(white bold)%s%C(reset)' -20 --all --graph --simplify-by-decoration
+    logshort = my-log short
+    logshortcommit = my-log short origin..HEAD
+    loglong = my-log long
+    loglongcommit = my-log long origin..HEAD
+    loggraph = my-log graph
     branch = checkout --track -b
-    whichbranch = branch --contains
-    resethard = reset --hard
+    whichbranch = branch --list --contains
     v = config --global --edit
     d = diff
     ds = diff --staged
@@ -37,13 +37,14 @@
     aa = stage --all
     r = reset --quiet
     c = commit --verbose
-    l = log --pretty=format:'%C(magenta)%an%C(reset)%C(auto)%d%C(reset) %ar%n%C(cyan)%h%C(reset) %C(white bold)%s%+b%C(reset)' -10 --name-status
-    ll = log --pretty=format:'%C(magenta)%an%C(reset)%C(auto)%d%C(reset) %ar%n%C(cyan)%h%C(reset) %C(white bold)%s%+b%C(reset)' -10 --patch
-    lc = log --pretty=format:'%C(magenta)%an%C(reset)%C(auto)%d%C(reset) %ar%n%C(cyan)%h%C(reset) %C(white bold)%s%+b%C(reset)' -10 --name-status origin..HEAD
-    lg = log --pretty=tformat:'%C(magenta)%an%C(reset)%C(auto)%d%C(reset) %ar %C(cyan)%h%C(reset) %C(white bold)%s%C(reset)' -20 --all --graph --simplify-by-decoration
+    l = my-log short
+    ll = my-log long
+    lc = my-log short origin..HEAD
+    llc = my-log long origin..HEAD
+    lg = my-log graph
     b = checkout --track -b
-    wb = branch --contains
-    h = reset --hard
+    wb = branch --list --contains
+    h = discard
 
 [color]
     branch = always

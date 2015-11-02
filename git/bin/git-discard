@@ -1,0 +1,9 @@
+#!/bin/bash
+
+if [ $# -eq 0 ]; then
+    git reset --hard
+else
+    for i in "$@"; do
+        git checkout -- "$i"
+    done
+fi

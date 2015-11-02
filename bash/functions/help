@@ -82,7 +82,7 @@ function help() {
     _help_print_newline
 
     _help_print_label "Git Change"
-    _help_print_git "a=stage" "aa=stageall" "r=unstage" "h=resethard" "c=checkin"
+    _help_print_git "a=stage" "aa=stageall" "r=unstage" "h=discard" "c=checkin"
     _help_print_newline
 
     _help_print_label "Git Status"
