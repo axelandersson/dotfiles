@@ -7,3 +7,5 @@ set show-all-if-ambiguous on
 
 "[A": history-search-backward
 "[B": history-search-forward
+"b": backward-word
+"f": forward-word
