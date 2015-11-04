@@ -78,23 +78,23 @@ function help() {
     done
 
     _help_print_label "Git Remote"
-    _help_print_git "u=pullall" "b=branch" "m=mergenoff" "p=pushall"
+    _help_print_git "u=pullall" "m=mergenoff" "p=pushall"
     _help_print_newline
 
     _help_print_label "Git Change"
-    _help_print_git "a=stage" "aa=stageall" "r=unstage" "h=discard" "c=checkin"
+    _help_print_git "a=stage" "aa=stageall" "r=unstage" "h(c)=discard(commit)" "c=checkin"
     _help_print_newline
 
     _help_print_label "Git Status"
-    _help_print_git "s=status" "d(t)=diff(tool)" "d(t)s=diff(tool)staged" "d(t)c=diff(tool)commit"
+    _help_print_git "s=status" "d(t)=diff(tool)" "d(t)s=diff(tool)staged" "d(t)c=diff(tool)committed"
     _help_print_newline
 
     _help_print_label "Git Log"
-    _help_print_git "l(c)=logshort(commit)" "ll(c)=loglong(commit)" "lg=loggraph"
+    _help_print_git "l(c)=logshort(committed)" "ll(c)=loglong(committed)" "lg=loggraph" "po=printobject"
     _help_print_newline
 
-    _help_print_label "Git Search"
-    _help_print_git "wb=whichbranch"
+    _help_print_label "Git Branches"
+    _help_print_git "b=branch" "lb=logbranch" "wb=whichbranch"
     _help_print_newline
 
     _help_print_label "Git Config"

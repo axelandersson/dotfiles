@@ -3,7 +3,11 @@
 if [ $# -eq 0 ]; then
     git reset --hard
 else
-    for i in "$@"; do
-        git checkout -- "$i"
-    done
+    if [ "$1" = "origin" ]; then
+        git reset --hard origin
+    else
+        for i in "$@"; do
+            git checkout -- "$i"
+        done
+    fi
 fi

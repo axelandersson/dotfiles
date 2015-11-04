@@ -1,0 +1,54 @@
+#!/usr/bin/perl -w
+
+use strict;
+use File::Basename;
+use Term::ReadKey;
+use Term::ANSIColor qw(colorstrip);
+
+my $BINARY = basename($0);
+my $PATTERN = shift @ARGV;
+
+my $maxwidth = (GetTerminalSize())[0];
+my $pager = `git config --get core.pager` || $ENV{"PAGER"} || "less";
+
+my $command = "git --no-pager for-each-ref --format='<<<STARTBRANCH>>>%(refname:short)<<<STOPBRANCH>>> %(color:magenta)%(authorname)%(color:reset) %(authordate:relative) %(color:cyan)%(objectname:short)%(color:reset) %(color:white bold)%(subject)%(color:reset)' refs/heads refs/remotes";
+my @lines = ();
+
+open(FH, "-|", $command) or die "$BINARY: $!\n";
+
+while(my $line = <FH>) {
+    chomp($line);
+
+    if($line =~ /^<<<STARTBRANCH>>>(.+?)<<<STOPBRANCH>>>/) {
+        my $branch = $1;
+        my $color;
+
+        if($PATTERN) {
+            next unless $branch =~ $PATTERN;
+        }
+
+        if($branch =~ /^origin/) {
+            $color = "\033[0;31m";
+        } else {
+            $color = "\033[0;34m";
+        }
+
+        $line =~ s/<<<STARTBRANCH>>>(.+?)<<<STOPBRANCH>>>/$color$1\033[0m/;
+
+        while(length(colorstrip($line)) > $maxwidth) {
+            chop($line);
+        }
+
+        push(@lines, $line);
+    }
+}
+
+close(FH);
+
+open(FH, "|-", $pager) or die "$BINARY: $!\n";
+
+foreach my $line (@lines) {
+    print FH "$line\n";
+}
+
+close(FH);

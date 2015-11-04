@@ -8,20 +8,26 @@
     diffstaged = diff --staged
     diffcommit = diff origin
     difftoolstaged = difftool --staged
-    difftoolcommit = difftool origin
+    difftoolcommitted = difftool origin
     pullall = up-or-pull
     pushall = push --set-upstream --all
     mergenoff = merge --no-ff
+    mergecherrypick = cherry-pick --edit
+    mergerevert = revert --edit
     stageall = stage --all
     unstage = reset --quiet
     checkin = commit --verbose
-    logshort = my-log short
-    logshortcommit = my-log short origin..HEAD
-    loglong = my-log long
-    loglongcommit = my-log long origin..HEAD
-    loggraph = my-log graph
+    logshort = log-nice short
+    loglong = log-nice long
+    logshortcommitted = log-nice short origin..HEAD
+    loglongcommitted = log-nice long origin..HEAD
+    loggraph = log-nice graph
+    logbranch = log-branch
+    printobject = show --stat --pretty=format:'   Author: %C(magenta)%an%C(reset) <%ae>%n     Date: %ad%nCommitter: %C(magenta)%cn%C(reset) <%ce>%n     Date: %cd%n     Refs: %C(auto)%D%C(reset)%n   Commit: %C(cyan)%h%C(reset)%n  Parents: %C(cyan)%p%C(reset)%n     Tree: %C(cyan)%t%C(reset)%n  Subject: %C(white bold)%s%n%+b%C(reset)'
     branch = checkout --track -b
+    switchbranch = checkout
     whichbranch = branch --list --contains
+    discardcommitted = discard origin
     v = config --global --edit
     d = diff
     ds = diff --staged
@@ -32,19 +38,26 @@
     u = up-or-pull
     p = push --set-upstream --all
     m = merge --no-ff
+    mt = mergetool
+    mcp = cherry-pick --edit
+    mr = revert --edit
     s = status
     a = stage
     aa = stage --all
     r = reset --quiet
     c = commit --verbose
-    l = my-log short
-    ll = my-log long
-    lc = my-log short origin..HEAD
-    llc = my-log long origin..HEAD
-    lg = my-log graph
+    l = log-nice short
+    ll = log-nice long
+    lc = log-nice short origin..HEAD
+    llc = log-nice long origin..HEAD
+    lg = log-nice graph
+    lb = log-branch
+    po = show --stat --pretty=format:'   Author: %C(magenta)%an%C(reset) <%ae>%n     Date: %ad%nCommitter: %C(magenta)%cn%C(reset) <%ce>%n     Date: %cd%n     Refs: %C(auto)%D%C(reset)%n   Commit: %C(cyan)%h%C(reset)%n  Parents: %C(cyan)%p%C(reset)%n     Tree: %C(cyan)%t%C(reset)%n  Subject: %C(white bold)%s%n%+b%C(reset)'
     b = checkout --track -b
+    sb = checkout
     wb = branch --list --contains
     h = discard
+    hc = discard origin
 
 [color]
     branch = always
@@ -58,7 +71,7 @@
 
 [color "branch"]
     current = blue
-    local = green
+    local = blue
     remote = red
     plain = white
 
@@ -107,18 +120,11 @@
 [difftool "Kaleidoscope"]
     cmd = ksdiff --partial-changeset --relative-path \"$MERGED\" -- \"$LOCAL\" \"$REMOTE\"
 
-[format]
-    pretty = %C(cyan)%h%Creset %C(magenta)%cd%Creset %d %s
-
 [git-up "rebase"]
     arguments = --preserve-merges
 
 [grep]
     patternType = perl
-
-[log]
-    date = local
-    decorate = short
 
 [merge]
     log = true

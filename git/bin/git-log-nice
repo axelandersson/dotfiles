@@ -44,7 +44,7 @@ my @lines = ();
 my $firstentry = 1;
 my $inbody = 0;
 
-open(FH, "-|", $command) or die "$!\n";
+open(FH, "-|", $command) or die "$BINARY: $!\n";
 
 while(my $line = <FH>) {
     chomp($line);
@@ -87,7 +87,7 @@ while(my $line = <FH>) {
 
 close(FH);
 
-open(FH, "|-", $pager) or die "$!\n";
+open(FH, "|-", $pager) or die "$BINARY: $!\n";
 
 foreach my $line (@lines) {
     print FH "$line\n";
