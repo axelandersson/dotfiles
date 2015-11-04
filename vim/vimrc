@@ -27,6 +27,7 @@ set titlestring=%t
 set number
 set numberwidth=5
 set shortmess=atToOI
+set cursorline
 
 " Editing
 set showmatch
@@ -39,6 +40,7 @@ set backspace=eol,start,indent
 " Completion
 set wildmenu
 set wildmode=list:longest
+set wildignore+=.git,.svn,.DS_Store,*.o
 
 " Indentation
 set expandtab
@@ -59,27 +61,48 @@ filetype on
 filetype indent on
 filetype plugin on
 
-" Key Bindings
-let mapleader=","
-noremap <Space> <PageDown>
-noremap <BS> <PageUp>
-noremap <Up> gk
-noremap <Down> gj
-noremap m ]m
-noremap M [m
-noremap ' :call NERDComment(0, "toggle")<CR>
-noremap ä >>
-noremap ö <<
-noremap å =<CR>
-noremap U :redo<CR>
+" Command Mode Key Bindings
+cnoremap w!! w !sudo tee >/dev/null %
 
-" sudo
-cmap w! %!sudo tee >/dev/null %
+" Normal Mode Key Bindings
+nnoremap <silent> & :nohlsearch<CR>
+nnoremap U :redo<CR>
+nnoremap s :w<cr>
 
-" Line Position
-au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal g'\"" | endif
+nnoremap <Space> <PageDown>
+nnoremap <BS> <PageUp>
+nnoremap <Up> gk
+nnoremap <Down> gj
+nnoremap 0 ^
+nnoremap = $
+nnoremap m ]m
+nnoremap M [m
+nnoremap <silent> * :let stay_star_view=winsaveview()<CR>*:call winrestview(stay_star_view)<CR>
 
-" Status Line
+nnoremap <CR> o<Esc>
+nnoremap ä >>
+nnoremap ö <<
+nnoremap å ==
+nnoremap <silent> ' :call NERDComment(0, "toggle")<CR>
+nnoremap S i<CR><ESC>^
+nnoremap J mzJ`z
+nnoremap qw mzguiw`z
+nnoremap qW mzgUiw`z
+nnoremap qq mzguu`z
+nnoremap qQ mzgUU`z
+
+nnoremap q <nop>
+nnoremap Q <nop>
+nnoremap >> <nop>
+nnoremap << <nop>
+
+" Remember Line Position
+au BufReadPost *
+            \ if line("'\"") > 0 && line("'\"") <= line("$") |
+            \   execute "normal g'\"" |
+            \ endif
+
+" LightLine
 let g:lightline = {
     \ 'colorscheme': 'jellybeans',
     \ 'component': {
@@ -89,3 +112,9 @@ let g:lightline = {
     \ 'separator': { 'left': '', 'right': '' },
     \ 'subseparator': { 'left': '|', 'right': '|' },
     \ }
+
+" Fakeclip
+nmap yy <Plug>(fakeclip-Y)
+nmap dd <Plug>(fakeclip-dd)
+nmap p <Plug>(fakeclip-p)
+nmap P <Plug>(fakeclip-P)
