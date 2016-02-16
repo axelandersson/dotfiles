@@ -1,81 +1,55 @@
 #!/usr/bin/perl -w
-#
-# rename
-# Rename files or directories using commands, like changing case, or doing regexp search and replace.
-#
-# Coypright (c) 2015 Axel Andersson
-#
 
 use strict;
-use File::Basename;
-use Getopt::Long;
-use Text::Autoformat; # CPAN
+use CLI;
+use Text::Autoformat;
 
-my $BINARY = basename($0);
-my $DRYRUN = 0;
-
-my $r = GetOptions("n", \$DRYRUN);
-
-die "Usage: $BINARY [-n] <command> [<file> ...]\nCommands: 's/foo/bar/' 'd/foo/g' 'uppercase' 'lowercase' 'titlecase'\n" if $r == 0 || @ARGV < 2;
-
+my $options = CLI::options("dryrun|n");
 my $command = shift @ARGV;
+
+CLI::usage("[--dryrun|-n] <command> <file> [<file> ...]", "Commands: 's/foo/bar/g' 'uppercase' 'lowercase' 'titlecase'") if $options->{"help"} || !$command || @ARGV == 0;
+
 my $regexp;
 my $autoformatcase;
 
-# "s///": Replace matching text
 if($command =~ /^s\/.*?\/.*?\/\w*$/) {
     $regexp = $command;
 }
-# "d//" Remove matching text
-elsif($command =~ /^d\/(.+)\/(\w*)$/) {
-    $regexp = "s/$1//$2";
-}
-# "uppercase": Convert letters to upper-case
 elsif($command eq "uppercase" || $command eq "upper" || $command eq "uc") {
     $autoformatcase = "upper";
 }
-# "lowercase": Convert letters to lower-case
 elsif($command eq "lowercase" || $command eq "lower" || $command eq "lc") {
     $autoformatcase = "lower";
 }
-# "titlecase": Convert letters to title-case
 elsif($command eq "titlecase" || $command eq "title" || $command eq "tc") {
     $autoformatcase = "highlight";
 }
-# No action found
-else {
-    die "$BINARY: \"$command\" is not a recognized command\n";
-}
 
-# Perform action on ARGV
+CLI::assert_true($regexp || $autoformatcase, "Command \"$command\" not recognized");
+
 foreach my $path (@ARGV) {
-    my $dirname = dirname($path);
-    my $basename = basename($path);
-    my $newpath;
-    my $newbasename;
+    my $olddirectory = CLI::pathbydeletinglastpathcomponent($path);
+    my $oldname = CLI::lastpathcomponent($path);
+    my $newname;
 
     if($regexp) {
-        $newbasename = $basename;
-        eval("\$newbasename =~ $regexp;");
+        $newname = $oldname;
+        eval("\$newname =~ $regexp;");
     }
     elsif($autoformatcase) {
-        $newbasename = autoformat($basename, {case => $autoformatcase});
-        $newbasename =~ s/\s+$//s;
-        $newbasename =~ s/(\.[\w\d]+)$/lc($1)/ei;
+        $newname = autoformat($oldname, {case => $autoformatcase});
+        $newname =~ s/\s+$//s;
+        $newname =~ s/(\.[\w\d]+)$/lc($1)/ei;
     }
 
-    if($dirname ne ".") {
-        $newpath = $dirname . "/" . $newbasename;
-    } else {
-        $newpath = $newbasename;
-    }
+    my $newpath = ($olddirectory eq ".") ? $newname : "$olddirectory/$newname";
 
     if($path eq $newpath) {
         print "\"$path\" -> \"$newpath\": No change\n";
         next;
     }
 
-    if($DRYRUN) {
+    if($options->{"dryrun"}) {
         print "\"$path\" -> \"$newpath\": OK (Dry run)\n";
         next;
     }

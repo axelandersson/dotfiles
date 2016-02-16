@@ -1,0 +1,79 @@
+#!/usr/bin/perl -w
+
+use strict;
+use CLI;
+
+print_commands("Shell", "resource", "lsalias", "lsenv", "lsfunction", "rmalias", "rmenv", "rmfunction");
+print_commands("File", "rename", "lsdump");
+print_commands("Directory List", "ll", "la");
+print_commands("Directory Find", "ff", "ffd", "ffx");
+print_commands("Process", "psv", "psvv", "psa", "psav", "psavv", "psg");
+print_commands("Archive List", "lsar");
+print_commands("Archive Pack", "tgz");
+
+my @unpackcommands = ("untgz", "untbz", "untar");
+push(@unpackcommands, "unrar") if CLI::can_run("unrar");
+print_commands("Archive Unpack", @unpackcommands);
+
+print_commands("Grep", "grepi", "grepr", "grepri", "grepar", "grepcode", "greph");
+
+if(CLI::can_run("jq")) {
+    print_commands("JSON", "jq");
+}
+
+if($^O eq "darwin") {
+    print_commands("Mac OS X", "ql", "console", "plxml", "pljson", "trash");
+}
+
+if(CLI::can_run("hfsdata")) {
+    print_commands("HFS Write", "setcomment", "setlabel", "settype", "setcreator", "sethidden", "setunhidden");
+    print_commands("HFS READ", "lscomment", "lslabel", "lskind", "lstype", "lscreator");
+}
+
+foreach my $cd (sort split(";", $ENV{"CDMAP"})) {
+    my($alias, $path) = split(":", $cd);
+    print_directory("Directory", $alias, $path);
+}
+
+if(CLI::can_run("git-api")) {
+    CLI::run("git api help");
+}
+
+print_git("Git Prompt", "*unstaged", "+staged", "<behind", ">ahead", "=sync");
+
+
+# functions
+
+sub print_commands {
+    my $label = shift;
+    my @commands = @_;
+
+    print CLI::justifiedstring($label, 18);
+
+    foreach my $command (@commands) {
+        print CLI::coloredstring($command, "magenta"), " ";
+    }
+
+    print "\n";
+}
+
+sub print_directory {
+    my $label = shift;
+    my $alias = shift;
+    my $path = shift;
+
+    println CLI::justifiedstring($label, 18), CLI::coloredstring(CLI::justifiedstring("\"$alias\"", 10), "green"), CLI::coloredstring($path, "green");
+}
+
+sub print_git {
+    my $label = shift;
+    my @commands = @_;
+
+    print CLI::justifiedstring($label, 18);
+
+    foreach my $command (@commands) {
+        print CLI::coloredstring($command, "blue"), " ";
+    }
+
+    print "\n";
+}

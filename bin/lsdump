@@ -1,0 +1,87 @@
+#!/usr/bin/perl -w
+
+use strict;
+use CLI;
+
+CLI::usage("<file> [<file> ...]") unless @ARGV;
+
+for my $path (@ARGV) {
+    lsdump($path);
+}
+
+
+
+sub lsdump {
+    my $path = shift;
+
+    if(! -e $path) {
+        CLI::error("$path: No such file or directory");
+        return;
+    }
+
+    printcommand("lsdump", [CLI::absolutepath($path)]);
+
+    if(CLI::can_run("file")) {
+        my @output = CLI::run(["file", "--brief", $path]);
+
+        printcommand("file", \@output);
+    }
+
+    if(CLI::can_run("du")) {
+        my @output = CLI::run(["du", "-hs", $path]);
+
+        foreach my $line (@output) {
+            $line =~ s/\s+.+//g;
+        }
+
+        printcommand("du", \@output);
+    }
+
+    if(CLI::can_run("stat")) {
+        my @output = CLI::run(["stat", "-x", $path]);
+
+        printcommand("stat", \@output);
+    }
+
+    if(CLI::can_run("xattr")) {
+        my @output = CLI::run(["xattr", "-lx", $path]);
+
+        printcommand("xattr", \@output);
+
+        my $quarantine = CLI::run(["xattr", "-p", "com.apple.quarantine", $path]);
+
+        if($quarantine) {
+            if($quarantine =~ /^(.+?);(.+?);(.+?);(.+?)$/) {
+                my @result = CLI::run(["sqlite3", "-list", "-noheader", "-separator", ";", "$CLI::HOME/Library/Preferences/com.apple.LaunchServices.QuarantineEventsV2", "select LSQuarantineAgentName, LSQuarantineDataURLString, datetime(LSQuarantineTimeStamp + 978307200, 'unixepoch') from LSQuarantineEvent where LSQuarantineEventIdentifier = '$4';"]);
+
+                foreach my $line (@result) {
+                    if($line =~ /^(.+?);(.+?);(.+?)$/) {
+                        printcommand("quarantine", ["Application: $1", "URL: $2", "Date: $3"]);
+                    }
+                }
+            }
+        }
+    }
+
+    if(CLI::can_run("hfsdata")) {
+        my $type = CLI::run(["hfsdata", "-T", $path]) || "";
+        my $creator = CLI::run(["hfsdata", "-C", $path]) || "";
+        my $kind  = CLI::run(["hfsdata", "-k", $path]) || "";
+        my $labelname  = CLI::run(["hfsdata", "-L", $path]) || "";
+        my $labelcode  = CLI::run(["hfsdata", "-l", $path]) || "0";
+        my $comment  = CLI::run(["hfsdata", "-o", $path]) || "";
+
+        printcommand("hfsdata", ["Type: \"$type\"", "Creator: \"$creator\"", "Kind: \"$kind\"", "Label: $labelname ($labelcode)", "Comment: \"$comment\""]);
+    }
+}
+
+sub printcommand {
+    my $command = shift;
+    my $lines = shift;
+
+    foreach my $line (@{$lines}) {
+        println CLI::coloredstring(CLI::justifiedstring($command, 18), "magenta,bold"), CLI::trimmedstring($line);
+
+        $command = "";
+    }
+}

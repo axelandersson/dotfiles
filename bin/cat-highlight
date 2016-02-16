@@ -1,0 +1,81 @@
+#!/bin/bash
+
+if [ ! -x "$(which pygmentize 2>/dev/null)" ]; then
+    cat $@
+    exit $?
+fi
+
+formatter="terminal256"
+style="tomorrownight"
+encoding="utf-8"
+
+if [ $# -eq 0 ]; then
+    indir="$(mktemp -d -t "cat-highlight.XXXXXXXX")"
+    infile="$indir/file"
+    inname="file"
+
+    mkdir -p "$indir"
+    cat - > "$infile"
+
+    if [ $? -ne 0 ]; then
+        exit $?
+    fi
+else
+    infile="$1"
+    inname="$(basename "$infile")"
+fi
+
+outdir="$(mktemp -d -t "cat-highlight.XXXXXXXX")"
+outfile="$outdir/$inname"
+
+mkdir -p "$outdir"
+
+mimetype="$(file --brief --mime-type "$infile")"
+lexer=""
+
+case "$mimetype" in
+    application/xml|image/svg+xml) lexer="xml";;
+    text/html) lexer="html";;
+    text/troff) lexer="nroff";;
+    text/x-asm) lexer="nasm";;
+    text/x-awk) lexer="awk";;
+    text/x-c) lexer="c";;
+    text/x-c++) lexer="cpp";;
+    text/x-diff) lexer="diff";;
+    text/x-fortran) lexer="fortran";;
+    text/x-gawk) lexer="gawk";;
+    text/x-java) lexer="java";;
+    text/x-lisp) lexer="common-lisp";;
+    text/x-lua) lexer="lua";;
+    text/x-makefile) lexer="make";;
+    text/x-msdos-batch) lexer="bat";;
+    text/x-nawk) lexer="nawk";;
+    text/x-pascal) lexer="pascal";;
+    text/x-perl) lexer="perl";;
+    text/x-php) lexer="php";;
+    text/x-po) lexer="po";;
+    text/x-python) lexer="python";;
+    text/x-ruby) lexer="ruby";;
+    text/x-shellscript) lexer="sh";;
+    text/x-tcl) lexer="tcl";;
+esac
+
+if [ -n "$lexer" ]; then
+    pygmentize -f "$formatter" -O "style=$style" -O "encoding=$encoding" -o "$outfile" -l "$lexer" "$infile"
+
+    if [ $? -eq 0 ]; then
+        cat "$outfile"
+        rm -r "$outdir"
+    fi
+
+    exit $?
+fi
+
+pygmentize -f "$formatter" -O "style=$style" -O "encoding=$encoding" -o "$outfile" -g "$infile"
+
+if [ $? -eq 0 ]; then
+    cat "$outfile"
+    rm -r "$outdir"
+fi
+
+exit $?

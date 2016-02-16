@@ -1,22 +1,16 @@
-#!/bin/bash
+#!/usr/bin/perl -w
 
-if [ ! -x "$(which osascript 2>/dev/null)" ]; then
-    echo "$BASH_SOURCE: osascript: No such command"
-    exit 1
-fi
+use strict;
+use CLI;
 
-path=$(osascript -e "tell application id \"com.apple.dt.Xcode\" to return path of text document 1 whose name ends with (word -1 of (get name of window 1))")
+my $options = CLI::options();
 
-if [ -z "$path" ]; then
-    echo "$BASH_SOURCE: No file found"
-    exit 1
-fi
+CLI::usage() if $options->{"help"};
 
-directory=$(dirname "$path")
+CLI::assert_true(CLI::can_run("osascript"), "Command \"osascript\" not available");
 
-if [ -z "$directory" ]; then
-    echo "$BASH_SOURCE: No directory found"
-    exit 1
-fi
+my $path = CLI::run(["osascript", "-e", "tell application id \"com.apple.dt.Xcode\" to return path of text document 1 whose name ends with (word -1 of (get name of window 1))"]);
 
-echo "$directory"
+CLI::assert_defined($path, "No file open in Xcode");
+
+println CLI::pathbydeletinglastpathcomponent($path);

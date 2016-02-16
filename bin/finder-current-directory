@@ -1,32 +1,24 @@
-#!/bin/bash
+#!/usr/bin/perl -w
 
-binname=$(basename "$0")
+use strict;
+use CLI;
 
-if [ ! -x "$(which osascript 2>/dev/null)" ]; then
-    echo "$binname: osascript: No such command"
-    exit 1
-fi
+my $options = CLI::options();
 
-path=$(osascript -e "tell application id \"com.apple.finder\" to return POSIX path of (selection as alias)" 2>/dev/null)
+CLI::usage() if $options->{"help"};
 
-if [ -z "$path" ]; then
-    path=$(osascript -e "tell application id \"com.apple.finder\" to return POSIX path of (target of window 1 as alias)" 2>/dev/null)
-fi
+CLI::assert_true(CLI::can_run("osascript"), "Command \"osascript\" not available");
 
-if [ -z "$path" ]; then
-    echo "$binname: No file found"
-    exit 1
-fi
+my $path = CLI::run(["osascript", "-e", "tell application id \"com.apple.finder\" to return POSIX path of (selection as alias)"]);
 
-if [ -d "$path" ]; then
-    directory="$path"
-else
-    directory=$(dirname "$path")
+if(!$path) {
+    $path = CLI::run(["osascript", "-e", "tell application id \"com.apple.finder\" to return POSIX path of (target of window 1 as alias)"]);
+}
 
-    if [ -z "$directory" ]; then
-        echo "$binname: No directory found"
-        exit 1
-    fi
-fi
+CLI::assert_defined($path, "No file selected and no directory open in Finder");
 
-echo "$directory"
+if(-d $path) {
+    println $path;
+} else {
+    println CLI::pathbydeletinglastpathcomponent($path);
+}

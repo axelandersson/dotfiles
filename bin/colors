@@ -1,0 +1,21 @@
+#!/usr/bin/perl -w
+
+use strict;
+use CLI;
+
+my @colors = (" -", " b", " r", " g", " y", " b", " m", " c", " w", "bb", "br", "bg", "by", "bb", "bm", "bc", "bw");
+my @attributes = ("none", "bold", "dimmed", "underlined", "inverted");
+
+foreach my $color (@colors) {
+    my $name = CLI::colorname($color);
+
+    print CLI::justifiedstring($name, 17);
+
+    foreach my $attribute (@attributes) {
+        my $string = "$color,$attribute,-";
+
+        print CLI::coloredstring($string, $string), " ";
+    }
+
+    print "\n";
+}

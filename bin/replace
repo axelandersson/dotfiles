@@ -1,49 +1,48 @@
 #!/usr/bin/perl -w
-#
-# replace
-# Sed-like text replacer.
-#
-# Copyright (c) 2015 Axel Andersson
-#
 
 use strict;
-use File::Basename;
-use File::Copy;
-use File::Temp;
-use Getopt::Long;
+use CLI;
 
-my $BINARY = basename($0);
-my $CASEINSENSITIVE = 0;
-
-my $r = GetOptions("i|ignore-case" => \$CASEINSENSITIVE);
-
-die "Usage: $BINARY [-i] [pattern] [file ...]\n" if $r == 0 || @ARGV < 1;
-
+my $options = CLI::options("ignore-case|i");
 my $pattern = shift @ARGV;
-my $flags = $CASEINSENSITIVE ? "i" : "";
 my @files = @ARGV ? @ARGV : ("-");
+my $flags = $options->{"ignore-case"} ? "i" : "";
+
+CLI::usage("[--ignore-case|-i] [<file> ...]") if $options->{"help"} || !$pattern;
 
 foreach my $file (@files) {
-    open(FH, $file) or die "$BINARY: $file: $!\n";
-
-    my $th;
-    my $tempfile;
-
-    if(-e $file) {
-        ($th, $tempfile) = File::Temp::tempfile();
+    if($file eq "-") {
+        while(my $line = <>) {
+            println replaceline($line, $pattern, $flags);
+        }
     } else {
-        $th = *STDOUT;
+        CLI::assert_true(open(FH, $file), $!);
+
+        my @lines = <FH>;
+
+        close(FH);
+
+        CLI::assert_true(open(FH, ">$file"), $!);
+
+        foreach my $line (@lines) {
+            println replaceline($line, $pattern, $flags);
+        }
+
+        close(FH);
     }
+}
 
-    while(<FH>) {
-        my $new = $_;
 
-        eval("\$new =~ $pattern$flags;");
 
-        print $th $new;
-    }
+sub replaceline {
+    my $line = shift;
+    my $pattern = shift;
+    my $flags = shift;
 
-    move($tempfile, $file) if $tempfile;
+    my $newline = $line;
 
-    close(FH);
+    chomp($newline);
+    eval("\$newline =~ $pattern$flags;");
+
+    return $newline;
 }
