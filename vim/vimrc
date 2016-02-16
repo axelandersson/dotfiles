@@ -1,7 +1,5 @@
 " Setup
-set nocompatible
 set encoding=utf-8
-set fenc=utf-8
 set termencoding=utf-8
 set ttyfast
 
@@ -23,7 +21,7 @@ set laststatus=2
 set noshowmode
 set noruler
 set title
-set titlestring=%t
+set titlestring=%m\ %{v:progname}\ %f
 set number
 set numberwidth=5
 set shortmess=atToOI
@@ -52,7 +50,6 @@ set formatoptions=tcrqn
 " Searching
 set ignorecase
 set smartcase
-set incsearch
 set hlsearch
 
 " Syntax
@@ -64,6 +61,12 @@ filetype plugin on
 " Command Mode Key Bindings
 cnoremap w!! w !sudo tee >/dev/null %
 
+" Operator Key Bindings
+onoremap 0 ^
+onoremap = $
+onoremap m ]m
+onoremap M [m
+
 " Normal Mode Key Bindings
 nnoremap <silent> & :nohlsearch<CR>
 nnoremap U :redo<CR>
@@ -73,16 +76,17 @@ nnoremap <Space> <PageDown>
 nnoremap <BS> <PageUp>
 nnoremap <Up> gk
 nnoremap <Down> gj
+
 nnoremap 0 ^
 nnoremap = $
 nnoremap m ]m
 nnoremap M [m
-nnoremap <silent> * :let stay_star_view=winsaveview()<CR>*:call winrestview(stay_star_view)<CR>
 
 nnoremap <CR> o<Esc>
 nnoremap ä >>
 nnoremap ö <<
 nnoremap å ==
+nnoremap <silent> * :let stay_star_view=winsaveview()<CR>*:call winrestview(stay_star_view)<CR>
 nnoremap <silent> ' :call NERDComment(0, "toggle")<CR>
 nnoremap S i<CR><ESC>^
 nnoremap J mzJ`z
@@ -98,9 +102,9 @@ nnoremap << <nop>
 
 " Remember Line Position
 au BufReadPost *
-            \ if line("'\"") > 0 && line("'\"") <= line("$") |
-            \   execute "normal g'\"" |
-            \ endif
+    \ if line("'\"") > 0 && line("'\"") <= line("$") |
+    \   execute "normal g'\"" |
+    \ endif
 
 " LightLine
 let g:lightline = {
@@ -114,7 +118,11 @@ let g:lightline = {
     \ }
 
 " Fakeclip
-nmap yy <Plug>(fakeclip-Y)
-nmap dd <Plug>(fakeclip-dd)
+nmap yy <plug>(fakeclip-Y)
+nmap dd <plug>(fakeclip-dd)
+nmap D <Plug>(fakeclip-D)
 nmap p <Plug>(fakeclip-p)
 nmap P <Plug>(fakeclip-P)
+
+let g:fakeclip_no_default_key_mappings = 1
+let g:fakeclip_terminal_multiplexer_type = "gnuscreen"

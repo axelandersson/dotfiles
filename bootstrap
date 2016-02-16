@@ -13,15 +13,16 @@ ln -sfn "$HOME/.dotfiles/git/gitconfig" "$HOME/.gitconfig"
 ln -sfn "$HOME/.dotfiles/input/inputrc" "$HOME/.inputrc"
 ln -sfn "$HOME/.dotfiles/lldb/lldbinit" "$HOME/.lldbinit"
 ln -sfn "$HOME/.dotfiles/plan/plan" "$HOME/.plan"
+ln -sfn "$HOME/.dotfiles/python/pydistutils.cfg" "$HOME/.pydistutils.cfg"
 ln -sfn "$HOME/.dotfiles/screen/screenrc" "$HOME/.screenrc"
 ln -sfn "$HOME/.dotfiles/sqlite/sqliterc" "$HOME/.sqliterc"
 ln -sfn "$HOME/.dotfiles/vim/vimrc" "$HOME/.vimrc"
 
 # ssh
-if [ -f "$HOME/.dotfiles/local/dotfiles/ssh_config" ]; then
+if [ -f "$HOME/.dotfiles/local/ssh/ssh_config" ]; then
     mkdir -p "$HOME/.ssh"
     rm -f "$HOME/.ssh/config"
-    cat "$HOME/.dotfiles/ssh/ssh_config" "$HOME/.dotfiles/local/dotfiles/ssh_config" > "$HOME/.ssh/config"
+    cat "$HOME/.dotfiles/ssh/ssh_config" "$HOME/.dotfiles/local/ssh/ssh_config" > "$HOME/.ssh/config"
 else
     mkdir -p "$HOME/.ssh"
     ln -sfn "$HOME/.dotfiles/ssh/config" "$HOME/.ssh/ssh_config"
@@ -38,13 +39,14 @@ ln -sfn "$HOME/.dotfiles/vim/colors" "$HOME/.vim/colors"
 ln -sfn "$HOME/.dotfiles/vim/doc" "$HOME/.vim/doc"
 ln -sfn "$HOME/.dotfiles/vim/plugin" "$HOME/.vim/plugin"
 
-# Xcode
-if [ "$(uname -s)" = "Darwin"] && [ -x "$(which xcode-select 2>/dev/null)" ]; then
-    mkdir -p "$HOME/Library/Developer/Xcode/UserData/FontAndColorThemes"
-    ln -sfn "$HOME/.dotfiles/xcode/Tomorrow-Night.dvtcolortheme" "$HOME/Library/Developer/Xcode/UserData/FontAndColorThemes/Tomorrow-Night.dvtcolortheme"
-fi
-
-# Mac OS X defaults
+# Mac OS X
 if [ "$(uname -s)" = "Darwin" ]; then
+    # Xcode
+    if [ -x "$(which xcode-select 2>/dev/null)" ]; then
+        mkdir -p "$HOME/Library/Developer/Xcode/UserData/FontAndColorThemes"
+        ln -sfn "$HOME/.dotfiles/xcode/Tomorrow-Night.dvtcolortheme" "$HOME/Library/Developer/Xcode/UserData/FontAndColorThemes/Tomorrow-Night.dvtcolortheme"
+    fi
+
+    # defaults
     source "$HOME/.dotfiles/defaults/defaultsrc"
 fi
