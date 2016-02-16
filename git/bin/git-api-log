@@ -1,0 +1,90 @@
+#!/usr/bin/perl -w
+
+use strict;
+use CLI;
+use CLI::Git;
+
+my $options = CLI::options("short", "long", "ignore-case|i", "git|g=s@");
+
+CLI::usage("--short|--long [-i|--ignore-case] [<maxcount>] [@<author>] [+|-<time>] [<pattern>]") if $options->{"help"} || (!$options->{"short"} && !$options->{"long"});
+
+my $pager = CLI::Git::pager();
+my $maxcount = 5;
+my @flags = ("--perl-regexp");
+my $path;
+
+foreach my $arg (@ARGV) {
+    if($arg =~ /^\d+$/ && $arg > 0 && $arg <= 1000) {
+        $maxcount = $arg;
+    }
+    elsif($arg =~ /^@(me)?$/i) {
+        my $author = CLI::Git::username();
+
+        push(@flags, "--author='$author'");
+    }
+    elsif($arg =~ /^@(.+)$/i) {
+        my $author = $1;
+
+        push(@flags, "--author='$author'");
+    }
+    elsif($arg =~ /^(\-|\+)?(\d+)(h|d|w|m)$/) {
+        my %units = ( "h" => "hour", "d" => "day", "w" => "week", "m" => "month" );
+
+        my $flag = ($1 && $1 eq "+") ? "before" : "after";
+        my $number = $2;
+        my $unit = ($number == 1) ? $units{$3} : $units{$3} . "s";
+
+        push(@flags, "--$flag='$number $unit ago'");
+
+        $maxcount = undef;
+    }
+    elsif(-e $arg) {
+        $path = $arg;
+    }
+    else {
+        push(@flags, "--grep='$arg'");
+    }
+}
+
+if($options->{"ignore-case"}) {
+    push(@flags, "--regexp-ignore-case");
+}
+
+if($maxcount) {
+    push(@flags, "--max-count=$maxcount");
+}
+
+if($options->{"short"}) {
+    push(@flags, "--stat");
+} else {
+    push(@flags, "--patch");
+}
+
+if($options->{"git"}) {
+    push(@flags, @{$options->{"git"}});
+}
+
+my @input = CLI::Git::log(\@flags, $path);
+my @output;
+my $index = 0;
+
+foreach my $log (@input) {
+    push(@output, "") if $index++ > 0;
+
+    push(@output, CLI::Git::authorstring($log->{"author"}) . $log->{"refs"} . " " . CLI::Git::datestring($log->{"author-relative"}));
+    push(@output, CLI::Git::commitstring($log->{"commit"}) . " " . CLI::Git::subjectstring($log->{"subject"}));
+
+    foreach my $line (@{$log->{"body"}}) {
+        push(@output, CLI::Git::bodystring($line));
+    }
+
+    foreach my $line (@{$log->{"content"}}) {
+        if($line =~ /^ \d+ files? changed/) {
+            next;
+        }
+
+        push(@output, $line);
+    }
+}
+
+CLI::run($pager, { "input" => \@output } );

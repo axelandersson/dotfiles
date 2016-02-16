@@ -1,0 +1,12 @@
+#!/usr/bin/perl -w
+
+use strict;
+use CLI;
+use CLI::Git;
+
+my $options = CLI::options();
+my $branch = shift @ARGV;
+
+CLI::usage("<branch>") if $options->{"help"} || !CLI::Git::isbranch($branch);
+
+CLI::run("git merge --edit --no-ff origin/$branch");

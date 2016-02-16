@@ -1,0 +1,64 @@
+#!/usr/bin/perl -w
+
+use strict;
+use CLI;
+use CLI::Git;
+
+my $options = CLI::options("normal", "raw", "blame");
+my $file = shift @ARGV;
+my $branch = shift @ARGV || CLI::Git::rev_parse_head();
+
+CLI::usage("--normal|--raw|--blame <file> [branch]") if $options->{"help"} || (!$options->{"normal"} && !$options->{"raw"} && !$options->{"blame"}) || !CLI::isfile($file) || !CLI::Git::isbranch($branch);
+
+my $pager = CLI::Git::pager();
+my @output;
+
+if($options->{"normal"}) {
+    $pager = "less-highlight";
+
+    @output = CLI::Git::show_file($file, $branch);
+}
+elsif($options->{"raw"}) {
+    @output = CLI::Git::show_file($file, $branch);
+}
+elsif($options->{"blame"}) {
+    my @input = CLI::Git::blame($file, $branch);
+    my @lines;
+
+    foreach my $blame (@input) {
+        push(@lines, $blame->{"line"});
+    }
+
+    my @formattedlines = CLI::run("cat-highlight", { "input" => \@lines } );
+    my $previouscommit = "";
+    my $commitlength;
+    my $index = 0;
+
+    foreach my $line (@formattedlines) {
+        my $blame = $input[$index++];
+        my $info = "";
+
+        if($blame->{"commit"} ne $previouscommit) {
+            my $author = CLI::justifiedstring($blame->{"author"}, 12, 12);
+            my $date = CLI::formattedtime("%Y-%m-%d", $blame->{"author-time"});
+            my $commit = $blame->{"commit"};
+
+            if($commitlength) {
+                $commit = CLI::justifiedstring($commit, $commitlength, $commitlength);
+            } else {
+                $commit = CLI::Git::rev_parse_short($commit);
+                $commitlength = length($commit);
+            }
+
+            $info = CLI::Git::blameauthorstring($author) . CLI::Git::blamedatestring(" " . $date) . CLI::Git::blamecommitstring(" ". $commit);
+        }
+
+        $line = CLI::terminalwidthstring($line, CLI::stringwidth($info));
+
+        push(@output, $line . $info);
+
+        $previouscommit = $blame->{"commit"};
+    }
+}
+
+CLI::run($pager, { "input" => \@output });

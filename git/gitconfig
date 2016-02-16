@@ -4,60 +4,57 @@
     name = Axel Andersson
 
 [alias]
-    viconfig = config --global --edit
-    diffstaged = diff --staged
-    diffcommit = diff origin
-    difftoolstaged = difftool --staged
-    difftoolcommitted = difftool origin
-    pullall = up-or-pull
-    pushall = push --set-upstream --all
-    mergenoff = merge --no-ff
-    mergecherrypick = cherry-pick --edit
-    mergerevert = revert --edit
-    stageall = stage --all
-    unstage = reset --quiet
-    checkin = commit --verbose
-    logshort = log-nice short
-    loglong = log-nice long
-    logshortcommitted = log-nice short origin..HEAD
-    loglongcommitted = log-nice long origin..HEAD
-    loggraph = log-nice graph
-    logbranch = log-branch
-    printobject = show --stat --pretty=format:'   Author: %C(magenta)%an%C(reset) <%ae>%n     Date: %ad%nCommitter: %C(magenta)%cn%C(reset) <%ce>%n     Date: %cd%n     Refs: %C(auto)%D%C(reset)%n   Commit: %C(cyan)%h%C(reset)%n  Parents: %C(cyan)%p%C(reset)%n     Tree: %C(cyan)%t%C(reset)%n  Subject: %C(white bold)%s%n%+b%C(reset)'
-    branch = checkout --track -b
-    switchbranch = checkout
-    whichbranch = branch --list --contains
-    discardcommitted = discard origin
-    v = config --global --edit
-    d = diff
-    ds = diff --staged
-    dc = diff origin
-    dt = difftool
-    dts = difftool --staged
-    dtc = difftool origin
-    u = up-or-pull
-    p = push --set-upstream --all
-    m = merge --no-ff
-    mt = mergetool
-    mcp = cherry-pick --edit
-    mr = revert --edit
-    s = status
-    a = stage
-    aa = stage --all
-    r = reset --quiet
-    c = commit --verbose
-    l = log-nice short
-    ll = log-nice long
-    lc = log-nice short origin..HEAD
-    llc = log-nice long origin..HEAD
-    lg = log-nice graph
-    lb = log-branch
-    po = show --stat --pretty=format:'   Author: %C(magenta)%an%C(reset) <%ae>%n     Date: %ad%nCommitter: %C(magenta)%cn%C(reset) <%ce>%n     Date: %cd%n     Refs: %C(auto)%D%C(reset)%n   Commit: %C(cyan)%h%C(reset)%n  Parents: %C(cyan)%p%C(reset)%n     Tree: %C(cyan)%t%C(reset)%n  Subject: %C(white bold)%s%n%+b%C(reset)'
-    b = checkout --track -b
-    sb = checkout
-    wb = branch --list --contains
-    h = discard
-    hc = discard origin
+    v = api viconfig
+    u = api update
+    p = api push
+    s = api status
+    a = api stage
+    aa = api stage-all
+    r = api unstage
+    c = api commit
+    h = api discard
+    hf = api discard-file
+    hc = api discard-committed
+    l = api log
+    ll = api log-long
+    lc = api log-committed
+    llc = api log-long-committed
+    lb = api log-branch
+    lg = api log-graph
+    d = api diff
+    dr = api diff-raw
+    ds = api diff-staged
+    dc = api diff-committed
+    dt = api difftool
+    dts = api difftool-staged
+    dtc = api difftool-committed
+    pc = api print-commit
+    pcl = api print-commit-long
+    pf = api print-file
+    pfr = api print-file-raw
+    pfb = api print-file-blame
+    b = api branch
+    bs = api branch-switch
+    bn = api branch-new
+    bc = api branch-commit
+    m = api merge
+    mo = api merge-origin
+    mt = api mergetool
+    mr = api merge-revert
+    mcp = api merge-cherrypick
+
+[cli "color"]
+    author = magenta,none,none
+    email = none,none,none
+    date = none,none,none
+    commit = cyan,none,none
+    localref = blue,none,none
+    remoteref = red,none,none
+    subject = white,bold,none
+    body = white,bold,none
+    blameauthor = magenta,none,black
+    blamedate = none,none,black
+    blamecommit = cyan,none,black
 
 [color]
     branch = always
@@ -105,7 +102,7 @@
     attributesfile = ~/.gitattributes
 
 [credential]
-    helper = dynamic
+    helper = api
 
 [diff]
     renames = copies

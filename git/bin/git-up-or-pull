@@ -1,7 +1,0 @@
-#!/bin/bash
-
-if [ -x "$(which git-up 2>/dev/null)" ]; then
-    git up
-else
-    git pull --rebase --all
-fi
