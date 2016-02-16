@@ -1,0 +1,243 @@
+#!/bin/bash
+
+function cd() {
+    if [ $# -eq 0 ]; then
+        builtin cd "$HOME"
+    elif [ $# -eq 1 ]; then
+        directory="$1"
+
+        if [ "$directory" != ".." ]; then
+            if [[ $CDMAP =~ (^|;)${directory}:([^;]*)(;|$) ]]; then
+                directory=${BASH_REMATCH[2]}
+            fi
+        fi
+
+        if [ "${directory:0:1}" = "+" ]; then
+            command="${directory:1}"
+
+            if ! output=$($command); then
+                echo "$FUNCNAME: $command: Command failed"
+                return
+            fi
+
+            directory="$output"
+        fi
+
+        if [ -f "$directory" ]; then
+            directory=$(dirname "$directory")
+        fi
+
+        builtin cd "$directory"
+    else
+        echo "Usage: $FUNCNAME [<directory>]"
+    fi
+}
+
+function clangdefines() {
+    clang -dM -E - </dev/null
+}
+
+function clangflags() {
+    clang "$@" -### -x c -o /dev/null - </dev/null 2>&1 | grep -v "^(Apple LLVM|Target|Thread)" | replace 's/^ //g' | replace 's/"//g'
+}
+
+function console() {
+    if [ "$(uname -s)" != "Darwin" ]; then
+        echo "$FUNCNAME: Console: No such application"
+        return
+    fi
+
+    if [ $# -gt 0 ]; then
+        for i in "$@"; do
+            if [ -f "$i" ]; then
+                open -a "Console" "$i"
+            else
+                echo "$FUNCNAME: $i: No such file"
+            fi
+        done
+    else
+        open -a "Console" -f
+    fi
+}
+
+function diff() {
+    command diff -u "$@" | cat-highlight
+}
+
+function ff() {
+    if [ -n "$@" ]; then
+        find . -iname "*$@*"
+    else
+        find .
+    fi
+}
+
+function ffd() {
+    if [ -n "$@" ]; then
+        find . -type d -iname "*$@*"
+    else
+        find . -type d
+    fi
+}
+
+function ffx() {
+    if [ -n "$@" ]; then
+        find . -type f -perm +111 -iname "*$@*"
+    else
+        find . -type f -perm +111
+    fi
+}
+
+function grep() {
+    if [ -x "$(which pcre2grep 2>/dev/null)" ]; then
+        command pcre2grep --buffer-size=1048576 --color=auto --binary-files=without-match $@
+    else
+        command grep --extended-regexp --color=auto --binary-files=without-match $@
+    fi
+}
+
+function grepi() {
+    grep --ignore-case $@
+}
+
+function grepr() {
+    grep --recursive $@
+}
+
+function grepri() {
+    grep --recursive --ignore-case $@
+}
+
+function grepar() {
+    if [ $# -lt 2 ]; then
+        echo "Usage: $FUNCNAME <pattern> <archive> [<archive> ...]"
+        return
+    fi
+
+    lsar "${@:2}" | grep "$1"
+}
+
+function grepcode() {
+    if [ -x "$(which pcre2grep 2>/dev/null)" ]; then
+        command pcre2grep --buffer-size=1048576 --color=auto --recursive --with-filename --line-number --binary-files=without-match --exclude-dir=.svn --exclude-dir=.git --include='\.(c|h|pch|m|mm|swift|cpp|hpp|cs|java|rb|pl|py|lua|sh|js)$' $@
+    else
+        command grep --extended-regexp --color=auto --recursive --with-filename --line-number --binary-files=without-match --exclude-dir=.svn --exclude-dir=.git --include='*.c' --include='*.h' --include='*.pch' --include='*.m' --include='*.mm' --include='*.swift' --include='*.cpp' --include='*.hpp' --include='*.cs' --include='*.java' --include='*.rb' --include='*.pl' --include='*.py' --include='*.lua' --include='*.sh' --include='*.js' $@
+    fi
+}
+
+function greph() {
+    paths="/usr/include"
+
+    if [ -x "$(which xcrun 2>/dev/null)" ]; then
+        paths="$paths $(xcrun --sdk macosx --show-sdk-path 2>/dev/null) $(xcrun --sdk iphoneos --show-sdk-path 2>/dev/null) $(xcrun --sdk watchos --show-sdk-path 2>/dev/null)"
+    fi
+
+    if [ -x "$(which pcre2grep 2>/dev/null)" ]; then
+        command pcre2grep --buffer-size=1048576 --color=auto --recursive --with-filename --line-number --binary-files=without-match --include='\.(h|hpp)$' "$1" $paths
+    else
+        command grep --extended-regexp --color=auto --recursive --with-filename --line-number --binary-files=without-match --include='*.h' --include='*.hpp' "$1" $paths
+    fi
+}
+
+function lsalias() {
+    if [ $# -eq 1 ]; then
+        alias "$1" | replace "s/^alias $1='//" | replace "s/'$//"
+    elif [ $# -eq 0 ]; then
+        alias -p | replace 's/^alias //' | sort
+    else
+        echo "Usage: $FUNCNAME [<alias>]"
+    fi
+}
+
+function lsar() {
+    if [ $# -eq 0 ]; then
+        echo "Usage: $FUNCNAME <archive> [<archive> ...]"
+        return
+    fi
+
+    for i in "$@"; do
+        if [ -f "$i" ]; then
+            if [ $# -gt 1 ]; then
+                pattern='s/^(\(for architecture \w+\):)?(.+?):(.+?): (.+?)$/$2 $3 $4/'
+            else
+                pattern='s/^(\(for architecture \w+\):)?(.+?):(.+?): (.+?)$/$3 $4/'
+            fi
+
+            nm -A "$i" 2>/dev/null | replace "$pattern" | c++filt
+        else
+            echo "$FUNCNAME: $i: No such file"
+        fi
+    done
+}
+
+function lsenv() {
+    if [ $# -eq 1 ]; then
+        env | grep "^$1=" | replace "s/^$1=//"
+    elif [ $# -eq 0 ]; then
+        env | sort
+    else
+        echo "Usage: $FUNCNAME [<variable>]"
+    fi
+}
+
+function lsfunction() {
+    if [ $# -eq 1 ]; then
+        declare -f "$1"
+    elif [ $# -eq 0 ]; then
+        declare -F | replace 's/^declare -f //' | sort
+    else
+        echo "Usage: $FUNCNAME [<function>]"
+    fi
+}
+
+function pljson() {
+    if [ ! -x "$(which plutil 2>/dev/null)" ]; then
+        echo "$FUNCNAME: plutil: No such command"
+        return
+    fi
+
+    if [ $# -gt 0 ]; then
+        for i in "$@"; do
+            if [ -f "$i" ]; then
+                plutil -convert json -o - "$i"
+            else
+                echo "$FUNCNAME: $i: No such file"
+            fi
+        done
+    else
+        plutil -convert json -o - -
+    fi
+}
+
+function plxml() {
+    if [ ! -x "$(which plutil 2>/dev/null)" ]; then
+        echo "$FUNCNAME: plutil: No such command"
+        return
+    fi
+
+    if [ $# -gt 0 ]; then
+        for i in "$@"; do
+            if [ -f "$i" ]; then
+                plutil -convert xml1 -o - "$i"
+            else
+                echo "$FUNCNAME: $i: No such file"
+            fi
+        done
+    else
+        plutil -convert xml1 -o - -
+    fi
+}
+
+function ql() {
+    if [ ! -x "$(which qlmanage 2>/dev/null)" ]; then
+        echo "$FUNCNAME: qlmanage: No such command"
+        return
+    fi
+
+    if [ $# -eq 0 ]; then
+        echo "Usage: $FUNCNAME <file> [<file> ...]"
+        return
+    fi
+
+    qlmanage -p $@ >/dev/null 2>&1 &
+}

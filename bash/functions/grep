@@ -1,9 +1,0 @@
-#!/bin/bash
-
-function grep() {
-    if [ -x "$(which pcre2grep 2>/dev/null)" ]; then
-        command pcre2grep --buffer-size=1048576 --color=auto "$@"
-    else
-        command grep --extended-regexp --color=auto "$@"
-    fi
-}

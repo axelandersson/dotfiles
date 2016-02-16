@@ -1,11 +1,12 @@
 #!/bin/bash
 
+# shell
+alias help="$HOME/.dotfiles/bin/help"
 alias ll="ls -l"
 alias la="ls -Al"
 alias du="du -h"
 alias df="df -h"
 alias host="host -a"
-alias less="less -x4 -i"
 
 # bash
 alias resource="source $HOME/.bashrc"
@@ -37,6 +38,9 @@ fi
 
 # grep
 alias grepi="grep --ignore-case"
+
+# less
+alias less="less-highlight"
 
 # ps
 if [ "$(uname -s)" = "Darwin" ]; then

@@ -1,7 +1,82 @@
 #!/bin/bash
 
+if [ -z "$PS1" ]; then
+    return
+fi
+
+# git
 source "$HOME/.dotfiles/bash/contrib/git_completion"
 
+function _git_api() {
+    if [ "$prev" = "api" ]; then
+        __gitcomp_nl "$(__git_api_commands)"
+        return
+    fi
+
+    local command argindex
+
+    if [ "${words[1]}" = "${COMP_WORDS[1]}" ]; then
+        command="${COMP_WORDS[2]}"
+        argindex=3
+    else
+        command="$(__git_api_commandforalias "${COMP_WORDS[1]}")"
+        argindex=2
+    fi
+
+    local type="$(__git_api_type "$command")"
+
+    if [ -z "$type" ]; then
+        return
+    fi
+
+    case "$type" in
+        commandoralias)
+            __gitcomp_nl "$(__git_api_commands)"
+            ;;
+
+        anyfiles)
+            __git_complete_index_file "--others --directory"
+            ;;
+
+        untrackedfiles)
+            __git_complete_index_file "--others --modified --directory --no-empty-directory"
+            ;;
+
+        trackedfiles)
+            __git_complete_index_file "--cached"
+            ;;
+
+        trackedfileandbranch)
+            if [ $cword = $argindex ]; then
+                __git_complete_index_file "--cached"
+            else
+                __git_api_complete_branches
+            fi
+            ;;
+    esac
+}
+
+function __git_api_commands() {
+    git api completion "commands"
+}
+
+function __git_api_commandforalias() {
+    git api completion "commandforalias" "$1"
+}
+
+function __git_api_type() {
+    git api completion "type" "$1"
+}
+
+function __git_api_complete_branches() {
+    __gitcomp_nl "$(__git_api_branches "$cur")"
+}
+
+function __git_api_branches() {
+    git for-each-ref --format="%(refname:short)" "refs/heads/${1}*" 2>/dev/null
+}
+
+# bash
 version=${BASH_VERSION%.*}
 major=${version%.*}
 minor=${version#*.}

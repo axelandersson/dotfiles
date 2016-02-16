@@ -1,5 +1,9 @@
 #!/bin/bash
 
+if [ -z "$PS1" ]; then
+    return
+fi
+
 # Increase size of history
 export HISTSIZE="100000"
 export HISTFILESIZE="100000"

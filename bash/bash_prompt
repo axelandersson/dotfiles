@@ -1,5 +1,9 @@
 #!/bin/bash
 
+if [ -z "$PS1" ]; then
+    return
+fi
+
 function _prompt_path() {
     local IFS="/"
 
@@ -31,9 +35,9 @@ GIT_PS1_STATESEPARATOR=""
 
 source "$HOME/.dotfiles/bash/contrib/git_prompt"
 
-PS_ID="\[$cwhi\]\u@\h\[$cres\]"
-PS_PATH='$(_prompt_path "\[$cbgre\]%s\[$cres\]" "\[$cbwhi\]%s\[$cres\]")'
-PS_GIT='$(__git_ps1 " \[$cblu\]%s\[$cres\]")'
-PS_ARROW="\[$cwhi\]>\[$cres\]"
+PS_ID='\[\033[0;97m\]\u@\h\[\033[0m\]'
+PS_PATH='$(_prompt_path "\[\033[0;92m\]%s\[\033[0m\]" "\[\033[0;97m\]%s\[\033[0m\]")'
+PS_GIT='$(__git_ps1 " \[\033[0;94m\]%s\[\033[0m\]")'
+PS_ARROW='\[\033[0;97m\]>\[\033[0m\]'
 
 export PS1="$PS_ID $PS_PATH$PS_GIT$PS_ARROW "

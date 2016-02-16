@@ -1,15 +1,14 @@
 #!/bin/bash
 
-export LESSCHARSET="latin1"
+export LESSCHARSET="utf-8"
 export MAILCHECK="0"
-export PAGER="less"
+
+export PAGER="less-highlight"
+export MANPAGER="less"
+export LESS="-F -i -M -R -X -x4"
 
 if [ -n "$LINES" ]; then
-    halflines=$(expr $LINES / 2)
-
-    export LESS="-FiMrX -z-$halflines"
-else
-    export LESS="-FiMrX"
+    export LESS="$LESS -z-$(expr $LINES / 2)"
 fi
 
 export LSCOLORS="cxGxahahFxExExHFHGHCHC"
@@ -20,11 +19,12 @@ if [ -x "$(which vim 2>/dev/null)" ]; then
     export EDITOR="vim"
 else
     export EDITOR="vi"
-    echo "warning: 'vim' is not available, use 'vi' instead"
 fi
 
 export PERL_MB_OPT="--install_base \"$HOME/.dotfiles/local/perl5\""
 export PERL_MM_OPT="INSTALL_BASE=$HOME/.dotfiles/local/perl5"
-export PERL5LIB="$HOME/.dotfiles/local/perl5/lib/perl5"
+export PERL5LIB="$HOME/.dotfiles/perl5/lib/perl5:$HOME/.dotfiles/local/perl5/lib/perl5"
 
 export GEM_HOME="$HOME/.dotfiles/local/ruby-gems"
+
+export PYTHONPATH="$HOME/.dotfiles/local/python/lib/python2.7/site-packages"

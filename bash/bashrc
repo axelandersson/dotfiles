@@ -1,26 +1,13 @@
 #!/bin/bash
 
-if [ -z "$PS1" ]; then
-    return
-fi
-
 if [ -f "/etc/bashrc" ]; then
     source "/etc/bashrc"
 fi
 
-for i in "$HOME/.bash_local_"*; do
-    if [ -f "$i" ]; then
-        source $i
+for i in "alias" "completion" "config" "env" "function" "path" "prompt"; do
+    source "$HOME/.dotfiles/bash/bash_$i"
+
+    if [ -f "$HOME/.dotfiles/local/bash/bash_$i" ]; then
+        source "$HOME/.dotfiles/local/bash/bash_$i"
     fi
-done
-
-source "$HOME/.dotfiles/bash/bash_prompt"
-source "$HOME/.dotfiles/bash/bash_config"
-source "$HOME/.dotfiles/bash/bash_path"
-source "$HOME/.dotfiles/bash/bash_env"
-source "$HOME/.dotfiles/bash/bash_alias"
-source "$HOME/.dotfiles/bash/bash_completion"
-
-for i in "$HOME/.dotfiles/bash/functions"/*; do
-    source "$i"
 done
