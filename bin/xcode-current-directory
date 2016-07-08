@@ -7,10 +7,10 @@ my $options = CLI::options();
 
 CLI::usage() if $options->{"help"};
 
-CLI::assert_true(CLI::can_run("osascript"), "Command \"osascript\" not available");
+CLI::assertcanrun("osascript");
 
 my $path = CLI::run(["osascript", "-e", "tell application id \"com.apple.dt.Xcode\" to return path of text document 1 whose name ends with (word -1 of (get name of window 1))"]);
 
-CLI::assert_defined($path, "No file open in Xcode");
+CLI::assertdefined($path, "No file open in Xcode");
 
 println CLI::pathbydeletinglastpathcomponent($path);

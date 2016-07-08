@@ -1,0 +1,14 @@
+#!/usr/bin/perl -w
+
+use strict;
+use CLI;
+use CLI::Git;
+
+my $options = CLI::options();
+my $commit = shift @ARGV;
+
+CLI::usage("<commit>") if $options->{"help"} || !CLI::Git::iscommit($commit);
+
+my @input = CLI::run(["git", "branch", "--list", "--all", "--contains", $commit]);
+
+CLI::Git::runpager(\@input);

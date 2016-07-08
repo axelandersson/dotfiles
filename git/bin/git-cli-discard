@@ -1,0 +1,24 @@
+#!/usr/bin/perl -w
+
+use strict;
+use CLI;
+use CLI::Git;
+
+my $options = CLI::options("all", "committed");
+my @files = @ARGV;
+
+CLI::usage("[--all|--committed|<file> ...]") if $options->{"help"} || (@files == 0 && !$options->{"all"} && !$options->{"committed"}) || (@files != 0 && ($options->{"all"} || $options->{"committed"}));
+
+if($options->{"all"}) {
+    CLI::run(["git", "reset", "--hard"]);
+}
+elsif($options->{"committed"}) {
+    CLI::run(["git", "reset", "--hard", CLI::Git::remotebranch()]);
+}
+else {
+    foreach my $file (@files) {
+        CLI::run(["git", "reset", "--quiet", $file], { "assertonerror" => 0 });
+        CLI::run(["git", "checkout", "--", $file], { "assertonerror" => 0 });
+        CLI::run(["git", "clean", "-d", "--force", "--quiet", $file], { "assertonerror" => 0 });
+    }
+}

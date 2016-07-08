@@ -1,0 +1,18 @@
+#!/usr/bin/perl -w
+
+use strict;
+use CLI;
+use CLI::Git;
+
+my $options = CLI::options();
+my $branch = shift @ARGV || "master";
+
+CLI::usage("[<branch>|-]") if $options->{"help"} || ($branch ne "-" && !CLI::Git::isbranch($branch));
+
+if($branch eq "-") {
+    $branch = CLI::Git::configget("cli.branchswitch.lastbranch", $CLI::Git::CONFIGLOCAL);
+}
+
+CLI::Git::configset("cli.branchswitch.lastbranch", CLI::Git::branch(), $CLI::Git::CONFIGLOCAL);
+
+CLI::run(["git", "checkout", $branch]);

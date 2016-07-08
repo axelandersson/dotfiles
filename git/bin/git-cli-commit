@@ -1,0 +1,17 @@
+#!/usr/bin/perl -w
+
+use strict;
+use CLI;
+use CLI::Git;
+
+my $options = CLI::options("amend");
+
+CLI::usage("[--amend]") if $options->{"help"};
+
+my @flags;
+
+if($options->{"amend"}) {
+    push(@flags, "--amend");
+}
+
+CLI::run(["git", "commit", "--edit", "--verbose", @flags]);

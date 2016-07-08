@@ -1,0 +1,11 @@
+#!/usr/bin/perl -w
+
+use strict;
+use CLI;
+use CLI::Git;
+
+my $options = CLI::options();
+
+CLI::usage() if $options->{"help"};
+
+CLI::run(["git", "status"]);

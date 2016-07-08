@@ -2,10 +2,13 @@
 
 use strict;
 use CLI;
+use CLI::File;
 
-CLI::usage("<file> [<file> ...]") unless @ARGV;
+my @files = @ARGV;
 
-for my $path (@ARGV) {
+CLI::usage("<file> [<file> ...]") if @files == 0;
+
+for my $path (@files) {
     lsdump($path);
 }
 
@@ -14,20 +17,20 @@ for my $path (@ARGV) {
 sub lsdump {
     my $path = shift;
 
-    if(! -e $path) {
+    if(!CLI::File::isfile($path)) {
         CLI::error("$path: No such file or directory");
         return;
     }
 
     printcommand("lsdump", [CLI::absolutepath($path)]);
 
-    if(CLI::can_run("file")) {
+    if(CLI::canrun("file")) {
         my @output = CLI::run(["file", "--brief", $path]);
 
         printcommand("file", \@output);
     }
 
-    if(CLI::can_run("du")) {
+    if(CLI::canrun("du")) {
         my @output = CLI::run(["du", "-hs", $path]);
 
         foreach my $line (@output) {
@@ -37,13 +40,13 @@ sub lsdump {
         printcommand("du", \@output);
     }
 
-    if(CLI::can_run("stat")) {
+    if(CLI::canrun("stat")) {
         my @output = CLI::run(["stat", "-x", $path]);
 
         printcommand("stat", \@output);
     }
 
-    if(CLI::can_run("xattr")) {
+    if(CLI::canrun("xattr")) {
         my @output = CLI::run(["xattr", "-lx", $path]);
 
         printcommand("xattr", \@output);
@@ -52,7 +55,8 @@ sub lsdump {
 
         if($quarantine) {
             if($quarantine =~ /^(.+?);(.+?);(.+?);(.+?)$/) {
-                my @result = CLI::run(["sqlite3", "-list", "-noheader", "-separator", ";", "$CLI::HOME/Library/Preferences/com.apple.LaunchServices.QuarantineEventsV2", "select LSQuarantineAgentName, LSQuarantineDataURLString, datetime(LSQuarantineTimeStamp + 978307200, 'unixepoch') from LSQuarantineEvent where LSQuarantineEventIdentifier = '$4';"]);
+                my $databasepath = CLI::pathbyappendingpathcomponents(CLI::homepath(), "Library", "Preferences", "com.apple.LaunchServices.QuarantineEventsV2");
+                my @result = CLI::run(["sqlite3", "-list", "-noheader", "-separator", ";", $databasepath, "select LSQuarantineAgentName, LSQuarantineDataURLString, datetime(LSQuarantineTimeStamp + 978307200, 'unixepoch') from LSQuarantineEvent where LSQuarantineEventIdentifier = '$4';"]);
 
                 foreach my $line (@result) {
                     if($line =~ /^(.+?);(.+?);(.+?)$/) {
@@ -63,7 +67,7 @@ sub lsdump {
         }
     }
 
-    if(CLI::can_run("hfsdata")) {
+    if(CLI::canrun("hfsdata")) {
         my $type = CLI::run(["hfsdata", "-T", $path]) || "";
         my $creator = CLI::run(["hfsdata", "-C", $path]) || "";
         my $kind  = CLI::run(["hfsdata", "-k", $path]) || "";

@@ -33,11 +33,11 @@ function cd() {
     fi
 }
 
-function clangdefines() {
+function clang-defines() {
     clang -dM -E - </dev/null
 }
 
-function clangflags() {
+function clang-flags() {
     clang "$@" -### -x c -o /dev/null - </dev/null 2>&1 | grep -v "^(Apple LLVM|Target|Thread)" | replace 's/^ //g' | replace 's/"//g'
 }
 
@@ -90,22 +90,22 @@ function ffx() {
 
 function grep() {
     if [ -x "$(which pcre2grep 2>/dev/null)" ]; then
-        command pcre2grep --buffer-size=1048576 --color=auto --binary-files=without-match $@
+        command pcre2grep --buffer-size=1048576 --color=auto --binary-files=without-match "$@"
     else
-        command grep --extended-regexp --color=auto --binary-files=without-match $@
+        command grep --extended-regexp --color=auto --binary-files=without-match "$@"
     fi
 }
 
 function grepi() {
-    grep --ignore-case $@
+    grep --ignore-case "$@"
 }
 
 function grepr() {
-    grep --recursive $@
+    grep --recursive "$@"
 }
 
 function grepri() {
-    grep --recursive --ignore-case $@
+    grep --recursive --ignore-case "$@"
 }
 
 function grepar() {
@@ -119,9 +119,9 @@ function grepar() {
 
 function grepcode() {
     if [ -x "$(which pcre2grep 2>/dev/null)" ]; then
-        command pcre2grep --buffer-size=1048576 --color=auto --recursive --with-filename --line-number --binary-files=without-match --exclude-dir=.svn --exclude-dir=.git --include='\.(c|h|pch|m|mm|swift|cpp|hpp|cs|java|rb|pl|py|lua|sh|js)$' $@
+        command pcre2grep --buffer-size=1048576 --color=auto --recursive --with-filename --line-number --binary-files=without-match --exclude-dir=.svn --exclude-dir=.git --include='\.(c|h|pch|m|mm|swift|cpp|hpp|cs|java|rb|pl|py|lua|sh|js)$' "$@"
     else
-        command grep --extended-regexp --color=auto --recursive --with-filename --line-number --binary-files=without-match --exclude-dir=.svn --exclude-dir=.git --include='*.c' --include='*.h' --include='*.pch' --include='*.m' --include='*.mm' --include='*.swift' --include='*.cpp' --include='*.hpp' --include='*.cs' --include='*.java' --include='*.rb' --include='*.pl' --include='*.py' --include='*.lua' --include='*.sh' --include='*.js' $@
+        command grep --extended-regexp --color=auto --recursive --with-filename --line-number --binary-files=without-match --exclude-dir=.svn --exclude-dir=.git --include='*.c' --include='*.h' --include='*.pch' --include='*.m' --include='*.mm' --include='*.swift' --include='*.cpp' --include='*.hpp' --include='*.cs' --include='*.java' --include='*.rb' --include='*.pl' --include='*.py' --include='*.lua' --include='*.sh' --include='*.js' "$@"
     fi
 }
 
@@ -239,5 +239,5 @@ function ql() {
         return
     fi
 
-    qlmanage -p $@ >/dev/null 2>&1 &
+    qlmanage -p "$@" >/dev/null 2>&1 &
 }

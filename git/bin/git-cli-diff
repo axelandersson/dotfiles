@@ -1,0 +1,32 @@
+#!/usr/bin/perl -w
+
+use strict;
+use CLI;
+use CLI::Git;
+
+my $options = CLI::options("raw", "staged", "committed", "tool");
+my $file = shift @ARGV;
+
+CLI::usage("[--raw|--staged|--committed] [--tool]") if $options->{"help"};
+
+my %logoptions;
+
+if($options->{"raw"}) {
+    $logoptions{"raw"} = 1;
+}
+
+if($options->{"staged"}) {
+    $logoptions{"staged"} = 1;
+}
+
+if($options->{"committed"}) {
+    $logoptions{"branch"} = CLI::Git::remotebranch() . "..HEAD";
+}
+
+if($file) {
+    $logoptions{"file"} = $file;
+}
+
+my @output = CLI::Git::diff(\%logoptions);
+
+CLI::Git::runpager(\@output);

@@ -1,0 +1,240 @@
+#!/usr/bin/perl -w
+
+use strict;
+use CLI;
+use CLI::Git;
+
+my $COMPLETIONANYFILES = "anyfiles";
+my $COMPLETIONUNTRACKEDFILES = "untrackedfiles";
+my $COMPLETIONTRACKEDFILES = "trackedfiles";
+my $COMPLETIONTRACKEDFILEANDBRANCH = "trackedfileandbranch";
+my $COMPLETIONCOMMIT = "commit";
+my $COMPLETIONBRANCH = "branch";
+my $COMPLETIONLOGFILTER = "logfilter";
+
+my @SECTIONS = (
+    { "name" => "Config",
+      "commands" => [ { "name" => "config-list", "alias" => "cl",
+                        "command" => "cli-config-list" },
+                      { "name" => "config-vi", "alias" => "cv",
+                        "command" => "cli-config-vi" }
+                    ] },
+    { "name" => "Remote",
+      "commands" => [ { "name" => "update", "alias" => "u",
+                        "command" => "cli-update" },
+                      { "name" => "push", "alias" => "p",
+                        "command" => "cli-push" }
+                    ] },
+    { "name" => "Index",
+      "commands" => [ { "name" => "status", "alias" => "s",
+                        "command" => "cli-status" },
+                      { "name" => "stage", "alias" => "a",
+                        "command" => "cli-stage",
+                        "completion" => $COMPLETIONUNTRACKEDFILES },
+                      { "name" => "stage-all", "alias" => "aa",
+                        "command" => "cli-stage", "arguments" => [ "--all" ] },
+                      { "name" => "unstage", "alias" => "r",
+                        "command" => "cli-unstage",
+                        "completion" => $COMPLETIONTRACKEDFILES }
+                    ] },
+    { "name" => "Local",
+      "commands" => [ { "name" => "commit", "alias" => "c",
+                        "command" => "cli-commit" },
+                      { "name" => "commit-amend", "alias" => "ca",
+                        "command" => "cli-commit", "arguments" => [ "--amend" ] },
+                      { "name" => "discard", "alias" => "h",
+                        "command" => "cli-discard", "arguments" => [ "--all" ] },
+                      { "name" => "discard-file", "alias" => "hf",
+                        "command" => "cli-discard",
+                        "completion" => $COMPLETIONANYFILES },
+                      { "name" => "discard-committed", "alias" => "hc",
+                        "command" => "cli-discard", "arguments" => [ "--committed" ] }
+                    ] },
+    { "name" => "Log",
+      "commands" => [ { "name" => "log", "alias" => "l",
+                        "command" => "cli-log",
+                        "completion" => $COMPLETIONLOGFILTER },
+                      { "name" => "log-long", "alias" => "ll",
+                        "command" => "cli-log", "arguments" => [ "--long" ],
+                        "completion" => $COMPLETIONLOGFILTER },
+                      { "name" => "log-committed", "alias" => "lc",
+                        "command" => "cli-log", "arguments" => [ "--committed" ] },
+                      { "name" => "log-long-committed", "alias" => "llc",
+                        "command" => "cli-log", "arguments" => [ "--long", "--committed" ] },
+                      { "name" => "log-branch", "alias" => "lb",
+                        "command" => "cli-log-branch" },
+                      { "name" => "log-graph", "alias" => "lg",
+                        "command" => "cli-log-graph",
+                        "completion" => $COMPLETIONLOGFILTER }
+                    ] },
+    { "name" => "Diff",
+      "commands" => [ { "name" => "diff", "alias" => "d",
+                        "command" => "cli-diff" },
+                      { "name" => "diff-raw", "alias" => "dr",
+                        "command" => "cli-diff", "arguments" => [ "--raw" ] },
+                      { "name" => "diff-staged", "alias" => "ds",
+                        "command" => "cli-diff", "arguments" => [ "--staged" ] },
+                      { "name" => "diff-committed", "alias" => "dc",
+                        "command" => "cli-diff", "arguments" => [ "--committed" ] }
+                    ] },
+    { "name" => "Difftool",
+      "commands" => [ { "name" => "difftool", "alias" => "dt",
+                        "command" => "cli-diff", "arguments" => [ "--tool" ] },
+                      { "name" => "difftool-staged", "alias" => "dts",
+                        "command" => "cli-diff", "arguments" => [ "--tool", "--staged" ] },
+                      { "name" => "difftool-committed", "alias" => "dtc",
+                        "command" => "cli-diff", "arguments" => [ "--tool", "--committed" ] }
+                    ] },
+    { "name" => "Print",
+      "commands" => [ { "name" => "print-commit", "alias" => "pc",
+                        "command" => "cli-print-commit",
+                        "completion" => $COMPLETIONCOMMIT },
+                      { "name" => "print-commit-long", "alias" => "pcl",
+                        "command" => "cli-print-commit", "arguments" => [ "--long" ],
+                        "completion" => $COMPLETIONCOMMIT },
+                      { "name" => "print-file", "alias" => "pf",
+                        "command" => "cli-print-file",
+                        "completion" => $COMPLETIONTRACKEDFILEANDBRANCH },
+                      { "name" => "print-file-raw", "alias" => "pfr",
+                        "command" => "cli-print-file", "arguments" => [ "--raw" ],
+                        "completion" => $COMPLETIONTRACKEDFILEANDBRANCH },
+                      { "name" => "print-file-blame", "alias" => "pfb",
+                        "command" => "cli-print-file", "arguments" => [ "--blame" ],
+                        "completion" => $COMPLETIONTRACKEDFILEANDBRANCH }
+                    ] },
+    { "name" => "Branch",
+      "commands" => [ { "name" => "branch", "alias" => "b",
+                        "command" => "cli-branch" },
+                      { "name" => "branch-list", "alias" => "bl",
+                        "command" => "cli-branch-list" },
+                      { "name" => "branch-switch", "alias" => "bs",
+                        "command" => "cli-branch-switch",
+                        "completion" => $COMPLETIONBRANCH },
+                      { "name" => "branch-new", "alias" => "bn",
+                        "command" => "cli-branch-new",
+                        "completion" => $COMPLETIONBRANCH },
+                      { "name" => "branch-delete", "alias" => "bd",
+                        "command" => "cli-branch-delete",
+                        "completion" => $COMPLETIONBRANCH },
+                      { "name" => "branch-commit", "alias" => "bc",
+                        "command" => "cli-branch-commit",
+                        "completion" => $COMPLETIONCOMMIT }
+                    ] },
+    { "name" => "Merge",
+      "commands" => [ { "name" => "merge", "alias" => "m",
+                        "command" => "cli-merge",
+                        "completion" => $COMPLETIONBRANCH },
+                      { "name" => "merge-origin", "alias" => "mo",
+                        "command" => "cli-merge", "arguments" => [ "--origin" ],
+                        "completion" => $COMPLETIONBRANCH },
+                      { "name" => "merge-revert", "alias" => "mr",
+                        "command" => "cli-merge-revert",
+                        "completion" => $COMPLETIONCOMMIT },
+                      { "name" => "merge-cherrypick", "alias" => "mc",
+                        "command" => "cli-merge-cherrypick",
+                        "completion" => $COMPLETIONCOMMIT }
+                    ] }
+);
+
+my $options = CLI::options("commands", "describe", "completion");
+
+if($options->{"commands"} || $options->{"help"}) {
+    commands();
+}
+elsif($options->{"describe"}) {
+    describe();
+}
+elsif($options->{"completion"}) {
+    completion();
+}
+else {
+    execute();
+}
+
+
+
+sub commands {
+    foreach my $section (@SECTIONS) {
+        print CLI::justifiedstring($section->{"name"}, 17);
+
+        foreach my $command (@{$section->{"commands"}}) {
+            print " ";
+            print CLI::coloredstring($command->{"alias"}, "blue");
+            print "=";
+            print CLI::coloredstring($command->{"name"}, "blue");
+        }
+
+        print "\n";
+    }
+}
+
+sub describe {
+    my $argument = shift @ARGV;
+
+    CLI::assertdefined($argument, "Command not defined");
+
+    my $command = commandforaliasorname($argument);
+
+    CLI::assertdefined($command, "Command \"$argument\" not found");
+
+    println "Name: $command->{name}";
+    println "Alias: $command->{alias}";
+    println "Command: $command->{command}";
+
+    CLI::run(["git", $command->{"command"}, "-h"], { "assertonerror" => 0, "showoutput" => 1, "showerrors" => 1 });
+}
+
+sub completion {
+    my $argument = shift @ARGV;
+
+    if($argument) {
+        my $command = commandforaliasorname($argument);
+
+        CLI::assertdefined($command, "Command \"$argument\" not found");
+
+        if($command->{"completion"}) {
+            println $command->{"completion"};
+        }
+    } else {
+        foreach my $section (@SECTIONS) {
+            foreach my $command (@{$section->{"commands"}}) {
+                println $command->{"name"};
+                println $command->{"alias"};
+            }
+        }
+    }
+}
+
+sub execute {
+    my $argument = shift @ARGV;
+
+    CLI::assertdefined($argument, "Command not defined");
+
+    my $command = commandforaliasorname($argument);
+
+    CLI::assertdefined($command, "Command \"$argument\" not found");
+
+    my @arguments;
+
+    if($command->{"arguments"}) {
+        push(@arguments, @{$command->{"arguments"}});
+    }
+
+    push(@arguments, @ARGV);
+
+    CLI::run(["git", $command->{"command"}, @arguments], { "assertonerror" => 0, "showerrors" => 1 });
+}
+
+sub commandforaliasorname {
+    my $argument = shift;
+
+    foreach my $section (@SECTIONS) {
+        foreach my $command (@{$section->{"commands"}}) {
+            if($command->{"alias"} eq $argument || $command->{"name"} eq $argument) {
+                return $command;
+            }
+        }
+    }
+
+    return undef;
+}

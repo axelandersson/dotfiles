@@ -1,0 +1,24 @@
+#!/usr/bin/perl -w
+
+use strict;
+use CLI;
+use CLI::Git;
+
+my $options = CLI::options();
+
+CLI::usage() if $options->{"help"} || @ARGV > 0;
+
+my @branches = CLI::Git::branches();
+my @output;
+
+foreach my $branch (@branches) {
+    my $remotebranch = CLI::Git::remotebranch($branch);
+    
+    if($remotebranch) {
+        push(@output, CLI::Git::refstring($branch) . " -> " . CLI::Git::refstring($remotebranch));
+    } else {
+        push(@output, CLI::Git::refstring($branch));
+    }
+}
+
+CLI::Git::runpager(\@output);

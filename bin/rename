@@ -2,12 +2,14 @@
 
 use strict;
 use CLI;
+use CLI::File;
 use Text::Autoformat;
 
 my $options = CLI::options("dryrun|n");
 my $command = shift @ARGV;
+my @files = @ARGV;
 
-CLI::usage("[--dryrun|-n] <command> <file> [<file> ...]", "Commands: 's/foo/bar/g' 'uppercase' 'lowercase' 'titlecase'") if $options->{"help"} || !$command || @ARGV == 0;
+CLI::usage("[--dryrun|-n] <command> <file> [<file> ...]", "Commands: 's/foo/bar/g' 'uppercase' 'lowercase' 'titlecase'") if $options->{"help"} || !$command || @files == 0;
 
 my $regexp;
 my $autoformatcase;
@@ -25,9 +27,29 @@ elsif($command eq "titlecase" || $command eq "title" || $command eq "tc") {
     $autoformatcase = "highlight";
 }
 
-CLI::assert_true($regexp || $autoformatcase, "Command \"$command\" not recognized");
+CLI::asserttrue($regexp || $autoformatcase, "Command \"$command\" not recognized");
 
-foreach my $path (@ARGV) {
+foreach my $path (@files) {
+    my $newpath = renamedpath($path, $regexp, $autoformatcase);
+
+    if($path eq $newpath) {
+        println "$path -> $newpath: No change";
+    }
+    elsif($options->{"dryrun"}) {
+        println "$path -> $newpath: OK (Dry run)";
+    }
+    elsif(CLI::File::move($path, $newpath)) {
+        println "$path -> $newpath: OK";
+    }
+}
+
+
+
+sub renamedpath {
+    my $path = shift;
+    my $regexp = shift;
+    my $autoformatcase = shift;
+
     my $olddirectory = CLI::pathbydeletinglastpathcomponent($path);
     my $oldname = CLI::lastpathcomponent($path);
     my $newname;
@@ -37,27 +59,14 @@ foreach my $path (@ARGV) {
         eval("\$newname =~ $regexp;");
     }
     elsif($autoformatcase) {
-        $newname = autoformat($oldname, {case => $autoformatcase});
+        $newname = autoformat($oldname, { "case" => $autoformatcase });
         $newname =~ s/\s+$//s;
         $newname =~ s/(\.[\w\d]+)$/lc($1)/ei;
     }
 
-    my $newpath = ($olddirectory eq ".") ? $newname : "$olddirectory/$newname";
-
-    if($path eq $newpath) {
-        print "\"$path\" -> \"$newpath\": No change\n";
-        next;
+    if($olddirectory eq ".") {
+        return $newname;
+    } else {
+        return CLI::pathbyappendingpathcomponents($olddirectory, $newname);
     }
-
-    if($options->{"dryrun"}) {
-        print "\"$path\" -> \"$newpath\": OK (Dry run)\n";
-        next;
-    }
-
-    if(rename($path, $newpath)) {
-        print "\"$path\" -> \"$newpath\": OK\n";
-        next;
-    }
-
-    print "\"$path\" -> \"$newpath\": $!\n";
 }

@@ -5,7 +5,7 @@ package CLI;
 use strict;
 use File::Basename;
 use File::Spec;
-use Getopt::Long;
+use Getopt::Long qw(:config pass_through);
 use IPC::Run3;
 use POSIX;
 use Term::ReadKey;
@@ -13,35 +13,35 @@ use Term::ANSIColor;
 
 our @ISA = qw(Exporter);
 our @EXPORT = qw(println);
-
-our $HOME = $ENV{"HOME"};
-our $COMMAND = basename($0);
+our $DEBUG = 0;
 
 
 
 # options
 
 sub options {
-    my @definitions = @_;
+    my @specifiers = @_;
 
-    push(@definitions, "help|h|?");
+    push(@specifiers, "help|h|?");
 
     my %options;
+    my $result = GetOptions(\%options, @specifiers);
 
-    GetOptions(\%options, @definitions);
+    asserttrue($result, $!);
 
     return \%options;
 }
 
 
+
 # run
 
-sub can_run {
+sub canrun {
     my $command = shift;
 
-    assert_parameter($command);
+    assertparameter($command);
 
-    my $path = CLI::run("which $command");
+    my $path = run("which $command");
 
     return $path ? 1 : 0;
 }
@@ -52,25 +52,32 @@ sub run {
     my $command = shift;
     my $options = shift;
 
-    assert_parameter($command);
+    assertparameter($command);
 
     my $wantarray = wantarray() || 0;
     my $wantscalar = (defined(wantarray()) && !$wantarray) || 0;
 
     my $assertonerror = defined($options->{"assertonerror"}) ? $options->{"assertonerror"} : (!$wantarray && !$wantscalar);
     my $input = $options->{"input"};
-    my $showcommand = defined($options->{"showcommand"}) ? $options->{"showcommand"} : 0;
+    my $rawinput = $options->{"rawinput"};
+    my $showcommand = defined($options->{"showcommand"}) ? $options->{"showcommand"} : $DEBUG;
     my $showoutput = defined($options->{"showoutput"}) ? $options->{"showoutput"} : 0;
     my $showerrors = defined($options->{"showerrors"}) ? $options->{"showerrors"} : 0;
 
+    my $commandstring = (ref($command) eq "ARRAY") ? join(" ", @{$command}) : $command;
     my $inputref;
     my $outputref;
     my $errorsref = [];
 
     if($input) {
         foreach my $line (@{$input}) {
+            $line ||= "";
+
             push(@{$inputref}, "$line\n");
         }
+    }
+    elsif($rawinput) {
+        push(@{$inputref}, $rawinput);
     }
 
     if($showoutput || ($wantarray || $wantscalar)) {
@@ -78,15 +85,15 @@ sub run {
     }
 
     if($showcommand) {
-        println $command;
+        println($commandstring);
     }
 
     run3($command, $inputref, $outputref, $errorsref, { "return_if_system_error" => 1 });
 
     if($assertonerror) {
-        assert_false($? == -1, "Command \"$command\" failed with error \"$!\"");
+        assertfalse($? == -1, "Command \"$commandstring\" failed with error \"$!\"");
     } else {
-        return if $? == -1;
+        return undef if $? == -1;
     }
 
     if($showerrors) {
@@ -110,9 +117,9 @@ sub run {
             }
         }
 
-        assert_true($status == 0, "Command \"$command\" failed with status $status");
+        asserttrue($status == 0, "Command \"$commandstring\" failed with status $status");
     } else {
-        return unless $status == 0;
+        return undef unless $status == 0;
     }
 
     if($wantarray) {
@@ -136,14 +143,49 @@ sub run {
     }
 }
 
+sub runpager {
+    my $input = shift;
+    my $options = shift;
+
+    my $pager = $options->{"pager"} || $ENV{"PAGER"};
+
+    run([$pager], { "input" => $input });
+}
+
 
 
 # terminal
 
+sub ask {
+    my $prefix = shift;
+
+    print $prefix, ": ";
+
+    my $string = <>;
+
+    chomp($string);
+
+    return $string;
+}
+
+sub askwithoutecho {
+    my $prefix = shift;
+
+    ReadMode('noecho');
+
+    my $string = ask($prefix);
+
+    ReadMode(0);
+
+    print "\n";
+
+    return $string;
+}
+
 sub stringwidth {
     my $string = shift;
 
-    assert_parameter($string);
+    assertparameter($string);
 
     return length(Term::ANSIColor::colorstrip($string));
 }
@@ -156,7 +198,7 @@ sub terminalwidthstring {
     my $string = shift;
     my $offset = shift || 0;
 
-    assert_parameter($string);
+    assertparameter($string);
 
     my $width = terminalwidth() - $offset;
 
@@ -175,7 +217,7 @@ sub coloredstring {
     my $string = shift;
     my $format = shift || "";
 
-    assert_parameter($string);
+    assertparameter($string);
 
     sub colornames {
         my @names;
@@ -287,12 +329,41 @@ sub coloredstring {
 
 
 
+# array
+
+sub trimmedarray {
+    my @array = @_;
+
+    my $firstemptyindex;
+    my $lastemptyindex;
+
+    for(my $i = 0; $i < @array; $i++) {
+        my $isempty = ($array[$i] eq "" || trimmedstring($array[$i]) eq "") ? 1 : 0;
+
+        if(!defined($firstemptyindex) && !$isempty) {
+            $firstemptyindex = $i;
+        }
+
+        if(!$isempty) {
+            $lastemptyindex = $i;
+        }
+    }
+
+    if(defined($firstemptyindex) && defined($lastemptyindex)) {
+        return splice(@array, $firstemptyindex, $lastemptyindex - $firstemptyindex + 1);
+    } else {
+        return ();
+    }
+}
+
+
+
 # string
 
 sub trimmedstring {
     my $string = shift;
 
-    assert_parameter($string);
+    assertparameter($string);
 
     $string =~ s/(^\s+|\s+$)//g;
 
@@ -304,8 +375,8 @@ sub justifiedstring {
     my $minwidth = shift;
     my $maxwidth = shift || -1;
 
-    assert_parameter($string);
-    assert_parameter($minwidth);
+    assertparameter($string);
+    assertparameter($minwidth);
 
     if($minwidth > 0) {
         return sprintf("%-*.*s", $minwidth, $maxwidth, $string);
@@ -319,8 +390,8 @@ sub justifiedstring {
 # time
 
 sub formattedtime {
-    my $format = shift || "%Y-%m-%d %H:%M:%S";;
     my $time = shift || time();
+    my $format = shift || "%Y-%m-%d %H:%M:%S";
 
     return POSIX::strftime($format, localtime($time));
 }
@@ -329,10 +400,22 @@ sub formattedtime {
 
 # path
 
+sub homepath {
+    return $ENV{"HOME"};
+}
+
+sub commandpath {
+    return absolutepath($0);
+}
+
+sub commandname {
+    return lastpathcomponent(commandpath());
+}
+
 sub absolutepath {
     my $path = shift;
 
-    assert_parameter($path);
+    assertparameter($path);
 
     return File::Spec->rel2abs($path);
 }
@@ -340,7 +423,7 @@ sub absolutepath {
 sub lastpathcomponent {
     my $path = shift;
 
-    assert_parameter($path);
+    assertparameter($path);
 
     return basename($path);
 }
@@ -348,9 +431,18 @@ sub lastpathcomponent {
 sub pathbydeletinglastpathcomponent {
     my $path = shift;
 
-    assert_parameter($path);
+    assertparameter($path);
 
     return dirname($path);
+}
+
+sub pathbyappendingpathcomponents {
+    my $path = shift;
+    my @components = @_;
+
+    assertparameter($path);
+
+    return pathbyjoiningpathcomponents(pathcomponents($path), @components);
 }
 
 sub pathbyjoiningpathcomponents {
@@ -359,43 +451,82 @@ sub pathbyjoiningpathcomponents {
     return join("/", @components);
 }
 
+sub pathcomponents {
+    my $path = shift;
 
+    assertparameter($path);
 
-# verification
+    return split(/\//, $path);
+}
 
-sub isfile {
-    my $file = shift;
+sub pathextension {
+    my $path = shift;
 
-    return 0 unless $file;
+    assertparameter($path);
 
-    return 1;
+    if($path =~ /^(.+)\.(\w+)$/) {
+        return $2;
+    } else {
+        return $path;
+    }
+}
+
+sub pathbydeletingpathextension {
+    my $path = shift;
+
+    assertparameter($path);
+
+    if($path =~ /^(.+)\.(\w+)$/) {
+        return $1;
+    } else {
+        return $path;
+    }
+}
+
+sub pathbyappendingpathextensions {
+    my $path = shift;
+    my @extensions = @_;
+
+    assertparameter($path);
+
+    my $extension = join(".", @extensions);
+
+    if($path =~ /\.$/) {
+        return $path . $extension;
+    } else {
+        return $path . "." . $extension;
+    }
 }
 
 
 
 # assert
 
-sub assert_true {
-    fatal($_[1]) unless $_[0];
+sub asserttrue {
+    fatal($_[1] . " (" . _assertcallsitestring() . ")") unless $_[0];
 }
 
-sub assert_false {
-    fatal($_[1]) if $_[0];
+sub assertfalse {
+    fatal($_[1] . " (" . _assertcallsitestring() . ")") if $_[0];
 }
 
-sub assert_defined {
-    fatal($_[1]) unless defined($_[0]);
+sub assertdefined {
+    fatal($_[1] . " (" . _assertcallsitestring() . ")") unless defined($_[0]);
 }
 
-sub assert_undefined {
-    fatal($_[1]) if defined($_[0]);
+sub assertundefined {
+    fatal($_[1] . " (" . _assertcallsitestring() . ")") if defined($_[0]);
 }
 
-sub assert_parameter {
-    fatal("Missing parameter at " . _assert_callsitestring()) unless defined($_[0]);
+sub assertparameter {
+    assertdefined($_[0], "Missing parameter");
 }
 
-sub _assert_callsitestring {
+sub assertcanrun {
+    asserttrue(canrun($_[0]), "Can't run \"$_[0]\"");
+}
+
+sub _assertcallsitestring {
     my @callsite = caller(1);
 
     return $callsite[1] . ":" . $callsite[2];
@@ -413,7 +544,8 @@ sub fatal {
     my $message = shift;
 
     chomp($message);
-    println "$COMMAND: $message";
+
+    println commandname(), ": ", $message;
 
     exit(1);
 }
@@ -422,20 +554,23 @@ sub error {
     my $message = shift;
 
     chomp($message);
-    println "$COMMAND: $message";
+
+    println commandname(), ": ", $message;
 }
 
 sub usage {
     my @messages = @_;
 
-    my $prefix = "Usage: $COMMAND ";
+    my $message = shift(@messages);
 
-    foreach my $message (@messages) {
-        chomp($message);
+    if($message) {
+        println "Usage: ", commandname(), " ", $message;
+    } else {
+        println "Usage: ", commandname();
+    }
 
-        println $prefix, $message;
-
-        $prefix = "";
+    foreach my $eachmessage (@messages) {
+        println $eachmessage;
     }
 
     exit(2);

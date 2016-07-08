@@ -1,0 +1,15 @@
+#!/usr/bin/perl -w
+
+use strict;
+use CLI;
+use CLI::Git;
+
+my $options = CLI::options();
+
+CLI::usage() if $options->{"help"};
+
+if(CLI::canrun("git-up")) {
+    CLI::run(["git", "up"]);
+} else {
+    CLI::run(["git", "pull", "--rebase", "--all"]);
+}

@@ -1,0 +1,88 @@
+#!/usr/bin/perl -w
+
+use strict;
+use CLI;
+use CLI::Git;
+
+my $options = CLI::options("long", "committed", "all|a");
+
+CLI::usage("[--long] [--committed] [-a|--all] [<maxcount>] [@<author>] [+|-<time>] [<pattern>] [<branch>] [<file>]") if $options->{"help"};
+
+my %logoptions;
+my $maxcount = 5;
+
+foreach my $arg (@ARGV) {
+    if($arg =~ /^\d+$/ && $arg > 0 && $arg <= 1000) {
+        $maxcount = $arg;
+    }
+    elsif($arg =~ /^@(.+?)?$/) {
+        if(!$1 || $1 eq "me") {
+            $logoptions{"author"} = CLI::Git::username();
+        } else {
+            $logoptions{"author"} = $1;
+        }
+    }
+    elsif($arg =~ /^(\-|\+)?(\d+)(h|d|w|m|y)$/) {
+        $logoptions{"time"} = $arg;
+        $maxcount = undef;
+    }
+    else {
+        if(CLI::Git::isbranch($arg)) {
+            $logoptions{"branch"} = $arg;
+        }
+        elsif(-e $arg || $arg =~ /\//) {
+            $logoptions{"file"} = $arg;
+        }
+        else {
+            if($arg !~ /[A-Z]/) {
+                $logoptions{"grepignorecase"} = 1;
+            }
+
+            $logoptions{"grepfilter"} = $arg;
+        }
+    }
+}
+
+if($maxcount) {
+    $logoptions{"maxcount"} = $maxcount;
+}
+
+if($options->{"long"}) {
+    $logoptions{"patch"} = 1;
+} else {
+    $logoptions{"stat"} = 1;
+}
+
+if($options->{"committed"}) {
+    $logoptions{"branch"} = CLI::Git::remotebranch() . "..HEAD";
+}
+
+my @input = CLI::Git::log(\%logoptions);
+my @output;
+
+foreach my $data (@input) {
+    push(@output, "") if @output > 0;
+
+    my $authorstring = CLI::Git::authorstring($data->{"author"});
+
+    if($data->{"author"} ne $data->{"committer"}) {
+        $authorstring .= " (via " . CLI::Git::authorstring($data->{"committer"}) . ")";
+    }
+
+    push(@output, $authorstring . $data->{"refs"} . " " . CLI::Git::datestring($data->{"author-relative"}));
+    push(@output, CLI::Git::commitstring($data->{"commit"}) . " " . CLI::Git::subjectstring($data->{"subject"}));
+
+    foreach my $line (@{$data->{"body"}}) {
+        if($line ne "") {
+            push(@output, CLI::Git::bodystring($line));
+        }
+    }
+
+    if($options->{"long"}) {
+        push(@output, @{$data->{"patch"}});
+    } else {
+        push(@output, @{$data->{"stat"}});
+    }
+}
+
+CLI::Git::runpager(\@output);

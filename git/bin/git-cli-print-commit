@@ -1,0 +1,43 @@
+#!/usr/bin/perl -w
+
+use strict;
+use CLI;
+use CLI::Git;
+
+my $options = CLI::options("long");
+my $commit = shift @ARGV;
+
+CLI::usage("[--long] <commit>") if $options->{"help"} || !CLI::Git::iscommit($commit);
+
+my %showoptions;
+
+if($options->{"long"}) {
+    $showoptions{"patch"} = 1;
+} else {
+    $showoptions{"stat"} = 1;
+}
+
+my $data = CLI::Git::showcommit($commit, \%showoptions);
+my @output;
+
+push(@output, CLI::justifiedstring("Author: ", -12) . CLI::Git::authorstring($data->{"author"}) . " " . CLI::Git::emailstring($data->{"author-email"}));
+push(@output, CLI::justifiedstring("Date: ", -12) . CLI::Git::datestring($data->{"author-date"}));
+push(@output, CLI::justifiedstring("Committer: ", -12) . CLI::Git::authorstring($data->{"committer"}) . " " . CLI::Git::emailstring($data->{"committer-email"}));
+push(@output, CLI::justifiedstring("Date: ", -12) . CLI::Git::datestring($data->{"committer-date"}));
+push(@output, CLI::justifiedstring("Refs: ", -12) . $data->{"refs"});
+push(@output, CLI::justifiedstring("Commit: ", -12) . CLI::Git::commitstring($data->{"commit"}));
+push(@output, CLI::justifiedstring("Parents: ", -12) . CLI::Git::commitstring($data->{"parents"}));
+push(@output, CLI::justifiedstring("Tree: ", -12) . CLI::Git::commitstring($data->{"tree"}));
+push(@output, CLI::justifiedstring("Subject: ", -12) . CLI::Git::subjectstring($data->{"subject"}));
+
+foreach my $line (@{$data->{"body"}}) {
+    push(@output, CLI::Git::bodystring($line));
+}
+
+if($options->{"long"}) {
+    push(@output, @{$data->{"patch"}});
+} else {
+    push(@output, @{$data->{"stat"}});
+}
+
+CLI::Git::runpager(\@output);

@@ -3,38 +3,150 @@
 package CLI::Git;
 
 use strict;
+use feature "state";
+
+
+
+# environment
+
+sub gitdirectory {
+    our $gitdirectory;
+
+    if(!$gitdirectory) {
+        $gitdirectory = CLI::run(["git", "rev-parse", "--git-dir"]);
+    }
+
+    return $gitdirectory;
+}
 
 
 
 # config
 
-sub aliases {
-    my @input = CLI::run("git config --get-regexp ^alias");
-    my %output;
+our %_CONFIG;
 
-    foreach my $line (@input) {
-        if($line =~ /^alias\.(\w+?) (.+)$/) {
-            $output{$1} = $2;
-        }
+our $CONFIGDEFAULT = "default";
+our $CONFIGSYSTEM = "system";
+our $CONFIGGLOBAL = "global";
+our $CONFIGLOCAL = "local";
+
+sub configset {
+    my $key = shift;
+    my $value = shift;
+    my $domain = shift || $CONFIGDEFAULT;
+
+    CLI::assertparameter($key);
+    CLI::assertparameter($value);
+    CLI::asserttrue($domain eq $CONFIGSYSTEM || $domain eq $CONFIGGLOBAL || $domain eq $CONFIGLOCAL || $domain eq $CONFIGDEFAULT, "Domain \"$domain\" not supported");
+
+    my @flags;
+
+    if($domain eq $CONFIGSYSTEM) {
+        push(@flags, "--system");
+    }
+    elsif($domain eq $CONFIGGLOBAL) {
+        push(@flags, "--global");
+    }
+    elsif($domain eq $CONFIGLOCAL) {
+        push(@flags, "--local");
     }
 
-    return \%output;
+    CLI::run(["git", "config", @flags, $key, $value]);
+
+    my $config = $_CONFIG{$domain};
+
+    if($config) {
+        $config->{$key} = $value;
+    }
 }
 
-sub pager {
-    return scalar(CLI::run("git config --get core.pager"));
+sub configunset {
+    my $key = shift;
+    my $domain = shift || $CONFIGDEFAULT;
+
+    CLI::assertparameter($key);
+    CLI::asserttrue($domain eq $CONFIGSYSTEM || $domain eq $CONFIGGLOBAL || $domain eq $CONFIGLOCAL || $domain eq $CONFIGDEFAULT, "Domain \"$domain\" not supported");
+
+    my @flags;
+
+    if($domain eq $CONFIGSYSTEM) {
+        push(@flags, "--system");
+    }
+    elsif($domain eq $CONFIGGLOBAL) {
+        push(@flags, "--global");
+    }
+    elsif($domain eq $CONFIGLOCAL) {
+        push(@flags, "--local");
+    }
+
+    CLI::run(["git", "config", "--unset", @flags, $key]);
+
+    my $config = $_CONFIG{$domain};
+
+    if($config) {
+        $config->{$key} = undef;
+    }
+}
+
+sub configget {
+    my $key = shift;
+    my $domain = shift || $CONFIGDEFAULT;
+
+    CLI::assertparameter($key);
+    CLI::asserttrue($domain eq $CONFIGSYSTEM || $domain eq $CONFIGGLOBAL || $domain eq $CONFIGLOCAL || $domain eq $CONFIGDEFAULT, "Domain \"$domain\" not supported");
+
+    my @flags;
+
+    if($domain eq $CONFIGSYSTEM) {
+        push(@flags, "--system");
+    }
+    elsif($domain eq $CONFIGGLOBAL) {
+        push(@flags, "--global");
+    }
+    elsif($domain eq $CONFIGLOCAL) {
+        push(@flags, "--local");
+    }
+
+    my $config = $_CONFIG{$domain};
+
+    if(!$config) {
+        $config = {};
+        $_CONFIG{$domain} = $config;
+    }
+
+    my $value = $config->{$key};
+
+    if(!$value) {
+        $value = CLI::run(["git", "config", "--get", $key]);
+        $config->{$key} = $value;
+    }
+
+    return $value;
 }
 
 sub username {
-    return scalar(CLI::run("git config --get user.name"));
+    return configget("user.name");
 }
 
 sub color {
     my $type = shift;
 
-    CLI::assert_parameter($type);
+    CLI::assertparameter($type);
 
-    return scalar(CLI::run("git config --get cli.color.$type"));
+    return configget("cli.color.$type");
+}
+
+
+
+# pager
+
+sub runpager {
+    my $input = shift;
+    my $options = shift;
+
+    my $pager = $options->{"pager"} || configget("core.pager");
+
+    CLI::run($pager, { "input" => $input });
 }
 
 
@@ -45,28 +157,28 @@ sub blame {
     my $file = shift;
     my $branch = shift;
 
-    CLI::assert_parameter($file);
-    CLI::assert_parameter($branch);
+    CLI::assertparameter($file);
+    CLI::assertparameter($branch);
 
-    my @input = CLI::run("git --no-pager blame --line-porcelain \"$branch\" \"$file\"");
+    my @input = CLI::run(["git", "--no-pager", "blame", "--line-porcelain", $branch, $file]);
     my @output;
-    my $blame = {};
+    my %data;
 
     foreach my $line (@input) {
         if($line =~ /^([a-h0-9]{6,40}) (\d+) (\d+)/) {
-            $blame->{"commit"} = $1;
+            $data{"commit"} = $1;
         }
         elsif($line =~ /^(author|author-mail|author-time|author-tz|committer|committer-mail|committer-time|committer-tz|summary|filename) (.+)$/) {
-            $blame->{$1} = $2;
+            $data{$1} = $2;
         }
         elsif($line =~ /^(previous) ([a-h0-9]{6,40}) (.*)$/) {
         }
         elsif($line =~ /^\t(.*)$/) {
-            $blame->{"line"} = $1;
+            $data{"line"} = $1;
 
-            push(@output, $blame);
+            push(@output, { %data });
 
-            $blame = {};
+            %data = ();
         }
     }
 
@@ -78,118 +190,172 @@ sub blame {
 # log
 
 sub log {
-    my $flags = shift;
-    my $path = shift;
+    my $options = shift;
 
-    my $format = "commit %h%nauthor %an%nauthor-relative %ar%nrefs %C(auto)%d%C(reset)%nsubject %s%nbody start%n%b%nbody stop%n";
-    my @input = CLI::run("git --no-pager log --pretty=tformat:'$format' " . join(" ", @{$flags}) . " $path");
+    my @flags;
+
+    if($options->{"maxcount"}) {
+        push(@flags, "--max-count", $options->{"maxcount"});
+    }
+
+    if($options->{"author"}) {
+        push(@flags, "--author", $options->{"author"});
+    }
+
+    if($options->{"time"} && $options->{"time"} =~ /^(\-|\+)?(\d+)(h|d|w|m|y)$/) {
+        my %units = ("h" => "hour", "d" => "day", "w" => "week", "m" => "month", "y" => "year");
+
+        my $flag = ($1 && $1 eq "+") ? "before" : "after";
+        my $number = $2;
+        my $unit = ($number == 1) ? $units{$3} : $units{$3} . "s";
+
+        push(@flags, "--$flag", "$number $unit ago");
+    }
+
+    if($options->{"patch"}) {
+        push(@flags, "--patch");
+    }
+
+    if($options->{"stat"}) {
+        push(@flags, "--stat");
+    }
+
+    if($options->{"grepfilter"}) {
+        push(@flags, "--perl-regexp");
+        push(@flags, "--grep", $options->{"grepfilter"});
+
+        if($options->{"grepignorecase"}) {
+            push(@flags, "--regexp-ignore-case");
+        }
+    }
+
+    if($options->{"branch"}) {
+        push(@flags, $options->{"branch"});
+    }
+
+    if($options->{"file"}) {
+        push(@flags, "--", $options->{"file"});
+    }
+
+    my $format = "commit %h%nauthor %an%nauthor-relative %ar%ncommitter %cn%ncommitter-relative %cr%nrefs %C(auto)%d%C(reset)%nsubject %s%nbody start%n%b%nbody stop%n";
+    my @input = CLI::run(["git", "--no-pager", "log", "--pretty=tformat:$format", @flags], { "assertonerror" => 1 });
+
     my @output;
-    my $log;
+    my %data;
     my @body;
     my @content;
     my $state = 0;
 
     foreach my $line (@input) {
-        if($line =~ /^(commit) (.+)$/) {
-            if($log) {
+        if($line =~ /^(commit) (.+)$/ && $state != 1) {
+            if(%data) {
                 if(@content) {
-                    my @contentcopy = @content;
-                    $log->{"content"} = \@contentcopy;
+                    if($options->{"patch"}) {
+                        $data{"patch"} = [ CLI::trimmedarray(@content) ];
+                    } else {
+                        $data{"stat"} = [ map { s/^ (.+?)$/$1/; $_; } CLI::trimmedarray(@content) ];
+                    }
+
                     @content = ();
                 }
 
-                push(@output, $log);
+                push(@output, { %data });
 
-                $log = {};
+                %data = ();
             }
 
-            $log->{$1} = $2;
+            $data{$1} = $2;
             $state = 0;
         }
-        if($line =~ /^(author|author-relative|refs|subject) (.+)$/) {
-            $log->{$1} = $2;
+        if($line =~ /^(author|author-relative|committer|committer-relative|refs|subject) (.+)$/ && $state != 1) {
+            $data{$1} = $2;
         }
         elsif($line =~ /^body start$/ && $state == 0) {
             $state = 1;
         }
         elsif($line =~ /^body stop$/ && $state == 1) {
             if(@body) {
-                my @bodycopy = @body;
-                $log->{"body"} = \@bodycopy;
+                $data{"body"} = [ CLI::trimmedarray(@body) ];
                 @body = ();
             }
 
             $state = 2;
         }
         elsif($state == 1) {
-            if($line =~ /\w+/) {
-                push(@body, $line);
-            }
+            push(@body, $line);
         }
         elsif($state == 2) {
-            if($line =~ /\w+/) {
-                push(@content, $line);
+            push(@content, $line);
+        }
+    }
+
+    if(%data) {
+        if(@content) {
+            if($options->{"patch"}) {
+                $data{"patch"} = [ CLI::trimmedarray(@content) ];
+            } else {
+                $data{"stat"} = [ map { s/^ (.+?)$/$1/; $_; } CLI::trimmedarray(@content) ];
             }
         }
-    }
 
-    if($log) {
-        if(@content) {
-            my @contentcopy = @content;
-            $log->{"content"} = \@contentcopy;
-        }
-
-        push(@output, $log);
+        push(@output, { %data });
     }
 
     return @output;
 }
 
-sub log_graph {
-    my $flags = shift;
+sub loggraph {
+    my $options = shift;
+
+    my @flags;
+
+    if($options->{"maxcount"}) {
+        push(@flags, "--max-count", $options->{"maxcount"});
+    }
 
     my $format = "commit(%h) author(%an) author-relative(%ar) subject(%s)";
-    my @input = CLI::run("git --no-pager log --all --graph --simplify-by-decoration --pretty=tformat:'$format' " . join(" ", @{$flags}));
+    my @input = CLI::run(["git", "--no-pager", "log", "--all", "--graph", "--simplify-by-decoration", "--pretty=tformat:$format", @flags], { "assertonerror" => 1 });
+
     my @output;
-    my $log;
 
     foreach my $line (@input) {
-        my $log;
+        my %data;
 
         if($line =~ /^(.+?) commit\((.+?)\) author\((.+?)\) author-relative\((.+?)\) subject\((.+?)\)$/) {
-            $log->{"graph"} = $1;
-            $log->{"commit"} = $2;
-            $log->{"author"} = $3;
-            $log->{"author-relative"} = $4;
-            $log->{"subject"} = $5;
+            $data{"graph"} = $1;
+            $data{"commit"} = $2;
+            $data{"author"} = $3;
+            $data{"author-relative"} = $4;
+            $data{"subject"} = $5;
         } else {
-            $log->{"graph"} = $line;
+            $data{"graph"} = $line;
         }
 
-        push(@output, $log);
+        push(@output, \%data);
     }
 
     return @output;
 }
 
-sub log_refs {
-    my $refs = shift;
+sub logbranches {
+    my @refs = ("refs/heads", "refs/remotes");
+    my $format = "ref(%(refname:short)) commit(%(objectname:short)) author(%(authorname)) author-relative(%(authordate:relative)) subject(%(subject))";
+    my @input = CLI::run(["git", "--no-pager", "for-each-ref", "--format=$format", @refs], { "assertonerror" => 1 });
 
-    my @input = CLI::run("git --no-pager for-each-ref --format='ref(%(refname:short)) commit(%(objectname:short)) author(%(authorname)) author-relative(%(authordate:relative)) subject(%(subject))' " . join(" ", @{$refs}));
     my @output;
 
     foreach my $line (@input) {
-        my $log;
+        my %data;
 
         if($line =~ /^ref\((.+?)\) commit\((.+?)\) author\((.+?)\) author-relative\((.+?)\) subject\((.+?)\)$/) {
-            $log->{"ref"} = $1;
-            $log->{"commit"} = $2;
-            $log->{"author"} = $3;
-            $log->{"author-relative"} = $4;
-            $log->{"subject"} = $5;
-        }
+            $data{"ref"} = $1;
+            $data{"commit"} = $2;
+            $data{"author"} = $3;
+            $data{"author-relative"} = $4;
+            $data{"subject"} = $5;
 
-        push(@output, $log);
+            push(@output, \%data);
+        }
     }
 
     return @output;
@@ -199,190 +365,293 @@ sub log_refs {
 
 # show
 
-sub show_file {
+sub showfile {
     my $file = shift;
     my $branch = shift;
 
-    CLI::assert_parameter($file);
-    CLI::assert_parameter($branch);
+    CLI::assertparameter($file);
+    CLI::assertparameter($branch);
 
-    return CLI::run("git --no-pager show $branch:./$file");
+    return CLI::run(["git", "--no-pager", "show", "$branch:./$file"], { "assertonerror" => 1 });
 }
 
-sub show_commit {
+sub showcommit {
     my $commit = shift;
-    my $flags = shift;
+    my $options = shift;
 
-    CLI::assert_parameter($commit);
+    CLI::assertparameter($commit);
+
+    my @flags;
+
+    if($options->{"patch"}) {
+        push(@flags, "--patch");
+    }
+
+    if($options->{"stat"}) {
+        push(@flags, "--stat");
+    }
 
     my $format = "author %an%nauthor-email %ae%n%nauthor-date %ad%ncommitter %cn%ncommitter-email %ce%ncommitter-date %cd%nrefs %C(auto)%D%C(reset)%ncommit %H%nparents %P%ntree %T%nsubject %s%nbody start%n%b%nbody stop";
-    my @input = CLI::run("git --no-pager show --pretty=format:'$format' $commit " . join(" ", @{$flags}));
-    my $output;
+    my @input = CLI::run(["git", "--no-pager", "show", "--pretty=format:$format", @flags, $commit], { "assertonerror" => 1 });
+
+    my %data;
     my @body;
     my @content;
     my $state = 0;
 
     foreach my $line (@input) {
-        if($line =~ /^(author|author-email|author-date|committer|committer-email|committer-date|refs|commit|parents|tree|subject) (.*)$/) {
-            $output->{$1} = $2;
+        if($line =~ /^(author|author-email|author-date|committer|committer-email|committer-date|refs|commit|parents|tree|subject) (.*)$/ && $state != 1) {
+            $data{$1} = $2;
         }
         elsif($line =~ /^body start$/ && $state == 0) {
             $state = 1;
         }
         elsif($line =~ /^body stop$/ && $state == 1) {
-            if(@body) {
-                $output->{"body"} = \@body;
-            }
+            $data{"body"} = [ CLI::trimmedarray(@body) ];
 
             $state = 2;
         }
         elsif($state == 1) {
-            if($line =~ /\w+/) {
-                push(@body, $line);
-            }
+            push(@body, $line);
         }
         elsif($state == 2) {
-            if($line =~ /\w+/) {
-                push(@content, $line);
-            }
+            push(@content, $line);
         }
     }
 
-    if(@content) {
-        $output->{"content"} = \@content;
+    if($options->{"patch"}) {
+        $data{"patch"} = [ CLI::trimmedarray(@content) ];
+    }
+    elsif($options->{"stat"}) {
+        $data{"stat"} = [ map { s/^ (.+?)$/$1/; $_; } CLI::trimmedarray(@content) ];
     }
 
-    return $output;
-}
+    CLI::assertdefined($data{"commit"}, "Invalid output from \"git show\" for $commit");
 
-
-# rev-parse
-
-sub rev_parse_head {
-    return scalar(CLI::run("git rev-parse --abbrev-ref HEAD"));
-}
-
-sub rev_parse_short {
-    my $commit = shift;
-
-    CLI::assert_parameter($commit);
-
-    return scalar(CLI::run("git rev-parse --short $commit"));
+    return \%data;
 }
 
 
 
-# verification
+# diff
 
-sub iscommit {
-    my $commit = shift;
+sub diff {
+    my $options = shift;
 
-    return 0 unless $commit;
-    return 0 unless $commit =~ /^[a-f0-9]{6,40}$/;
+    my $command = $options->{"tool"} ? "difftool" : "diff";
+    my @flags;
 
-    return 1;
+    if($options->{"raw"}) {
+        push(@flags, "--color=never", "--no-textconv");
+    }
+
+    if($options->{"staged"}) {
+        push(@flags, "--staged");
+    }
+
+    if($options->{"branch"}) {
+        push(@flags, $options->{"branch"});
+    }
+
+    if($options->{"file"}) {
+        push(@flags, "--", $options->{"file"});
+    }
+
+    return CLI::run(["git", "--no-pager", $command, @flags], { "assertonerror" => 1 });
 }
 
 
+
+# branches
+
+sub branches {
+    state @branches;
+
+    if(!@branches) {
+        @branches = CLI::run(["git", "for-each-ref", "--format=%(refname:short)", "refs/heads", "refs/remotes"], { "assertonerror" => 1 });
+    }
+
+    return @branches;
+}
+
+sub branch {
+    state $branch;
+
+    if(!$branch) {
+        $branch = CLI::run(["git", "rev-parse", "--abbrev-ref", "HEAD"], { "assertonerror" => 1 });
+    }
+
+    return $branch;
+}
+
+sub remotebranch {
+    my $branch = shift || branch();
+
+    if($branch !~ /^origin/) {
+        my $remote = configget("branch.$branch.remote");
+
+        if($remote) {
+            return "$remote/$branch";
+        }
+    }
+
+    return undef;
+}
 
 sub isbranch {
     my $branch = shift;
 
     return 0 unless $branch;
 
-    return 1;
+    return 1 if grep { $_ eq $branch } branches();
+
+    return 0;
 }
 
 
 
-# colors
+# commits
+
+sub shortcommit {
+    my $commit = shift;
+    state %commits;
+
+    CLI::asserttrue(iscommit($commit), "Commit \"$commit\" not supported");
+
+    my $shortcommit = $commits{$commit};
+
+    if(!$shortcommit) {
+        $shortcommit = CLI::run(["git", "rev-parse", "--short", $commit]);
+        $commits{$commit} = $shortcommit;
+    }
+
+    return $shortcommit;
+}
+
+sub iscommit {
+    my $commit = shift;
+
+    return 0 unless $commit;
+
+    if($commit =~ /^(.+?)(\@|\^|\~)(.+?)?$/) {
+        $commit = $1;
+    }
+
+    return 1 if $commit =~ /^[a-f0-9]{6,40}$/;
+    return 1 if $commit eq "HEAD";
+    return 1 if isbranch($commit);
+
+    return 0;
+}
+
+
+
+# formatting
 
 sub commitstring {
     my $commit = shift;
 
-    CLI::assert_parameter($commit);
+    CLI::assertparameter($commit);
 
-    return CLI::coloredstring($commit, color("commit"));
+    my $color = color("commit") || "cyan,none,none";
+
+    return CLI::coloredstring($commit, $color);
 }
 
-sub localrefstring {
-    my $localref = shift;
+sub refstring {
+    my $ref = shift;
 
-    CLI::assert_parameter($localref);
+    CLI::assertparameter($ref);
 
-    return CLI::coloredstring($localref, color("localref"));
-}
+    if($ref =~ /^origin/) {
+        my $color = color("remoteref") || "red,none,none";
 
-sub remoterefstring {
-    my $remoteref = shift;
+        return CLI::coloredstring($ref, $color);
+    } else {
+        my $color = color("localref") || "blue,none,none";
 
-    CLI::assert_parameter($remoteref);
-
-    return CLI::coloredstring($remoteref, color("remoteref"));
+        return CLI::coloredstring($ref, $color);
+    }
 }
 
 sub authorstring {
     my $author = shift;
 
-    CLI::assert_parameter($author);
+    CLI::assertparameter($author);
+    
+    my $color = color("author") || "magenta,none,none";
 
-    return CLI::coloredstring($author, color("author"));
+    return CLI::coloredstring($author, $color);
 }
 
 sub emailstring {
     my $email = shift;
 
-    CLI::assert_parameter($email);
+    CLI::assertparameter($email);
 
-    return CLI::coloredstring("<$email>", color("email"));
+    my $color = color("email") || "none,none,none";
+
+    return CLI::coloredstring("<$email>", $color);
 }
 
 sub datestring {
     my $date = shift;
 
-    CLI::assert_parameter($date);
+    CLI::assertparameter($date);
 
-    return CLI::coloredstring($date, color("date"));
+    my $color = color("date") || "none,none,none";
+
+    return CLI::coloredstring($date, $color);
 }
 
 sub subjectstring {
     my $subject = shift;
 
-    CLI::assert_parameter($subject);
+    CLI::assertparameter($subject);
 
-    return CLI::coloredstring($subject, color("subject"));
+    my $color = color("subject") || "white,none,none";
+
+    return CLI::coloredstring($subject, $color);
 }
 
 sub bodystring {
     my $body = shift;
 
-    CLI::assert_parameter($body);
+    CLI::assertparameter($body);
 
-    return CLI::coloredstring($body, color("body"));
+    my $color = color("body") || "white,bold,none";
+
+    return CLI::coloredstring($body, $color);
 }
 
 sub blameauthorstring {
     my $author = shift;
 
-    CLI::assert_parameter($author);
+    CLI::assertparameter($author);
 
-    return CLI::coloredstring($author, color("blameauthor"));
+    my $color = color("blameauthor") || "magenta,none,black";
+
+    return CLI::coloredstring($author, $color);
 }
 
 sub blamedatestring {
     my $date = shift;
 
-    CLI::assert_parameter($date);
+    CLI::assertparameter($date);
 
-    return CLI::coloredstring($date, color("blamedate"));
+    my $color = color("blamedate") || "none,none,black";
+
+    return CLI::coloredstring($date, $color);
 }
 
 sub blamecommitstring {
     my $commit = shift;
 
-    CLI::assert_parameter($commit);
+    CLI::assertparameter($commit);
 
-    return CLI::coloredstring($commit, color("blamecommit"));
+    my $color = color("blamecommit") || "cyan,none,black";
+
+    return CLI::coloredstring($commit, $color);
 }
 
 1;

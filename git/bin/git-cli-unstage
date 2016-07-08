@@ -1,0 +1,12 @@
+#!/usr/bin/perl -w
+
+use strict;
+use CLI;
+use CLI::Git;
+
+my $options = CLI::options();
+my @files = @ARGV;
+
+CLI::usage("<file> [<file> ...]") if $options->{"help"} || @files == 0;
+
+CLI::run(["git", "reset", "--quiet", "--", @files]);

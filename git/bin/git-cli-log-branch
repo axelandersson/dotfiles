@@ -1,0 +1,24 @@
+#!/usr/bin/perl -w
+
+use strict;
+use CLI;
+use CLI::Git;
+
+my $options = CLI::options();
+
+CLI::usage() if $options->{"help"} || @ARGV > 0;
+
+my @input = CLI::Git::logbranches();
+my @output;
+
+foreach my $data (@input) {
+    my $line = CLI::Git::refstring($data->{"ref"});
+    $line .= " " . CLI::Git::authorstring($data->{"author"});
+    $line .= " " . CLI::Git::datestring($data->{"author-relative"});
+    $line .= " " . CLI::Git::commitstring($data->{"commit"});
+    $line .= " " . CLI::Git::subjectstring($data->{"subject"});
+
+    push(@output, CLI::terminalwidthstring($line));
+}
+
+CLI::Git::runpager(\@output);

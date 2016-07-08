@@ -1,0 +1,26 @@
+#!/usr/bin/perl -w
+
+use strict;
+use CLI;
+use CLI::Git;
+
+my $options = CLI::options("system|s", "global|g", "local|l");
+
+CLI::usage("[-s|--system|-g|--global|-l|--local]") if $options->{"help"};
+
+my @flags;
+
+if($options->{"system"}) {
+    push(@flags, "--system");
+}
+elsif($options->{"global"}) {
+    push(@flags, "--global");
+}
+elsif($options->{"local"}) {
+    push(@flags, "--local");
+}
+else {
+    push(@flags, "--global");
+}
+
+CLI::run(["git", "config", "--edit", @flags]);

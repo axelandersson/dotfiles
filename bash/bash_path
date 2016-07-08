@@ -18,8 +18,12 @@ test -d "/usr/local/wired" && PATH0="/usr/local/wired:$PATH0"
 test -d "/opt/aws/bin" && PATH0="/opt/aws/bin:$PATH0"
 
 if [ "$(uname -s)" = "Darwin" ]; then
-    test -d "/Applications/Xcode.app/Contents/Developer/usr/bin" && PATH0="/Applications/Xcode.app/Contents/Developer/usr/bin:$PATH0"
-    test -d "/Applications/Xcode.app/Contents/SharedFrameworks/DTDeviceKitBase.framework/Resources" && PATH0="/Applications/Xcode.app/Contents/SharedFrameworks/DTDeviceKitBase.framework/Resources:$PATH0"
+    xcodepath=$(xcode-select -p 2>/dev/null)
+
+    if [ "$xcodepath" ]; then
+        test -d "$xcodepath/usr/bin" && PATH0="$xcodepath/usr/bin:$PATH0"
+    fi
+
     test -d "/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support" && PATH0="/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support:$PATH0"
 fi
 

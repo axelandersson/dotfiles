@@ -1,0 +1,35 @@
+#!/usr/bin/perl -w
+
+use strict;
+use CLI;
+use CLI::File;
+
+my $options = CLI::options();
+my @files = @ARGV ? @ARGV : ("-");
+
+CLI::usage("[<file> ...]") if $options->{"help"};
+
+CLI::assertcanrun("xcode-select");
+
+my $developerpath = CLI::run(["xcode-select", "--print-path"]);
+my $commandpath = CLI::pathbyappendingpathcomponents(CLI::pathbydeletinglastpathcomponent($developerpath), "SharedFrameworks", "DVTFoundation.framework", "Versions", "Current", "Resources", "symbolicatecrash");
+
+$ENV{"DEVELOPER_DIR"} = $developerpath;
+
+foreach my $path (@files) {
+    CLI::asserttrue(CLI::File::isfile($path) || $path eq "-", "$path: No such file");
+
+    if($path eq "-") {
+        my @log = CLI::run([$commandpath, "-"]);
+
+        CLI::runpager(\@log);
+    } else {
+        CLI::asserttrue(CLI::pathextension($path) eq "crash", "$path: Not a crash");
+
+        my $newpath = CLI::pathbyappendingpathextensions(CLI::pathbydeletingpathextension($path), "symbolicated", "crash");
+
+        CLI::assertfalse(CLI::File::isfile($newpath), "$newpath: File exists");
+
+        CLI::run([$commandpath, "--output", $newpath, $path]);
+    }
+}

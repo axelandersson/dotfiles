@@ -1,0 +1,16 @@
+#!/usr/bin/perl -w
+
+use strict;
+use CLI;
+use CLI::Git;
+
+my $options = CLI::options("all");
+my @files = @ARGV;
+
+CLI::usage("[--all|<file> ...]") if $options->{"help"} || (@files == 0 && !$options->{"all"}) || (@files != 0 && $options->{"all"});
+
+if($options->{"all"}) {
+    CLI::run(["git", "add", "--all"]);
+} else {
+    CLI::run(["git", "add", @files]);
+}

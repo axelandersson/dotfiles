@@ -4,44 +4,48 @@
     name = Axel Andersson
 
 [alias]
-    v = api viconfig
-    u = api update
-    p = api push
-    s = api status
-    a = api stage
-    aa = api stage-all
-    r = api unstage
-    c = api commit
-    h = api discard
-    hf = api discard-file
-    hc = api discard-committed
-    l = api log
-    ll = api log-long
-    lc = api log-committed
-    llc = api log-long-committed
-    lb = api log-branch
-    lg = api log-graph
-    d = api diff
-    dr = api diff-raw
-    ds = api diff-staged
-    dc = api diff-committed
-    dt = api difftool
-    dts = api difftool-staged
-    dtc = api difftool-committed
-    pc = api print-commit
-    pcl = api print-commit-long
-    pf = api print-file
-    pfr = api print-file-raw
-    pfb = api print-file-blame
-    b = api branch
-    bs = api branch-switch
-    bn = api branch-new
-    bc = api branch-commit
-    m = api merge
-    mo = api merge-origin
-    mt = api mergetool
-    mr = api merge-revert
-    mcp = api merge-cherrypick
+    x = cli --describe
+    cl = cli cl
+    cv = cli cv
+    u = cli u
+    p = cli p
+    s = cli s
+    a = cli a
+    aa = cli aa
+    r = cli r
+    c = cli c
+    ca = cli ca
+    h = cli h
+    hf = cli hf
+    hc = cli hc
+    l = cli l
+    ll = cli ll
+    lc = cli lc
+    llc = cli llc
+    lb = cli lb
+    lg = cli lg
+    d = cli d
+    dr = cli dr
+    ds = cli ds
+    dc = cli dc
+    dt = cli dt
+    dts = cli dts
+    dtc = cli dtc
+    pc = cli pc
+    pcl = cli pcl
+    pf = cli pf
+    pfr = cli pfr
+    pfb = cli pfb
+    b = cli b
+    bl = cli bl
+    bs = cli bs
+    bn = cli bn
+    bd = cli bd
+    bc = cli bc
+    m = cli m
+    mo = cli mo
+    mr = cli mr
+    mc = cli mc
 
 [cli "color"]
     author = magenta,none,none
@@ -102,7 +106,7 @@
     attributesfile = ~/.gitattributes
 
 [credential]
-    helper = api
+    helper = cli
 
 [diff]
     renames = copies

@@ -7,7 +7,7 @@ my $options = CLI::options();
 
 CLI::usage() if $options->{"help"};
 
-CLI::assert_true(CLI::can_run("osascript"), "Command \"osascript\" not available");
+CLI::assertcanrun("osascript");
 
 my $path = CLI::run(["osascript", "-e", "tell application id \"com.apple.finder\" to return POSIX path of (selection as alias)"]);
 
@@ -15,7 +15,7 @@ if(!$path) {
     $path = CLI::run(["osascript", "-e", "tell application id \"com.apple.finder\" to return POSIX path of (target of window 1 as alias)"]);
 }
 
-CLI::assert_defined($path, "No file selected and no directory open in Finder");
+CLI::assertdefined($path, "No file selected and no directory open in Finder");
 
 if(-d $path) {
     println $path;

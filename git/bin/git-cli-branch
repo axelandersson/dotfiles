@@ -1,0 +1,18 @@
+#!/usr/bin/perl -w
+
+use strict;
+use CLI;
+use CLI::Git;
+
+my $options = CLI::options();
+
+CLI::usage() if $options->{"help"};
+
+my $branch = CLI::Git::branch();
+my $remotebranch = CLI::Git::remotebranch();
+
+if($remotebranch) {
+    println CLI::Git::refstring($branch) . " -> " . CLI::Git::refstring($remotebranch);
+} else {
+    println CLI::Git::refstring($branch);
+}

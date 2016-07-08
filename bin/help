@@ -12,12 +12,12 @@ print_commands("Archive List", "lsar");
 print_commands("Archive Pack", "tgz");
 
 my @unpackcommands = ("untgz", "untbz", "untar");
-push(@unpackcommands, "unrar") if CLI::can_run("unrar");
+push(@unpackcommands, "unrar") if CLI::canrun("unrar");
 print_commands("Archive Unpack", @unpackcommands);
 
 print_commands("Grep", "grepi", "grepr", "grepri", "grepar", "grepcode", "greph");
 
-if(CLI::can_run("jq")) {
+if(CLI::canrun("jq")) {
     print_commands("JSON", "jq");
 }
 
@@ -25,7 +25,7 @@ if($^O eq "darwin") {
     print_commands("Mac OS X", "ql", "console", "plxml", "pljson", "trash");
 }
 
-if(CLI::can_run("hfsdata")) {
+if(CLI::canrun("hfsdata")) {
     print_commands("HFS Write", "setcomment", "setlabel", "settype", "setcreator", "sethidden", "setunhidden");
     print_commands("HFS READ", "lscomment", "lslabel", "lskind", "lstype", "lscreator");
 }
@@ -35,8 +35,8 @@ foreach my $cd (sort split(";", $ENV{"CDMAP"})) {
     print_directory("Directory", $alias, $path);
 }
 
-if(CLI::can_run("git-api")) {
-    CLI::run("git api help");
+if(CLI::canrun("git-cli")) {
+    CLI::run("git-cli --commands");
 }
 
 print_git("Git Prompt", "*unstaged", "+staged", "<behind", ">ahead", "=sync");

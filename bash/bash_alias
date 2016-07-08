@@ -113,3 +113,8 @@ if [ -x "$(which setfflags 2>/dev/null)" ]; then
     alias sethidden="setfflags -i true"
     alias setunhidden="setfflags -i false"
 fi
+
+# WiFi
+if [ "$(uname -s)" = "Darwin" ]; then
+    alias airport="/System/Library/PrivateFrameworks/Apple80211.framework/Versions/A/Resources/airport"
+fi

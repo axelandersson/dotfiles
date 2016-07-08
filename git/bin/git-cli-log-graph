@@ -1,0 +1,35 @@
+#!/usr/bin/perl -w
+
+use strict;
+use CLI;
+use CLI::Git;
+
+my $options = CLI::options();
+
+CLI::usage("[<maxcount>]") if $options->{"help"};
+
+my %logoptions;
+my $maxcount = 25;
+
+foreach my $arg (@ARGV) {
+    if($arg =~ /^\d+$/ && $arg > 0 && $arg <= 1000) {
+        $maxcount = $arg;
+    }
+}
+
+$logoptions{"maxcount"} = $maxcount;
+
+my @input = CLI::Git::loggraph(\%logoptions);
+my @output;
+
+foreach my $data (@input) {
+    my $line = $data->{"graph"};
+    $line .= " " . CLI::Git::authorstring($data->{"author"}) if $data->{"author"};
+    $line .= " " . CLI::Git::datestring($data->{"author-relative"}) if $data->{"author-relative"};
+    $line .= " " . CLI::Git::commitstring($data->{"commit"}) if $data->{"commit"};
+    $line .= " " . CLI::Git::subjectstring($data->{"subject"}) if $data->{"subject"};
+
+    push(@output, CLI::terminalwidthstring($line));
+}
+
+CLI::Git::runpager(\@output);

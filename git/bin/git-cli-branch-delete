@@ -1,0 +1,14 @@
+#!/usr/bin/perl -w
+
+use strict;
+use CLI;
+use CLI::Git;
+
+my $options = CLI::options();
+my $branch = shift @ARGV;
+
+CLI::usage("<branch>") if $options->{"help"} || !CLI::Git::isbranch($branch);
+
+CLI::run(["git", "branch", "--delete", "--force", $branch]);
+CLI::run(["git", "config", "--unset", "branch.$branch.remote"], { "assertonerror" => 0 });
+CLI::run(["git", "config", "--unset", "branch.$branch.merge"], { "assertonerror" => 0 });

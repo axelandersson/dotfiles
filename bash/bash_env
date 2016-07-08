@@ -5,6 +5,7 @@ export MAILCHECK="0"
 
 export PAGER="less-highlight"
 export MANPAGER="less"
+
 export LESS="-F -i -M -R -X -x4"
 
 if [ -n "$LINES" ]; then
