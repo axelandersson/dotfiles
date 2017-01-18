@@ -172,9 +172,9 @@ function lsar() {
 
 function lsenv() {
     if [ $# -eq 1 ]; then
-        env | grep "^$1=" | replace "s/^$1=//"
+        env | replace "s/\\033/\\\\033/g" | grep "^$1=" | replace "s/^$1=//"
     elif [ $# -eq 0 ]; then
-        env | sort
+        env | replace "s/\\033/\\\\033/g" | sort
     else
         echo "Usage: $FUNCNAME [<variable>]"
     fi
