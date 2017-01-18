@@ -116,6 +116,9 @@ my @SECTIONS = (
                       { "name" => "branch-delete", "alias" => "bd",
                         "command" => "cli-branch-delete",
                         "completion" => $COMPLETIONBRANCH },
+                      { "name" => "branch-track", "alias" => "bt",
+                        "command" => "cli-branch-track",
+                        "completion" => $COMPLETIONBRANCH },
                       { "name" => "branch-commit", "alias" => "bc",
                         "command" => "cli-branch-commit",
                         "completion" => $COMPLETIONCOMMIT }
@@ -171,7 +174,7 @@ sub commands {
 sub describe {
     my $argument = shift @ARGV;
 
-    CLI::assertdefined($argument, "Command not defined");
+    CLI::usage("<command>") if !$argument;
 
     my $command = commandforaliasorname($argument);
 

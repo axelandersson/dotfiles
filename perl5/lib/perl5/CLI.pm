@@ -519,7 +519,7 @@ sub assertundefined {
 }
 
 sub assertparameter {
-    assertdefined($_[0], "Missing parameter");
+    fatal("Missing parameter (" . _assertcallsitestring() . ")") unless defined($_[0]);
 }
 
 sub assertcanrun {

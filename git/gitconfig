@@ -41,6 +41,7 @@
     bs = cli bs
     bn = cli bn
     bd = cli bd
+    bt = cli bt
     bc = cli bc
     m = cli m
     mo = cli mo
@@ -61,14 +62,14 @@
     blamecommit = cyan,none,black
 
 [color]
-    branch = always
+    branch = auto
     diff = always
-    grep = always
-    interactive = always
+    grep = auto
+    interactive = auto
     pager = true
-    showbranch = always
-    status = always
-    ui = always
+    showbranch = auto
+    status = auto
+    ui = auto
 
 [color "branch"]
     current = blue
@@ -150,3 +151,9 @@
 
 [status]
     short = true
+
+[filter "lfs"]
+    clean = git-lfs clean -- %f
+    smudge = git-lfs smudge -- %f
+    process = git-lfs filter-process
+    required = true

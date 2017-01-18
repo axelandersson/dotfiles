@@ -5,7 +5,7 @@ use CLI;
 use CLI::Git;
 
 my $options = CLI::options("raw", "staged", "committed", "tool");
-my $file = shift @ARGV;
+my $arg = shift @ARGV;
 
 CLI::usage("[--raw|--staged|--committed] [--tool]") if $options->{"help"};
 
@@ -20,11 +20,19 @@ if($options->{"staged"}) {
 }
 
 if($options->{"committed"}) {
-    $logoptions{"branch"} = CLI::Git::remotebranch() . "..HEAD";
+    $logoptions{"revision"} = CLI::Git::remotebranch() . "..HEAD";
 }
 
-if($file) {
-    $logoptions{"file"} = $file;
+if($options->{"tool"}) {
+    $logoptions{"tool"} = 1;
+}
+
+if($arg) {
+    if(-e $arg) {
+        $logoptions{"file"} = $arg;
+    } else {
+        $logoptions{"revision"} = $arg;
+    }
 }
 
 my @output = CLI::Git::diff(\%logoptions);

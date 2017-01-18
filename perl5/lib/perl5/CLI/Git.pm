@@ -198,10 +198,6 @@ sub log {
         push(@flags, "--max-count", $options->{"maxcount"});
     }
 
-    if($options->{"author"}) {
-        push(@flags, "--author", $options->{"author"});
-    }
-
     if($options->{"time"} && $options->{"time"} =~ /^(\-|\+)?(\d+)(h|d|w|m|y)$/) {
         my %units = ("h" => "hour", "d" => "day", "w" => "week", "m" => "month", "y" => "year");
 
@@ -220,9 +216,15 @@ sub log {
         push(@flags, "--stat");
     }
 
-    if($options->{"grepfilter"}) {
+    if($options->{"grepauthor"} || $options->{"grepmessage"}) {
         push(@flags, "--perl-regexp");
-        push(@flags, "--grep", $options->{"grepfilter"});
+
+        if($options->{"grepauthor"}) {
+            push(@flags, "--author", $options->{"grepauthor"});
+        }
+        elsif($options->{"grepmessage"}) {
+            push(@flags, "--grep", $options->{"grepmessage"});
+        }
 
         if($options->{"grepignorecase"}) {
             push(@flags, "--regexp-ignore-case");
@@ -421,6 +423,16 @@ sub showcommit {
 
     if($options->{"patch"}) {
         $data{"patch"} = [ CLI::trimmedarray(@content) ];
+
+        if($data{"parents"} && !@{$data{"patch"}}) {
+            my @parents = split(/ /, $data{"parents"});
+
+            if(@parents == 2) {
+                my @diffinput = CLI::run(["git", "--no-pager", "diff", $parents[0] . "..." . $parents[1]], { "assertonerror" => 1 });
+
+                $data{"patch"} = [ CLI::trimmedarray(@diffinput) ];
+            }
+        }
     }
     elsif($options->{"stat"}) {
         $data{"stat"} = [ map { s/^ (.+?)$/$1/; $_; } CLI::trimmedarray(@content) ];
@@ -449,8 +461,8 @@ sub diff {
         push(@flags, "--staged");
     }
 
-    if($options->{"branch"}) {
-        push(@flags, $options->{"branch"});
+    if($options->{"revision"}) {
+        push(@flags, $options->{"revision"});
     }
 
     if($options->{"file"}) {

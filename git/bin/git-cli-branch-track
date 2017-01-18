@@ -7,10 +7,8 @@ use CLI::Git;
 my $options = CLI::options();
 my $branch = shift @ARGV;
 
-CLI::usage() if $options->{"help"};
-
-CLI::usage("<branch>") if $options->{"help"} || !$branch;
+CLI::usage("<branch>") if $options->{"help"} || !CLI::Git::isbranch($branch);
 
 CLI::Git::configset("cli.branchswitch.lastbranch", CLI::Git::branch(), $CLI::Git::CONFIGLOCAL);
 
-CLI::run(["git", "checkout", "-b", $branch]);
+CLI::run(["git", "checkout", "--track", $branch]);

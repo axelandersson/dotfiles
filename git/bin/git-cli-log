@@ -17,9 +17,13 @@ foreach my $arg (@ARGV) {
     }
     elsif($arg =~ /^@(.+?)?$/) {
         if(!$1 || $1 eq "me") {
-            $logoptions{"author"} = CLI::Git::username();
+            $logoptions{"grepauthor"} = CLI::Git::username();
         } else {
-            $logoptions{"author"} = $1;
+            if($1 !~ /[A-Z]/) {
+                $logoptions{"grepignorecase"} = 1;
+            }
+
+            $logoptions{"grepauthor"} = $1;
         }
     }
     elsif($arg =~ /^(\-|\+)?(\d+)(h|d|w|m|y)$/) {
@@ -38,7 +42,7 @@ foreach my $arg (@ARGV) {
                 $logoptions{"grepignorecase"} = 1;
             }
 
-            $logoptions{"grepfilter"} = $arg;
+            $logoptions{"grepmessage"} = $arg;
         }
     }
 }
