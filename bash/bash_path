@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Shell search path
 PATH0="/bin:/sbin"
 
 test -d "/usr/sbin" && PATH0="/usr/sbin:$PATH0"
@@ -34,3 +35,13 @@ test -d "$HOME/.dotfiles/local/python/bin" && PATH0="$HOME/.dotfiles/local/pytho
 test -d "$HOME/.dotfiles/local/ruby-gems/bin" && PATH0="$HOME/.dotfiles/local/ruby-gems/bin:$PATH0"
 
 export PATH=".:$PATH0"
+
+# Directory shortcuts
+CDMAP0="dot:$HOME/.dotfiles"
+
+if [ "$(uname -s)" = "Darwin" ]; then
+    CDMAP0="f:+finder-current-directory;$CDMAP0"
+    CDMAP0="x:+xcode-current-directory;$CDMAP0"
+fi
+
+export CDMAP="$CDMAP0"
