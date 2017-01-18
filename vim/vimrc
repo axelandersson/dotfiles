@@ -116,13 +116,3 @@ let g:lightline = {
     \ 'separator': { 'left': '', 'right': '' },
     \ 'subseparator': { 'left': '|', 'right': '|' },
     \ }
-
-" Fakeclip
-nmap yy <plug>(fakeclip-Y)
-nmap dd <plug>(fakeclip-dd)
-nmap D <Plug>(fakeclip-D)
-nmap p <Plug>(fakeclip-p)
-nmap P <Plug>(fakeclip-P)
-
-let g:fakeclip_no_default_key_mappings = 1
-let g:fakeclip_terminal_multiplexer_type = "gnuscreen"
