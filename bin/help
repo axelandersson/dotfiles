@@ -27,7 +27,7 @@ if($^O eq "darwin") {
 
 if(CLI::canrun("hfsdata")) {
     print_commands("HFS Write", "setcomment", "setlabel", "settype", "setcreator", "sethidden", "setunhidden");
-    print_commands("HFS READ", "lscomment", "lslabel", "lskind", "lstype", "lscreator");
+    print_commands("HFS Read", "lscomment", "lslabel", "lskind", "lstype", "lscreator");
 }
 
 foreach my $cd (sort split(";", $ENV{"CDMAP"})) {
