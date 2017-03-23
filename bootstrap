@@ -36,8 +36,14 @@ ln -sfn "$HOME/.dotfiles/subversion/subversion_config" "$HOME/.subversion/config
 mkdir -p "$HOME/.vim" "$HOME/.vimtmp/backup" "$HOME/.vimtmp/swap" "$HOME/.vimtmp/undo"
 ln -sfn "$HOME/.dotfiles/vim/autoload" "$HOME/.vim/autoload"
 ln -sfn "$HOME/.dotfiles/vim/colors" "$HOME/.vim/colors"
+ln -sfn "$HOME/.dotfiles/vim/compiler" "$HOME/.vim/compiler"
 ln -sfn "$HOME/.dotfiles/vim/doc" "$HOME/.vim/doc"
+ln -sfn "$HOME/.dotfiles/vim/ftdetect" "$HOME/.vim/ftdetect"
+ln -sfn "$HOME/.dotfiles/vim/ftplugin" "$HOME/.vim/ftplugin"
+ln -sfn "$HOME/.dotfiles/vim/indent" "$HOME/.vim/indent"
+ln -sfn "$HOME/.dotfiles/vim/keymap" "$HOME/.vim/keymap"
 ln -sfn "$HOME/.dotfiles/vim/plugin" "$HOME/.vim/plugin"
+ln -sfn "$HOME/.dotfiles/vim/syntax" "$HOME/.vim/syntax"
 
 # Mac OS X
 if [ "$(uname -s)" = "Darwin" ]; then
