@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Shell search path
-PATH0="/bin:/sbin"
+PATH0="/bin:/sbin:."
 
 test -d "/usr/sbin" && PATH0="/usr/sbin:$PATH0"
 test -d "/usr/bin" && PATH0="/usr/bin:$PATH0"
@@ -16,7 +16,9 @@ if [ -n "$DISPLAY" ]; then
 fi
 
 test -d "/usr/local/wired" && PATH0="/usr/local/wired:$PATH0"
+
 test -d "/opt/aws/bin" && PATH0="/opt/aws/bin:$PATH0"
+test -d "/opt/homebrew/bin" && PATH0="/opt/homebrew/bin:$PATH0"
 
 if [ "$(uname -s)" = "Darwin" ]; then
     xcodepath=$(xcode-select -p 2>/dev/null)
@@ -34,7 +36,14 @@ test -d "$HOME/.dotfiles/local/bin" && PATH0="$HOME/.dotfiles/local/bin:$PATH0"
 test -d "$HOME/.dotfiles/local/python/bin" && PATH0="$HOME/.dotfiles/local/python/bin:$PATH0"
 test -d "$HOME/.dotfiles/local/ruby-gems/bin" && PATH0="$HOME/.dotfiles/local/ruby-gems/bin:$PATH0"
 
-export PATH=".:$PATH0"
+export PATH="$PATH0"
+
+# Man pages search path
+MANPATH_MAP0="."
+
+test -d "/opt/homebrew/manpages" && MANPATH_MAP0="/opt/homebrew/manpages:$MANPATH0"
+
+export MANPATH_MAP="$MANPATH_MAP0"
 
 # Directory shortcuts
 CDMAP0="dot:$HOME/.dotfiles"

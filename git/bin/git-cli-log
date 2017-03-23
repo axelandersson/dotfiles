@@ -47,7 +47,7 @@ foreach my $arg (@ARGV) {
     }
 }
 
-if($maxcount) {
+if($maxcount && !$options->{"committed"}) {
     $logoptions{"maxcount"} = $maxcount;
 }
 
