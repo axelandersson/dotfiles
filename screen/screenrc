@@ -1,5 +1,6 @@
 # screen/screenrc
 
+escape ^Xx
 defscrollback 10000
 termcapinfo xterm* ti@:te@
 defutf8 on
@@ -9,4 +10,5 @@ hardstatus string '%{= KW}%-w%{= WK}%n %t%{= KW}%+w %{= KW}%-=%H'
 
 bindkey "^[[1;5D" prev
 bindkey "^[[1;5C" next
-bindkey "^R" eval "source $HOME/.screenrc"
+
+bind r eval "source $HOME/.screenrc" "echo '.screenrc reloaded'"

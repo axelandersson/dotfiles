@@ -7,6 +7,7 @@ alias la="ls -Al"
 alias du="du -h"
 alias df="df -h"
 alias host="host -a"
+alias rename="rename -c"
 
 # bash
 alias resource="source $HOME/.bashrc"

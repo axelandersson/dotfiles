@@ -3,9 +3,10 @@
 use strict;
 use CLI;
 use CLI::File;
+use String::Diff;
 use Text::Autoformat;
 
-my $options = CLI::options("dryrun|n");
+my $options = CLI::options("dryrun|n", "color|c");
 my $command = shift @ARGV;
 my @files = @ARGV;
 
@@ -29,17 +30,34 @@ elsif($command eq "titlecase" || $command eq "title" || $command eq "tc") {
 
 CLI::asserttrue($regexp || $autoformatcase, "Command \"$command\" not recognized");
 
-foreach my $path (@files) {
-    my $newpath = renamedpath($path, $regexp, $autoformatcase);
+foreach my $oldpath (@files) {
+    my $newpath = renamedpath($oldpath, $regexp, $autoformatcase);
+    my $status;
 
-    if($path eq $newpath) {
-        println "$path -> $newpath: No change";
+    if($oldpath eq $newpath) {
+        $status = "No change";
     }
     elsif($options->{"dryrun"}) {
-        println "$path -> $newpath: OK (Dry run)";
+        $status = "OK (Dry run)";
     }
-    elsif(CLI::File::move($path, $newpath)) {
-        println "$path -> $newpath: OK";
+    elsif(CLI::File::move($oldpath, $newpath)) {
+        $status = "OK";
+    }
+
+    if($options->{"color"}) {
+        my($oldstartcode, $oldstopcode) = CLI::coloredstringcodes("white,none,red");
+        my($newstartcode, $newstopcode) = CLI::coloredstringcodes("white,none,green");
+
+        my($olddiff, $newdiff) = String::Diff::diff($oldpath, $newpath,
+            "remove_open" => $oldstartcode,
+            "remove_close" => $oldstopcode,
+            "append_open" => $newstartcode,
+            "append_close" => $newstopcode
+        );
+
+        println "$olddiff -> $newdiff: $status";
+    } else {
+        println "$oldpath -> $newpath: $status";
     }
 }
 

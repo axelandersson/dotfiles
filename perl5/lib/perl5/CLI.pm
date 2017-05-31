@@ -213,11 +213,10 @@ sub terminalwidthstring {
     return $string;
 }
 
-sub coloredstring {
-    my $string = shift;
-    my $format = shift || "";
+sub coloredstringcodes {
+    my $format = shift;
 
-    assertparameter($string);
+    assertparameter($format);
 
     sub colornames {
         my @names;
@@ -323,6 +322,17 @@ sub coloredstring {
 
     my $startcode = sprintf("\033[%d;%d;%dm", $attributecodes{$attributename}, $foregroundcodes{$foregroundname}, $backgroundcodes{$backgroundname});
     my $stopcode = sprintf("\033[0m");
+
+    return ($startcode, $stopcode);
+}
+
+sub coloredstring {
+    my $string = shift;
+    my $format = shift || "";
+
+    assertparameter($string);
+
+    my($startcode, $stopcode) = coloredstringcodes($format);
 
     return sprintf("%s%s%s", $startcode, $string, $stopcode);
 }
