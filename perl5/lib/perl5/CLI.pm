@@ -10,11 +10,16 @@ use IPC::Run3;
 use POSIX;
 use Term::ReadKey;
 use Term::ANSIColor;
+use Data::Dumper;
 
 our @ISA = qw(Exporter);
 our @EXPORT = qw(println);
 our $DEBUG = 0;
 
+$Data::Dumper::Indent = 2;
+$Data::Dumper::Useqq = 1;
+$Data::Dumper::Sortkeys = 1;
+$Data::Dumper::Deepcopy = 1;
 
 
 # options
@@ -156,12 +161,16 @@ sub runpager {
 
 # terminal
 
+sub isterminalinteractive {
+    return (-t STDIN && -t STDOUT);
+}
+
 sub ask {
     my $prefix = shift;
 
     print $prefix, ": ";
 
-    my $string = <>;
+    my $string = <STDIN>;
 
     chomp($string);
 
@@ -430,6 +439,18 @@ sub absolutepath {
     return File::Spec->rel2abs($path);
 }
 
+sub normalizepath {
+    my $path = shift;
+
+    assertparameter($path);
+
+    $path =~ s/^~(\w*)/(getpwnam($1 || $ENV{"USER"}))[7]/e;
+    $path = absolutepath($path);
+
+    return $path;
+}
+    
+
 sub lastpathcomponent {
     my $path = shift;
 
@@ -584,6 +605,10 @@ sub usage {
     }
 
     exit(2);
+}
+
+sub description {
+    return scalar(Dumper(@_));
 }
 
 1;

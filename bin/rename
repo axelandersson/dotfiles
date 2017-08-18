@@ -6,11 +6,11 @@ use CLI::File;
 use String::Diff;
 use Text::Autoformat;
 
-my $options = CLI::options("dryrun|n", "color|c");
+my $options = CLI::options("dryrun|n", "interactive|i", "color|c");
 my $command = shift @ARGV;
 my @files = @ARGV;
 
-CLI::usage("[--dryrun|-n] <command> <file> [<file> ...]", "Commands: 's/foo/bar/g' 'uppercase' 'lowercase' 'titlecase'") if $options->{"help"} || !$command || @files == 0;
+CLI::usage("[--dryrun|-n] [--interactive|-i] <command> <file> [<file> ...]", "Commands: 's/foo/bar/g' 'uppercase' 'lowercase' 'titlecase'") if $options->{"help"} || !$command || @files == 0;
 
 my $regexp;
 my $autoformatcase;
@@ -32,17 +32,8 @@ CLI::asserttrue($regexp || $autoformatcase, "Command \"$command\" not recognized
 
 foreach my $oldpath (@files) {
     my $newpath = renamedpath($oldpath, $regexp, $autoformatcase);
-    my $status;
-
-    if($oldpath eq $newpath) {
-        $status = "No change";
-    }
-    elsif($options->{"dryrun"}) {
-        $status = "OK (Dry run)";
-    }
-    elsif(CLI::File::move($oldpath, $newpath)) {
-        $status = "OK";
-    }
+    my $description;
+    my $move = 0;
 
     if($options->{"color"}) {
         my($oldstartcode, $oldstopcode) = CLI::coloredstringcodes("white,none,red");
@@ -55,9 +46,34 @@ foreach my $oldpath (@files) {
             "append_close" => $newstopcode
         );
 
-        println "$olddiff -> $newdiff: $status";
+        $description = "$olddiff -> $newdiff";
     } else {
-        println "$oldpath -> $newpath: $status";
+        $description = "$oldpath -> $newpath";
+    }
+
+    if($oldpath eq $newpath) {
+        println "$description: No change";
+    }
+    elsif($options->{"dryrun"}) {
+        println "$description: OK (Dry run)";
+    }
+    elsif($options->{"interactive"}) {
+        CLI::asserttrue(CLI::isterminalinteractive(), "Terminal is not interactive");
+
+        my $answer = CLI::ask($description . ": OK? [y]");
+
+        if($answer =~ /^(|y|yes)$/i) {
+            $move = 1;
+        }
+    }
+    else {
+        $move = 1;
+    }
+
+    if($move) {
+        if(CLI::File::move($oldpath, $newpath)) {
+            println "$description: OK";
+        }
     }
 }
 
@@ -77,9 +93,33 @@ sub renamedpath {
         eval("\$newname =~ $regexp;");
     }
     elsif($autoformatcase) {
-        $newname = autoformat($oldname, { "case" => $autoformatcase });
+        my $autoformatoptions = {
+            "case" => $autoformatcase,
+        };
+
+        my $oldextension;
+
+        if($oldname =~ /^(.+?)(\.[\w\d]+)$/i) {
+            $oldname = $1;
+            $oldextension = $2;
+        }
+
+        if($oldname =~ /^(.+?) - (.+?)$/) {
+            my $newfirstpart = autoformat($1, $autoformatoptions);
+            my $newsecondpart = autoformat($2, $autoformatoptions);
+
+            $newfirstpart =~ s/\s+$//s;
+            $newsecondpart =~ s/\s+$//s;
+
+            $newname = "$newfirstpart - $newsecondpart";
+        } else {
+            $newname = autoformat($oldname, $autoformatoptions);
+
+        }
+
         $newname =~ s/\s+$//s;
-        $newname =~ s/(\.[\w\d]+)$/lc($1)/ei;
+        $newname =~ s/\b([A-Z])(\1+)\b/uc($1 . $2)/ei;
+        $newname .= $oldextension;
     }
 
     if($olddirectory eq ".") {

@@ -4,6 +4,8 @@ package CLI::File;
 
 use strict;
 use File::Copy ();
+use File::Slurp;
+use Mac::PropertyList;
 
 
 
@@ -29,7 +31,7 @@ sub isdirectory {
 
 
 
-# operations
+# file operations
 
 sub readlines {
     my $path = shift;
@@ -83,6 +85,41 @@ sub writelines {
     }
 }
 
+sub readdirectory {
+    my $path = shift;
+
+    CLI::assertparameter($path);
+
+    my $result = opendir(DH, CLI::normalizepath($path));
+
+    CLI::asserttrue($result, $!);
+
+    my @files = grep { !/^\./ } readdir(DH);
+
+    closedir(DH);
+
+    return @files;
+}
+
+sub readplist {
+    my $path = shift;
+
+    CLI::assertparameter($path);
+
+    my $data = File::Slurp::read_file(CLI::normalizepath($path));
+
+    CLI::assertdefined($data, "$path: $!");
+
+    my $plist = Mac::PropertyList::parse_plist($data);
+
+    CLI::assertdefined($plist, "$path: $!");
+
+    return $plist->as_perl;
+}
+
+
+
+# file system operations
 sub move {
     my $sourcepath = shift;
     my $destinationpath = shift;

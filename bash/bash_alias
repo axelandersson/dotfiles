@@ -92,19 +92,8 @@ fi
 # HFS commands
 if [ -x "$(which hfsdata 2>/dev/null)" ]; then
     alias lscomment="hfsdata -o"
-    alias lscreator="hfsdata -C"
     alias lskind="hfsdata -k"
     alias lslabel="hfsdata -L"
-    alias lstype="hfsdata -T"
-fi
-
-if [ -x "$(which setfcomment 2>/dev/null)" ]; then
-    alias setcomment="setfcomment"
-fi
-
-if [ -x "$(which setfctypes 2>/dev/null)" ]; then
-    alias settype="settype"
-    alias setcreator="setcreator"
 fi
 
 if [ -x "$(which setfflags 2>/dev/null)" ]; then
