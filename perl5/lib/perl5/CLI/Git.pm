@@ -277,7 +277,7 @@ sub log {
         }
         elsif($line =~ /^body stop$/ && $state == 1) {
             if(@body) {
-                $data{"body"} = [ CLI::trimmedarray(@body) ];
+                $data{"body"} = [ map { s/\r//; $_; } CLI::trimmedarray(@body) ];
                 @body = ();
             }
 
@@ -409,7 +409,7 @@ sub showcommit {
             $state = 1;
         }
         elsif($line =~ /^body stop$/ && $state == 1) {
-            $data{"body"} = [ CLI::trimmedarray(@body) ];
+            $data{"body"} = [ map { s/\r//; $_ } CLI::trimmedarray(@body) ];
 
             $state = 2;
         }

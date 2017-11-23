@@ -1,3 +1,4 @@
 # git/gitattributes
 
 *.plist diff=plist merge=plist
+*.mobileprovision diff=mobileprovision

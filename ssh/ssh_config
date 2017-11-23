@@ -15,7 +15,6 @@ HostbasedAuthentication no
 KbdInteractiveAuthentication no
 PasswordAuthentication yes
 PubkeyAuthentication yes
-RhostsRSAAuthentication no
 
 HashKnownHosts yes
 

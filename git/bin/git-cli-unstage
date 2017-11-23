@@ -4,9 +4,13 @@ use strict;
 use CLI;
 use CLI::Git;
 
-my $options = CLI::options();
+my $options = CLI::options("all");
 my @files = @ARGV;
 
-CLI::usage("<file> [<file> ...]") if $options->{"help"} || @files == 0;
+CLI::usage("[--all|<file> [<file> ...]]") if $options->{"help"} || (@files == 0 && !$options->{"all"}) || (@files != 0 && $options->{"all"});
 
-CLI::run(["git", "reset", "--quiet", "--", @files]);
+if($options->{"all"}) {
+    CLI::run(["git", "reset", "HEAD"]);
+} else {
+    CLI::run(["git", "reset", "--quiet", "--", @files]);
+}

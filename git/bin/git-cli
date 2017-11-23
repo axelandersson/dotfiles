@@ -23,7 +23,9 @@ my @SECTIONS = (
       "commands" => [ { "name" => "update", "alias" => "u",
                         "command" => "cli-update" },
                       { "name" => "push", "alias" => "p",
-                        "command" => "cli-push" }
+                        "command" => "cli-push" },
+                      { "name" => "push-origin", "alias" => "po",
+                        "command" => "cli-push", "arguments" => [ "--origin" ] }
                     ] },
     { "name" => "Index",
       "commands" => [ { "name" => "status", "alias" => "s",
@@ -35,6 +37,9 @@ my @SECTIONS = (
                         "command" => "cli-stage", "arguments" => [ "--all" ] },
                       { "name" => "unstage", "alias" => "r",
                         "command" => "cli-unstage",
+                        "completion" => $COMPLETIONTRACKEDFILES },
+                      { "name" => "unstage-all", "alias" => "rr",
+                        "command" => "cli-unstage", "arguments" => [ "--all" ],
                         "completion" => $COMPLETIONTRACKEDFILES }
                     ] },
     { "name" => "Local",
@@ -74,8 +79,12 @@ my @SECTIONS = (
                         "command" => "cli-diff", "arguments" => [ "--raw" ] },
                       { "name" => "diff-staged", "alias" => "ds",
                         "command" => "cli-diff", "arguments" => [ "--staged" ] },
+                      { "name" => "diff-staged-raw", "alias" => "dsr",
+                        "command" => "cli-diff", "arguments" => [ "--staged", "--raw" ] },
                       { "name" => "diff-committed", "alias" => "dc",
-                        "command" => "cli-diff", "arguments" => [ "--committed" ] }
+                        "command" => "cli-diff", "arguments" => [ "--committed" ] },
+                      { "name" => "diff-committed-raw", "alias" => "dcr",
+                        "command" => "cli-diff", "arguments" => [ "--committed", "--raw" ] }
                     ] },
     { "name" => "Difftool",
       "commands" => [ { "name" => "difftool", "alias" => "dt",
@@ -115,6 +124,9 @@ my @SECTIONS = (
                         "completion" => $COMPLETIONBRANCH },
                       { "name" => "branch-delete", "alias" => "bd",
                         "command" => "cli-branch-delete",
+                        "completion" => $COMPLETIONBRANCH },
+                      { "name" => "branch-delete-origin", "alias" => "bdo",
+                        "command" => "cli-branch-delete", "arguments" => [ "--origin" ],
                         "completion" => $COMPLETIONBRANCH },
                       { "name" => "branch-track", "alias" => "bt",
                         "command" => "cli-branch-track",

@@ -4,8 +4,12 @@ use strict;
 use CLI;
 use CLI::Git;
 
-my $options = CLI::options();
+my $options = CLI::options("--origin");
 
-CLI::usage() if $options->{"help"};
+CLI::usage("[--origin]") if $options->{"help"};
 
-CLI::run(["git", "push", "--set-upstream"]);
+if($options->{"origin"}) {
+    CLI::run(["git", "push", "--set-upstream", "origin", CLI::Git::branch()]);
+} else {
+    CLI::run(["git", "push", "--set-upstream"]);
+}

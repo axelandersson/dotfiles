@@ -58,8 +58,14 @@ filetype on
 filetype indent on
 filetype plugin on
 
+" File Types
+autocmd BufNewFile,BufRead Gemfile set filetype=ruby
+
 " Command Mode Key Bindings
 cnoremap w!! w !sudo tee >/dev/null %
+
+" Insert Mode Key Bindings
+inoremap § <Esc>
 
 " Operator Key Bindings
 onoremap 0 ^

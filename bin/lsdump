@@ -34,7 +34,7 @@ sub lsdump {
         my @output = CLI::run(["du", "-hs", $path]);
 
         foreach my $line (@output) {
-            $line =~ s/\s+.+//g;
+            $line =~ s/^\s*(.+?)\s+.*$/$1/g;
         }
 
         printcommand("du", \@output);

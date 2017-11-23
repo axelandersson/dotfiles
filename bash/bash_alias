@@ -89,6 +89,9 @@ elif [ "$(uname -s)" = "SunOS" ]; then
     alias top="top -s 1"
 fi
 
+# xargs
+alias xargsnl="tr '\n' '\0' | xargs -0"
+
 # HFS commands
 if [ -x "$(which hfsdata 2>/dev/null)" ]; then
     alias lscomment="hfsdata -o"

@@ -9,10 +9,12 @@
     cv = cli cv
     u = cli u
     p = cli p
+    po = cli po
     s = cli s
     a = cli a
     aa = cli aa
     r = cli r
+    rr = cli rr
     c = cli c
     ca = cli ca
     h = cli h
@@ -27,7 +29,9 @@
     d = cli d
     dr = cli dr
     ds = cli ds
+    dsr = cli dsr
     dc = cli dc
+    dcr = cli dcr
     dt = cli dt
     dts = cli dts
     dtc = cli dtc
@@ -41,6 +45,7 @@
     bs = cli bs
     bn = cli bn
     bd = cli bd
+    bdo = cli bdo
     bt = cli bt
     bc = cli bc
     m = cli m
@@ -115,6 +120,9 @@
 
 [diff "plist"]
     textconv = plutil -convert xml1 -o -
+
+[diff "mobileprovision"]
+    textconv = security cms -D -i
 
 [difftool]
     prompt = false
