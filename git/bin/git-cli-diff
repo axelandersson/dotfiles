@@ -20,7 +20,9 @@ if($options->{"staged"}) {
 }
 
 if($options->{"committed"}) {
-    $logoptions{"revision"} = CLI::Git::remotebranch() . "..HEAD";
+    my $remotebranch = CLI::Git::remotebranch() || "master";
+
+    $logoptions{"revision"} = "$remotebranch..HEAD";
 }
 
 if($options->{"tool"}) {

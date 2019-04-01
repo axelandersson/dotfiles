@@ -66,6 +66,9 @@
     blamedate = none,none,black
     blamecommit = cyan,none,black
 
+[cli "branchnew"]
+    forbiddennamepattern = SJAB|sjab
+
 [color]
     branch = auto
     diff = always

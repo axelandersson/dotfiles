@@ -11,6 +11,12 @@ CLI::usage() if $options->{"help"};
 
 CLI::usage("<branch>") if $options->{"help"} || !$branch;
 
+if(my $pattern = CLI::Git::configget("cli.branchnew.forbiddennamepattern")) {
+    if($branch =~ qr/$pattern/) {
+        CLI::assert("Branch name \"$branch\" matches forbidden pattern \"$pattern\"");
+    }
+}
+
 CLI::Git::configset("cli.branchswitch.lastbranch", CLI::Git::branch(), $CLI::Git::CONFIGLOCAL);
 
 CLI::run(["git", "checkout", "-b", $branch]);
