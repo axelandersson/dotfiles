@@ -52,6 +52,7 @@
     mo = cli mo
     mr = cli mr
     mc = cli mc
+    ms = cli ms
 
 [cli "color"]
     author = magenta,none,none

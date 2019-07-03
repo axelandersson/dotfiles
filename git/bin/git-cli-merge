@@ -4,13 +4,17 @@ use strict;
 use CLI;
 use CLI::Git;
 
-my $options = CLI::options("origin");
+my $options = CLI::options("origin", "squash");
 my $branch = shift @ARGV;
 
 if($branch && $options->{"origin"}) {
     $branch = "origin/$branch";
 }
 
-CLI::usage("[--origin] <branch>") if $options->{"help"} || !CLI::Git::isbranch($branch);
+CLI::usage("[--origin] [--squash] <branch>") if $options->{"help"} || !CLI::Git::isbranch($branch);
 
-CLI::run(["git", "merge", "--no-ff", "--edit", "--verbose", $branch]);
+if($options->{"squash"}) {
+    CLI::run(["git", "merge", "--edit", "--verbose", "--squash", $branch]);
+} else {
+    CLI::run(["git", "merge", "--no-ff", "--edit", "--verbose", $branch]);
+}
