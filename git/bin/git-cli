@@ -109,7 +109,9 @@ my @SECTIONS = (
                         "completion" => $COMPLETIONTRACKEDFILEANDBRANCH },
                       { "name" => "print-file-blame", "alias" => "pfb",
                         "command" => "cli-print-file", "arguments" => [ "--blame" ],
-                        "completion" => $COMPLETIONTRACKEDFILEANDBRANCH }
+                        "completion" => $COMPLETIONTRACKEDFILEANDBRANCH },
+                      { "name" => "print-remote", "alias" => "pr",
+                        "command" => "cli-print-remote" }
                     ] },
     { "name" => "Branch",
       "commands" => [ { "name" => "branch", "alias" => "b",
