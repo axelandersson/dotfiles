@@ -543,18 +543,6 @@ sub shortcommit {
     return $shortcommit;
 }
 
-sub commitrange {
-    my $range = shift;
-
-    return undef unless $range;
-
-    if($range =~ /^([a-f0-9]{6,40})\.\.([a-f0-9]{6,40})$/) {
-        return ($1, $2);
-    }
-
-    return undef;
-}
-
 sub iscommit {
     my $commit = shift;
 
@@ -569,6 +557,31 @@ sub iscommit {
     return 1 if isbranch($commit);
 
     return 0;
+}
+
+sub iscommitrange {
+    my $range = shift;
+
+    return 0 unless $range;
+
+    if($range =~ /^([a-f0-9]{6,40})\.\.([a-f0-9]{6,40})$/) {
+        return 1;
+    }
+
+    return 0;
+}
+
+
+sub commitrange {
+    my $range = shift;
+
+    return undef unless $range;
+
+    if($range =~ /^([a-f0-9]{6,40})\.\.([a-f0-9]{6,40})$/) {
+        return ($1, $2);
+    }
+
+    return undef;
 }
 
 

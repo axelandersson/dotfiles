@@ -34,7 +34,9 @@ foreach my $arg (@ARGV) {
         if(CLI::Git::isbranch($arg)) {
             $logoptions{"branch"} = $arg;
         }
-        elsif(my ($fromcommit, $tocommit) = CLI::Git::commitrange($arg)) {
+        elsif(CLI::Git::iscommitrange($arg)) {
+            my ($fromcommit, $tocommit) = CLI::Git::commitrange($arg);
+
             $logoptions{"fromcommit"} = $fromcommit;
             $logoptions{"tocommit"} = $tocommit;
         }
