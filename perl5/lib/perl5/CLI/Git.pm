@@ -234,6 +234,9 @@ sub log {
     if($options->{"branch"}) {
         push(@flags, $options->{"branch"});
     }
+    elsif($options->{"fromcommit"} && $options->{"tocommit"}) {
+        push(@flags, $options->{"fromcommit"} . ".." . $options->{"tocommit"});
+    }
 
     if($options->{"file"}) {
         push(@flags, "--", $options->{"file"});
@@ -538,6 +541,18 @@ sub shortcommit {
     }
 
     return $shortcommit;
+}
+
+sub commitrange {
+    my $range = shift;
+
+    return undef unless $range;
+
+    if($range =~ /^([a-f0-9]{6,40})\.\.([a-f0-9]{6,40})$/) {
+        return ($1, $2);
+    }
+
+    return undef;
 }
 
 sub iscommit {
