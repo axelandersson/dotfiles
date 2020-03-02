@@ -19,6 +19,7 @@ test -d "/usr/local/wired" && PATH0="/usr/local/wired:$PATH0"
 
 test -d "/opt/aws/bin" && PATH0="/opt/aws/bin:$PATH0"
 test -d "/opt/homebrew/bin" && PATH0="/opt/homebrew/bin:$PATH0"
+test -d "/opt/homebrew/opt/ruby/bin" && PATH0="/opt/homebrew/opt/ruby/bin:$PATH0"
 
 if [ "$(uname -s)" = "Darwin" ]; then
     xcodepath=$(xcode-select -p 2>/dev/null)
