@@ -37,3 +37,5 @@ export PYTHONPATH="$HOME/.dotfiles/local/python/lib/python2.7/site-packages"
 if [ -d "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk" ]; then
     export SDKROOT="/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk"
 fi
+
+export BASH_SILENCE_DEPRECATION_WARNING=1

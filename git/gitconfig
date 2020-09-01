@@ -146,9 +146,6 @@
     stat = true
     tool = Kaleidoscope
 
-[merge "plist"]
-    textconv = plutil -convert xml1 -o -
-
 [mergetool]
     prompt = false
 

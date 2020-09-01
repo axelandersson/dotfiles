@@ -28,3 +28,6 @@ defaults write com.apple.Safari IncludeInternalDebugMenu -bool true
 
 # Enable debug menu in Mac App Store
 defaults write com.apple.appstore ShowDebugMenu -bool true
+
+# TextEdit
+defaults write com.apple.TextEdit TabWidth -int 4
