@@ -5,14 +5,19 @@ use CLI;
 use CLI::Git;
 
 my $options = CLI::options("--origin");
-my $branch = shift @ARGV;
 
-CLI::usage("[--origin] <branch>") if $options->{"help"} || (!$options->{"origin"} && !CLI::Git::isbranch($branch));
+CLI::usage("[--origin] <branch>") if $options->{"help"};
 
-if($options->{"origin"}) {
-    CLI::run(["git", "push", "origin", "--delete", $branch]);
-} else {
-    CLI::run(["git", "branch", "--delete", "--force", $branch]);
-    CLI::run(["git", "config", "--unset", "branch.$branch.remote"], { "assertonerror" => 0 });
-    CLI::run(["git", "config", "--unset", "branch.$branch.merge"], { "assertonerror" => 0 });
+my @branches = @ARGV;
+
+for my $branch (@branches) {
+    if($options->{"origin"}) {
+        CLI::run(["git", "push", "origin", "--delete", $branch]);
+    } else {
+        CLI::usage("[--origin] <branch>") if !CLI::Git::isbranch($branch);
+
+        CLI::run(["git", "branch", "--delete", "--force", $branch]);
+        CLI::run(["git", "config", "--unset", "branch.$branch.remote"], { "assertonerror" => 0 });
+        CLI::run(["git", "config", "--unset", "branch.$branch.merge"], { "assertonerror" => 0 });
+    }
 }
