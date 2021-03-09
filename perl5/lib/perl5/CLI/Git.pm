@@ -210,6 +210,8 @@ sub log {
 
     if($options->{"patch"}) {
         push(@flags, "--patch");
+        push(@flags, "-m");
+        push(@flags, "--first-parent");
     }
 
     if($options->{"stat"}) {

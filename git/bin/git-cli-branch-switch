@@ -7,14 +7,16 @@ use CLI::Git;
 my $options = CLI::options();
 my $branch = shift @ARGV || "master";
 
-CLI::usage("[<branch>|-]") if $options->{"help"} || ($branch ne "-" && !CLI::Git::isbranch($branch));
+CLI::usage("[<branch>|-]") if $options->{"help"};
 
 if($branch eq "-") {
     $branch = CLI::Git::configget("cli.branchswitch.lastbranch", $CLI::Git::CONFIGLOCAL);
+} else {
+    CLI::asserttrue(CLI::Git::isbranch($branch), "$branch is not a branch");
 }
 
-if($branch ne CLI::Git::branch()) {
-    CLI::Git::configset("cli.branchswitch.lastbranch", CLI::Git::branch(), $CLI::Git::CONFIGLOCAL);
-}
+my $previousbranch = CLI::Git::branch();
 
 CLI::run(["git", "checkout", $branch]);
+
+CLI::Git::configset("cli.branchswitch.lastbranch", $previousbranch, $CLI::Git::CONFIGLOCAL);

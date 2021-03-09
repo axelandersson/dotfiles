@@ -2,6 +2,7 @@
 
 [user]
     name = Axel Andersson
+    email = axel.andersson@bontouch.com
 
 [alias]
     x = cli --describe
