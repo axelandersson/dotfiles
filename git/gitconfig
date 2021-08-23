@@ -16,6 +16,7 @@
     aa = cli aa
     r = cli r
     rr = cli rr
+    rs = cli rs
     c = cli c
     ca = cli ca
     h = cli h

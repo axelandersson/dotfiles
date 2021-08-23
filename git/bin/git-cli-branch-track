@@ -9,6 +9,10 @@ my $branch = shift @ARGV;
 
 CLI::usage("<branch>") if $options->{"help"};
 
+if(!CLI::Git::isbranch($branch) && CLI::Git::isbranch("origin/$branch")) {
+    $branch = "origin/$branch";
+}
+
 CLI::asserttrue(CLI::Git::isbranch($branch), "$branch is not a branch");
 
 CLI::Git::configset("cli.branchswitch.lastbranch", CLI::Git::branch(), $CLI::Git::CONFIGLOCAL);

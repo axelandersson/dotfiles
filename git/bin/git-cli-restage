@@ -1,0 +1,12 @@
+#!/usr/bin/perl -w
+
+use strict;
+use CLI;
+use CLI::Git;
+
+my $options = CLI::options();
+my $index = shift @ARGV || "HEAD^1";
+
+CLI::usage("[tree-ish]") if $options->{"help"};
+
+CLI::run(["git", "reset", "--soft", $index]);

@@ -40,7 +40,9 @@ my @SECTIONS = (
                         "completion" => $COMPLETIONTRACKEDFILES },
                       { "name" => "unstage-all", "alias" => "rr",
                         "command" => "cli-unstage", "arguments" => [ "--all" ],
-                        "completion" => $COMPLETIONTRACKEDFILES }
+                        "completion" => $COMPLETIONTRACKEDFILES },
+                      { "name" => "restage", alias => "rs",
+                        "command" => "cli-restage" },
                     ] },
     { "name" => "Local",
       "commands" => [ { "name" => "commit", "alias" => "c",
