@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!/usr/local/bin/perl -w
 
 use strict;
 use CLI;
@@ -17,14 +17,11 @@ my $autoformatcase;
 
 if($command =~ /^s\/.*?\/.*?\/\w*$/) {
     $regexp = $command;
-}
-elsif($command eq "uppercase" || $command eq "upper" || $command eq "uc") {
+} elsif($command eq "uppercase" || $command eq "upper" || $command eq "uc") {
     $autoformatcase = "upper";
-}
-elsif($command eq "lowercase" || $command eq "lower" || $command eq "lc") {
+} elsif($command eq "lowercase" || $command eq "lower" || $command eq "lc") {
     $autoformatcase = "lower";
-}
-elsif($command eq "titlecase" || $command eq "title" || $command eq "tc") {
+} elsif($command eq "titlecase" || $command eq "title" || $command eq "tc") {
     $autoformatcase = "highlight";
 }
 
@@ -53,11 +50,9 @@ foreach my $oldpath (@files) {
 
     if($oldpath eq $newpath) {
         println "$description: No change";
-    }
-    elsif($options->{"dryrun"}) {
+    } elsif($options->{"dryrun"}) {
         println "$description: OK (Dry run)";
-    }
-    elsif($options->{"interactive"}) {
+    } elsif($options->{"interactive"}) {
         CLI::asserttrue(CLI::isterminalinteractive(), "Terminal is not interactive");
 
         my $answer = CLI::ask($description . ": OK? [y]");
@@ -65,8 +60,7 @@ foreach my $oldpath (@files) {
         if($answer =~ /^(|y|yes)$/i) {
             $move = 1;
         }
-    }
-    else {
+    } else {
         $move = 1;
     }
 
@@ -91,8 +85,7 @@ sub renamedpath {
     if($regexp) {
         $newname = $oldname;
         eval("\$newname =~ $regexp;");
-    }
-    elsif($autoformatcase) {
+    } elsif($autoformatcase) {
         my $autoformatoptions = {
             "case" => $autoformatcase,
         };
@@ -114,7 +107,6 @@ sub renamedpath {
             $newname = "$newfirstpart - $newsecondpart";
         } else {
             $newname = autoformat($oldname, $autoformatoptions);
-
         }
 
         $newname =~ s/\s+$//s;
