@@ -8,8 +8,4 @@ my $options = CLI::options();
 
 CLI::usage() if $options->{"help"};
 
-if(CLI::canrun("git-up")) {
-    CLI::run(["git", "up"]);
-} else {
-    CLI::run(["git", "pull", "--rebase", "--all"]);
-}
+CLI::run(["git", "pull", "--rebase", "--autostash", "--all"]);
