@@ -28,8 +28,8 @@ test -d "/opt/local/bin" && PATH0="/opt/local/bin:$PATH0"
 
 test -d "/opt/aws/bin" && PATH0="/opt/aws/bin:$PATH0"
 
-test -d "/usr/local/Homebrew/bin" && PATH0="/usr/local/Homebrew/bin:$PATH0"
-test -d "/usr/local/Homebrew/opt/ruby/bin" && PATH0="/usr/local/Homebrew/opt/ruby/bin:$PATH0"
+test -d "/opt/homebrew/bin" && PATH0="/opt/homebrew/bin:$PATH0"
+test -d "/opt/homebrew/opt/ruby/bin" && PATH0="/opt/homebrew/opt/ruby/bin:$PATH0"
 
 test -d "$HOME/.dotfiles/bin" && PATH0="$HOME/.dotfiles/bin:$PATH0"
 test -d "$HOME/.dotfiles/git/bin" && PATH0="$HOME/.dotfiles/git/bin:$PATH0"
@@ -43,7 +43,7 @@ export PATH="$PATH0"
 MANPATH_MAP0="."
 
 #test -d "/opt/homebrew/manpages" && MANPATH_MAP0="/opt/homebrew/manpages:$MANPATH_MAP0"
-test -d "/usr/local/Homebrew/manpages" && MANPATH_MAP0="/usr/local/Homebrew/manpages:$MANPATH_MAP0"
+#test -d "/usr/local/Homebrew/manpages" && MANPATH_MAP0="/usr/local/Homebrew/manpages:$MANPATH_MAP0"
 test -d "$HOME/.dotfiles/local" && MANPATH_MAP0="$HOME/.dotfiles/local:$MANPATH_MAP0"
 
 export MANPATH_MAP="$MANPATH_MAP0"
