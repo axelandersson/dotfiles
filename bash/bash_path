@@ -11,6 +11,13 @@ if [ -n "$DISPLAY" ]; then
     test -d "/usr/X11R6" && PATH0="/usr/X11R6/bin:$PATH0"
 fi
 
+test -d "/usr/local/wired" && PATH0="/usr/local/wired:$PATH0"
+
+test -d "/opt/aws/bin" && PATH0="/opt/aws/bin:$PATH0"
+test -d "/opt/homebrew/bin" && PATH0="/opt/homebrew/bin:$PATH0"
+
+test -d "$HOME/.local/bin" && PATH0="$HOME/.local/bin:$PATH0"
+
 if [ "$(uname -s)" = "Darwin" ]; then
     xcodepath=$(xcode-select -p 2>/dev/null)
 
