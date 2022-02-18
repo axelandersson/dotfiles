@@ -398,6 +398,10 @@ sub showcommit {
         push(@flags, "--stat");
     }
 
+    if($options->{"raw"}) {
+        push(@flags, "--no-color");
+    }
+
     my $format = "author %an%nauthor-email %ae%n%nauthor-date %ad%ncommitter %cn%ncommitter-email %ce%ncommitter-date %cd%nrefs %C(auto)%D%C(reset)%ncommit %H%nparents %P%ntree %T%nsubject %s%nbody start%n%b%nbody stop";
     my @input = CLI::run(["git", "--no-pager", "show", "--pretty=format:$format", @flags, $commit], { "assertonerror" => 1 });
 

@@ -39,6 +39,7 @@
     dtc = cli dtc
     pc = cli pc
     pcl = cli pcl
+    pcr = cli pcr
     pf = cli pf
     pfr = cli pfr
     pfb = cli pfb

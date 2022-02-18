@@ -31,6 +31,7 @@ export PERL_MM_OPT="INSTALL_BASE=$HOME/.dotfiles/local/perl5"
 export PERL5LIB="$HOME/.dotfiles/perl5/lib/perl5:$HOME/.dotfiles/local/perl5/lib/perl5"
 
 export GEM_HOME="$HOME/.dotfiles/local/ruby-gems"
+export GEM_PATH="$GEM_HOME"
 
 export PYTHONPATH="$HOME/.dotfiles/local/python/lib/python2.7/site-packages"
 
