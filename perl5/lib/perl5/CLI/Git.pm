@@ -245,7 +245,7 @@ sub log {
     }
 
     my $format = "commit %h%nauthor %an%nauthor-relative %ar%ncommitter %cn%ncommitter-relative %cr%nrefs %C(auto)%d%C(reset)%nsubject %s%nbody start%n%b%nbody stop%n";
-    my @input = CLI::run(["git", "--no-pager", "log", "--pretty=tformat:$format", @flags], { "assertonerror" => 1 });
+    my @input = CLI::run(["git", "--no-pager", "log", "--pretty=tformat:$format", "--no-prefix", @flags], { "assertonerror" => 1 });
 
     my @output;
     my %data;
@@ -403,7 +403,7 @@ sub showcommit {
     }
 
     my $format = "author %an%nauthor-email %ae%n%nauthor-date %ad%ncommitter %cn%ncommitter-email %ce%ncommitter-date %cd%nrefs %C(auto)%D%C(reset)%ncommit %H%nparents %P%ntree %T%nsubject %s%nbody start%n%b%nbody stop";
-    my @input = CLI::run(["git", "--no-pager", "show", "--pretty=format:$format", @flags, $commit], { "assertonerror" => 1 });
+    my @input = CLI::run(["git", "--no-pager", "show", "--no-prefix", "--pretty=format:$format", @flags, $commit], { "assertonerror" => 1 });
 
     my %data;
     my @body;
@@ -437,7 +437,7 @@ sub showcommit {
             my @parents = split(/ /, $data{"parents"});
 
             if(@parents == 2) {
-                my @diffinput = CLI::run(["git", "--no-pager", "diff", $parents[0] . "..." . $parents[1]], { "assertonerror" => 1 });
+                my @diffinput = CLI::run(["git", "--no-pager", "diff", "--no-prefix", $parents[0] . "..." . $parents[1]], { "assertonerror" => 1 });
 
                 $data{"patch"} = [ CLI::trimmedarray(@diffinput) ];
             }
