@@ -57,6 +57,10 @@ function _git_cli() {
             __gitcomp_nl "$(__git_heads)"
             ;;
 
+        remotebranch)
+            __gitcomp_nl "$(__git_remote_heads | sed -e 's/^origin\///')"
+            ;;
+
         logfilter)
             __git_complete_index_file "--cached"
             ;;

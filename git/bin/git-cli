@@ -10,6 +10,7 @@ my $COMPLETIONTRACKEDFILES = "trackedfiles";
 my $COMPLETIONTRACKEDFILEANDBRANCH = "trackedfileandbranch";
 my $COMPLETIONCOMMIT = "commit";
 my $COMPLETIONBRANCH = "branch";
+my $COMPLETIONREMOTEBRANCH = "remotebranch";
 my $COMPLETIONLOGFILTER = "logfilter";
 
 my @SECTIONS = (
@@ -137,7 +138,7 @@ my @SECTIONS = (
                         "completion" => $COMPLETIONBRANCH },
                       { "name" => "branch-track", "alias" => "bt",
                         "command" => "cli-branch-track",
-                        "completion" => $COMPLETIONBRANCH },
+                        "completion" => $COMPLETIONREMOTEBRANCH },
                       { "name" => "branch-commit", "alias" => "bc",
                         "command" => "cli-branch-commit",
                         "completion" => $COMPLETIONCOMMIT }
