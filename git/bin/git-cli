@@ -92,9 +92,9 @@ my @SECTIONS = (
     { "name" => "Difftool",
       "commands" => [ { "name" => "difftool", "alias" => "dt",
                         "command" => "cli-diff", "arguments" => [ "--tool" ] },
-                      { "name" => "difftool-staged", "alias" => "dts",
+                      { "name" => "difftool-staged", "alias" => "dst",
                         "command" => "cli-diff", "arguments" => [ "--tool", "--staged" ] },
-                      { "name" => "difftool-committed", "alias" => "dtc",
+                      { "name" => "difftool-committed", "alias" => "dct",
                         "command" => "cli-diff", "arguments" => [ "--tool", "--committed" ] }
                     ] },
     { "name" => "Print",

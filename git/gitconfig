@@ -35,8 +35,8 @@
     dc = cli dc
     dcr = cli dcr
     dt = cli dt
-    dts = cli dts
-    dtc = cli dtc
+    dst = cli dst
+    dct = cli dct
     pc = cli pc
     pcl = cli pcl
     pcr = cli pcr
