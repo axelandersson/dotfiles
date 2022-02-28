@@ -166,14 +166,11 @@ my $options = CLI::options("commands", "describe", "completion");
 
 if($options->{"commands"} || $options->{"help"}) {
     commands();
-}
-elsif($options->{"describe"}) {
+} elsif($options->{"describe"}) {
     describe();
-}
-elsif($options->{"completion"}) {
+} elsif($options->{"completion"}) {
     completion();
-}
-else {
+} else {
     execute();
 }
 
@@ -206,6 +203,7 @@ sub describe {
     println "Name: $command->{name}";
     println "Alias: $command->{alias}";
     println "Command: $command->{command}";
+    println "Completion: $command->{completion}";
 
     CLI::run(["git", $command->{"command"}, "-h"], { "assertonerror" => 0, "showoutput" => 1, "showerrors" => 1 });
 }

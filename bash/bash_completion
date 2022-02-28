@@ -64,7 +64,6 @@ function _git_cli() {
         logfilter)
             __git_complete_index_file "--cached"
             ;;
-
     esac
 }
 
