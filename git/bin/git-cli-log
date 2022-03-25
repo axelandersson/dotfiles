@@ -15,8 +15,7 @@ my $maxcount = 5;
 foreach my $arg (@ARGV) {
     if($arg =~ /^\d+$/ && $arg > 0 && $arg <= 1000) {
         $maxcount = $arg;
-    }
-    elsif($arg =~ /^@(.+?)?$/) {
+    } elsif($arg =~ /^@(.+?)?$/) {
         if(!$1 || $1 eq "me") {
             $logoptions{"grepauthor"} = CLI::Git::username();
         } else {
@@ -26,25 +25,20 @@ foreach my $arg (@ARGV) {
 
             $logoptions{"grepauthor"} = $1;
         }
-    }
-    elsif($arg =~ /^(\-|\+)?(\d+)(h|d|w|m|y)$/) {
+    } elsif($arg =~ /^(\-|\+)?(\d+)(h|d|w|m|y)$/) {
         $logoptions{"time"} = $arg;
         $maxcount = undef;
-    }
-    else {
+    } else {
         if(CLI::Git::isbranch($arg)) {
             $logoptions{"branch"} = $arg;
-        }
-        elsif(CLI::Git::iscommitrange($arg)) {
+        } elsif(CLI::Git::iscommitrange($arg)) {
             my ($fromcommit, $tocommit) = CLI::Git::commitrange($arg);
 
             $logoptions{"fromcommit"} = $fromcommit;
             $logoptions{"tocommit"} = $tocommit;
-        }
-        elsif(-e $arg || $arg =~ /\//) {
+        } elsif(-e $arg || $arg =~ /\//) {
             $logoptions{"file"} = $arg;
-        }
-        else {
+        } else {
             if($arg !~ /[A-Z]/) {
                 $logoptions{"grepignorecase"} = 1;
             }
@@ -53,6 +47,7 @@ foreach my $arg (@ARGV) {
         }
     }
 }
+
 
 if($maxcount && !$options->{"committed"}) {
     $logoptions{"maxcount"} = $maxcount;

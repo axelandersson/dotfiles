@@ -224,7 +224,8 @@ sub log {
         if($options->{"grepauthor"}) {
             push(@flags, "--author", $options->{"grepauthor"});
         }
-        elsif($options->{"grepmessage"}) {
+
+        if($options->{"grepmessage"}) {
             push(@flags, "--grep", $options->{"grepmessage"});
         }
 

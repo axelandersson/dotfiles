@@ -16,7 +16,7 @@ alias rmalias="unalias"
 alias rmenv="unset -v"
 
 # perl
-alias calc="perl -wlne 'print eval;'"
+alias calc="perl -wlne 's/,/./; print eval;'"
 
 # tar
 alias tgz="tar -czf"
