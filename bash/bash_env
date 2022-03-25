@@ -40,5 +40,3 @@ if [ -d "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk" ]; then
 fi
 
 export BASH_SILENCE_DEPRECATION_WARNING=1
-
-export VENV_PATH="$HOME/.local/bin"
