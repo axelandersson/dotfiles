@@ -23,12 +23,7 @@ if(CLI::canrun("jq")) {
 }
 
 if($^O eq "darwin") {
-    print_commands("Mac OS X", "ql", "console", "plxml", "pljson", "trash");
-}
-
-if(CLI::canrun("hfsdata")) {
-    print_commands("HFS Write", "setlabel", "sethidden", "setunhidden");
-    print_commands("HFS Read", "lslabel", "lcomment", "lskind");
+    print_commands("macOS", "ql", "console", "plxml", "pljson", "trash");
 }
 
 foreach my $cd (sort split(";", $ENV{"CDMAP"})) {
