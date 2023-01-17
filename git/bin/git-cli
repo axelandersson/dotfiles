@@ -58,6 +58,12 @@ my @SECTIONS = (
                       { "name" => "discard-committed", "alias" => "hc",
                         "command" => "cli-discard", "arguments" => [ "--committed" ] }
                     ] },
+    { "name" => "Stash",
+      "commands" => [ { "name" => "stash-all", "alias" => "sa",
+                        "command" => "cli-stash-all" },
+                      { "name" => "stash-pop", "alias" => "sp",
+                        "command" => "cli-stash-pop" }
+                    ] },
     { "name" => "Log",
       "commands" => [ { "name" => "log", "alias" => "l",
                         "command" => "cli-log",
@@ -95,7 +101,7 @@ my @SECTIONS = (
                       { "name" => "difftool-staged", "alias" => "dst",
                         "command" => "cli-diff", "arguments" => [ "--tool", "--staged" ] },
                       { "name" => "difftool-committed", "alias" => "dct",
-                        "command" => "cli-diff", "arguments" => [ "--tool", "--committed" ] }
+                        "command" => "cli-diff", "arguments" => [ "--tool", "--committed" ] },
                     ] },
     { "name" => "Print",
       "commands" => [ { "name" => "print-commit", "alias" => "pc",
@@ -106,6 +112,9 @@ my @SECTIONS = (
                         "completion" => $COMPLETIONCOMMIT },
                       { "name" => "print-commit-raw", "alias" => "pcr",
                         "command" => "cli-print-commit", "arguments" => [ "--raw" ],
+                        "completion" => $COMPLETIONCOMMIT },
+                      { "name" => "print-commit-tool", "alias" => "pct",
+                        "command" => "cli-print-commit", "arguments" => [ "--tool" ],
                         "completion" => $COMPLETIONCOMMIT },
                       { "name" => "print-file", "alias" => "pf",
                         "command" => "cli-print-file",

@@ -40,6 +40,7 @@
     pc = cli pc
     pcl = cli pcl
     pcr = cli pcr
+    pct = cli pct
     pf = cli pf
     pfr = cli pfr
     pfb = cli pfb
@@ -57,6 +58,8 @@
     mr = cli mr
     mc = cli mc
     ms = cli ms
+    sa = cli sa
+    sp = cli sp
 
 [cli "color"]
     author = magenta,none,none
@@ -171,11 +174,14 @@
     smudge = git-lfs smudge -- %f
     process = git-lfs filter-process
     required = true
+
 [difftool "sourcetree"]
-	cmd = /usr/local/bin/ksdiff -w \"$LOCAL\" \"$REMOTE\"
-	path = 
+    cmd = /usr/local/bin/ksdiff -w \"$LOCAL\" \"$REMOTE\"
+    path = 
+
 [mergetool "sourcetree"]
-	cmd = /Applications/Sourcetree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
-	trustExitCode = true
+    cmd = /Applications/Sourcetree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+    trustExitCode = true
+
 [commit]
-	template = /Users/axel/.stCommitMsg
+    template = /Users/axel/.stCommitMsg

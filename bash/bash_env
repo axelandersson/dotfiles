@@ -33,7 +33,7 @@ export PERL5LIB="$HOME/.dotfiles/perl5/lib/perl5:$HOME/.dotfiles/local/perl5/lib
 export GEM_HOME="$HOME/.dotfiles/local/ruby-gems"
 export GEM_PATH="$GEM_HOME"
 
-export PYTHONPATH="$HOME/.dotfiles/local/python/lib/python2.7/site-packages"
+export PYTHONPATH="$HOME/.dotfiles/local/python/lib/python3.9/site-packages"
 
 if [ -d "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk" ]; then
     export SDKROOT="/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk"

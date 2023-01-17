@@ -18,6 +18,10 @@ if($branch eq "-") {
 
 my $previousbranch = CLI::Git::branch();
 
+if($branch eq $previousbranch) {
+    exit(0);
+}
+
 CLI::run(["git", "checkout", $branch]);
 
 CLI::Git::configset("cli.branchswitch.lastbranch", $previousbranch, $CLI::Git::CONFIGLOCAL);

@@ -23,7 +23,7 @@ if(CLI::canrun("jq")) {
 }
 
 if($^O eq "darwin") {
-    print_commands("macOS", "ql", "console", "plxml", "pljson", "trash");
+    print_commands("macOS", "ql", "console", "plxml", "pljson", "trash", "lslabel");
 }
 
 foreach my $cd (sort split(";", $ENV{"CDMAP"})) {

@@ -8,6 +8,8 @@ alias du="du -h"
 alias df="df -h"
 alias host="host -a"
 alias rename="rename -c"
+alias uc="awk '{print toupper(\$0)}'"
+alias lc="awk '{print tolower(\$0)}'"
 
 # bash
 alias resource="source $HOME/.bashrc"
@@ -102,6 +104,10 @@ fi
 if [ -x "$(which setfflags 2>/dev/null)" ]; then
     alias sethidden="setfflags -i true"
     alias setunhidden="setfflags -i false"
+fi
+
+if [ -x "$(which setlabel 2>/dev/null)" ]; then
+    alias rmlabel="setlabel None"
 fi
 
 # WiFi

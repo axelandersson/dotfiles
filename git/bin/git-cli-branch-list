@@ -7,14 +7,19 @@ use CLI::Git;
 
 my $options = CLI::options();
 
-CLI::usage() if $options->{"help"} || @ARGV > 0;
+CLI::usage("[pattern]") if $options->{"help"};
 
+my $pattern = shift @ARGV;
 my @branches = CLI::Git::branches();
 my @output;
 
 foreach my $branch (@branches) {
+    if($pattern) {
+        next unless $branch =~ /$pattern/;
+    }
+
     my $remotebranch = CLI::Git::remotebranch($branch);
-    
+
     if($remotebranch) {
         push(@output, CLI::Git::refstring($branch) . " -> " . CLI::Git::refstring($remotebranch));
     } else {

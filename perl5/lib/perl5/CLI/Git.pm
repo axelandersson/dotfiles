@@ -4,6 +4,7 @@ package CLI::Git;
 
 use strict;
 use feature "state";
+use Text::Glob;
 
 
 
@@ -487,13 +488,19 @@ sub diff {
 # branches
 
 sub branches {
+    my $pattern = shift;
+
     state @branches;
 
     if(!@branches) {
         @branches = CLI::run(["git", "for-each-ref", "--format=%(refname:short)", "refs/heads", "refs/remotes"], { "assertonerror" => 1 });
     }
 
-    return @branches;
+    if(defined($pattern)) {
+        return Text::Glob::match_glob($pattern, @branches);
+    } else {
+        return @branches;
+    }
 }
 
 sub branch {

@@ -1,0 +1,7 @@
+#!/usr/bin/env perl
+
+use strict;
+use CLI;
+use CLI::Git;
+
+CLI::run(["git", "stash", "--include-untracked"]);

@@ -11,8 +11,8 @@ encoding="utf-8"
 
 if [ $# -eq 0 ]; then
     indir="$(mktemp -d -t "cat-highlight.XXXXXXXX")"
-    infile="$indir/file"
     inname="file"
+    infile="$indir/$inname"
 
     mkdir -p "$indir"
     cat - > "$infile"
@@ -62,20 +62,15 @@ esac
 
 if [ -n "$lexer" ]; then
     pygmentize -f "$formatter" -O "style=$style" -O "encoding=$encoding" -o "$outfile" -l "$lexer" "$infile"
-
-    if [ $? -eq 0 ]; then
-        cat "$outfile"
-        rm -r "$outdir"
-    fi
-
-    exit $?
+else
+    pygmentize -f "$formatter" -O "style=$style" -O "encoding=$encoding" -o "$outfile" -g "$infile"
 fi
-
-pygmentize -f "$formatter" -O "style=$style" -O "encoding=$encoding" -o "$outfile" -g "$infile"
 
 if [ $? -eq 0 ]; then
     cat "$outfile"
     rm -r "$outdir"
-fi
 
-exit $?
+    exit 0
+else
+    exit 1
+fi
