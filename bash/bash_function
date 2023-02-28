@@ -66,25 +66,25 @@ function diff() {
 
 function ff() {
     if [ -n "$@" ]; then
-        find . -iname "*$@*"
+        find -s . -iname "*$@*"
     else
-        find .
+        find -s .
     fi
 }
 
 function ffd() {
     if [ -n "$@" ]; then
-        find . -type d -iname "*$@*"
+        find -s . -type d -iname "*$@*"
     else
-        find . -type d
+        find -s . -type d
     fi
 }
 
 function ffx() {
     if [ -n "$@" ]; then
-        find . -type f -perm +111 -iname "*$@*"
+        find -s . -type f -perm +111 -iname "*$@*"
     else
-        find . -type f -perm +111
+        find -s . -type f -perm +111
     fi
 }
 

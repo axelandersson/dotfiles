@@ -4,4 +4,8 @@ use strict;
 use CLI;
 use CLI::Git;
 
+my $status = CLI::run(["git", "status"]);
+
+CLI::asserttrue(!$status, "Won't pop with existing changes");
+
 CLI::run(["git", "stash", "pop"]);
