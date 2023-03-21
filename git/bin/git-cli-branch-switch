@@ -5,6 +5,8 @@ use warnings;
 use CLI;
 use CLI::Git;
 
+my $STASHMESSAGE = "cli-autostash";
+
 my $options = CLI::options();
 my $branch = shift @ARGV || "master";
 
@@ -22,6 +24,26 @@ if($branch eq $previousbranch) {
     exit(0);
 }
 
+if(CLI::Git::haschanges()) {
+    my $saveanswer = CLI::ask("There are changes on $previousbranch - autostash? [y]");
+
+    if($saveanswer =~ /^(|y|yes)$/i) {
+        CLI::run(["git", "stash", "push", "--include-untracked", "-m", $STASHMESSAGE]);
+    }
+}
+
 CLI::run(["git", "checkout", $branch]);
 
 CLI::Git::configset("cli.branchswitch.lastbranch", $previousbranch, $CLI::Git::CONFIGLOCAL);
+
+foreach my $stash (CLI::Git::stashes($branch)) {
+    if($stash->{"message"} eq $STASHMESSAGE) {
+        my $restoreanswer = CLI::ask("Restore autostashed changes? [y]");
+
+        if($restoreanswer =~ /^(|y|yes)$/i) {
+            CLI::run(["git", "stash", "pop", $stash->{"name"}]);
+        }
+
+        last;
+    }
+}

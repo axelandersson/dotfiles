@@ -12,5 +12,6 @@ CLI::usage() if $options->{"help"};
 if(CLI::canrun("git-up")) {
     CLI::run(["git", "up"]);
 } else {
+    print "Warning: git-up not found - using git pull\n";
     CLI::run(["git", "pull", "--rebase", "--autostash", "--all"]);
 }

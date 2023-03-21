@@ -483,6 +483,12 @@ sub diff {
     return CLI::run(["git", "--no-pager", $command, @flags], { "assertonerror" => 1 });
 }
 
+sub haschanges {
+    my $changes = CLI::run(["git", "status", "--porcelain=v1"]);
+
+    return ($changes ne "");
+}
+
 
 
 # branches
@@ -543,9 +549,10 @@ sub isbranch {
 
 sub shortcommit {
     my $commit = shift;
+
     state %commits;
 
-    CLI::asserttrue(iscommit($commit), "Commit \"$commit\" not supported");
+    CLI::asserttrue(iscommit($commit), "\"$commit\" is not a commit");
 
     my $shortcommit = $commits{$commit};
 
@@ -598,6 +605,31 @@ sub commitrange {
     return undef;
 }
 
+
+
+# stashes
+
+sub stashes {
+    my $branch = shift;
+
+    CLI::assertparameter($branch);
+
+    my @stashes;
+    my @input = CLI::run(["git", "--no-pager", "stash", "list"]);
+
+    foreach my $line (@input) {
+        if($line =~ /^(.+?): On (.+?): (.+?)$/) {
+            if($2 eq $branch) {
+                my %stash;
+                $stash{"name"} = $1;
+                $stash{"message"} = $3;
+                push(@stashes, \%stash);
+            }
+        }
+    }
+
+    return @stashes;
+}
 
 
 # formatting
