@@ -1,0 +1,27 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+use CLI;
+
+my @results;
+
+while(my $input = <STDIN>) {
+    chomp($input);
+
+    $input =~ s/,/./g;
+    $input =~ s/\$(\d+)/$results[$1 - 1] || "0"/eg;
+
+    my $result = eval($input);
+
+    if(!$result) {
+        print("Syntax error\n");
+        next;
+    }
+
+    push(@results, $result);
+
+    my $length = @results;
+
+    print "→ \$$length = $result\n";
+}
