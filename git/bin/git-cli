@@ -146,7 +146,7 @@ my @SECTIONS = (
                         "command" => "cli-branch-delete", "arguments" => [ "--origin" ],
                         "completion" => $COMPLETIONBRANCH },
                       { "name" => "branch-track", "alias" => "bt",
-                        "command" => "cli-branch-track",
+                        "command" => "cli-branch-switch", "arguments" => [ "--track" ],
                         "completion" => $COMPLETIONREMOTEBRANCH },
                       { "name" => "branch-commit", "alias" => "bc",
                         "command" => "cli-branch-commit",

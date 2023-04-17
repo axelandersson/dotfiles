@@ -7,10 +7,10 @@ use CLI::Git;
 
 my $STASHMESSAGE = "cli-autostash";
 
-my $options = CLI::options();
+my $options = CLI::options("track");
 my $branch = shift @ARGV || "master";
 
-CLI::usage("[<branch>|-]") if $options->{"help"};
+CLI::usage("[--track] [<branch>|-]") if $options->{"help"};
 
 if($branch eq "-") {
     $branch = CLI::Git::configget("cli.branchswitch.lastbranch", $CLI::Git::CONFIGLOCAL);
@@ -24,21 +24,31 @@ if($branch eq $previousbranch) {
     exit(0);
 }
 
-if(CLI::Git::haschanges()) {
-    my $saveanswer = CLI::ask("There are changes on $previousbranch - autostash? [y]");
+my @arguments = ($branch);
 
-    if($saveanswer =~ /^(|y|yes)$/i) {
+if($options->{"track"}) {
+    push(@arguments, "--track");
+}
+
+if(CLI::Git::haschanges()) {
+    my $saveanswer = CLI::ask("There are changes on $previousbranch - merge/stash/abort? [msa]");
+
+    if($saveanswer =~ /^(m|merge)$/i) {
+        push(@arguments, "--merge");
+    } elsif($saveanswer =~ /^(s|stash)$/i) {
         CLI::run(["git", "stash", "push", "--include-untracked", "-m", $STASHMESSAGE]);
+    } else {
+        exit(0);
     }
 }
 
-CLI::run(["git", "checkout", $branch]);
+CLI::run(["git", "checkout", @arguments]);
 
 CLI::Git::configset("cli.branchswitch.lastbranch", $previousbranch, $CLI::Git::CONFIGLOCAL);
 
 foreach my $stash (CLI::Git::stashes($branch)) {
     if($stash->{"message"} eq $STASHMESSAGE) {
-        my $restoreanswer = CLI::ask("Restore autostashed changes? [y]");
+        my $restoreanswer = CLI::ask("Restore autostashed changes on $branch? [y]");
 
         if($restoreanswer =~ /^(|y|yes)$/i) {
             CLI::run(["git", "stash", "pop", $stash->{"name"}]);

@@ -124,7 +124,7 @@
     excludesfile = /Users/axel/.gitignore_global
 
 [credential]
-    helper = cli
+    helper = osxkeychain
 
 [diff]
     renames = copies
