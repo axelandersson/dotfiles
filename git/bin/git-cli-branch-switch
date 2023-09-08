@@ -8,7 +8,7 @@ use CLI::Git;
 my $STASHMESSAGE = "cli-autostash";
 
 my $options = CLI::options("track");
-my $branch = shift @ARGV || "master";
+my $branch = shift @ARGV || CLI::Git::defaultbranch();
 
 CLI::usage("[--track] [<branch>|-]") if $options->{"help"};
 

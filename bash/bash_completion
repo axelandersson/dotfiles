@@ -7,6 +7,9 @@ fi
 # git
 source "$HOME/.dotfiles/bash/contrib/git_completion"
 
+# spm
+source "$HOME/.dotfiles/bash/contrib/swift-package-complete.bash"
+
 function _git_cli() {
     if [ "$prev" = "cli" ]; then
         __gitcomp_nl "$(git-cli --completion)"

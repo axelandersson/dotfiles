@@ -60,7 +60,7 @@ if($options->{"long"}) {
 }
 
 if($options->{"committed"}) {
-    my $remotebranch = CLI::Git::remotebranch() || "master";
+    my $remotebranch = CLI::Git::remotebranch() || CLI::Git::defaultbranch();
 
     $logoptions{"branch"} = "$remotebranch..HEAD";
 }

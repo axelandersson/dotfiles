@@ -533,6 +533,18 @@ sub remotebranch {
     return undef;
 }
 
+sub defaultbranch {
+    my @names = ("master", "main");
+
+    for my $name (@names) {
+        if(isbranch($name)) {
+            return $name;
+        }
+    }
+
+    return undef;
+}
+
 sub isbranch {
     my $branch = shift;
 

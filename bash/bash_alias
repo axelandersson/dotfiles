@@ -111,3 +111,7 @@ fi
 if [ "$(uname -s)" = "Darwin" ]; then
     alias airport="/System/Library/PrivateFrameworks/Apple80211.framework/Versions/A/Resources/airport"
 fi
+
+if [ -x "$(which uuidgen 2>/dev/null)" ]; then
+    alias uuid="uuidgen | lc"
+fi
