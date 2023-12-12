@@ -52,6 +52,8 @@ my @SECTIONS = (
                         "command" => "cli-commit", "arguments" => [ "--amend" ] },
                       { "name" => "discard", "alias" => "h",
                         "command" => "cli-discard", "arguments" => [ "--all" ] },
+                      { "name" => "discard-untracked", "alias" => "hh",
+                        "command" => "cli-discard", "arguments" => [ "--untracked" ] },
                       { "name" => "discard-file", "alias" => "hf",
                         "command" => "cli-discard",
                         "completion" => $COMPLETIONANYFILES },

@@ -4,18 +4,20 @@ use strict;
 use CLI;
 use CLI::Git;
 
-my $options = CLI::options("all", "committed");
+my $options = CLI::options("all", "committed", "untracked");
 my @files = @ARGV;
 
-CLI::usage("[--all|--committed|<file> ...]") if $options->{"help"} || (@files == 0 && !$options->{"all"} && !$options->{"committed"}) || (@files != 0 && ($options->{"all"} || $options->{"committed"}));
+CLI::usage("[--all|--committed|--untracked|<file> ...]") if $options->{"help"} || (@files == 0 && !$options->{"all"} && !$options->{"committed"} && !$options->{"untracked"}) || (@files != 0 && ($options->{"all"} || $options->{"committed"} || $options->{"untracked"}));
 
 if($options->{"all"}) {
     CLI::run(["git", "reset", "--hard"]);
-}
-elsif($options->{"committed"}) {
+} elsif($options->{"committed"}) {
     CLI::run(["git", "reset", "--hard", CLI::Git::remotebranch()]);
-}
-else {
+} elsif($options->{"untracked"}) {
+    CLI::run(["git", "reset", "--hard"]);
+    CLI::run(["git", "clean", "-f"]);
+    CLI::run(["git", "submodule", "update", "--init", "--recursive"]);
+} else {
     foreach my $file (@files) {
         CLI::run(["git", "reset", "--quiet", $file], { "assertonerror" => 1 });
         CLI::run(["git", "checkout", "--", $file], { "assertonerror" => 0 });

@@ -22,6 +22,7 @@
     h = cli h
     hf = cli hf
     hc = cli hc
+    hh = cli hh
     l = cli l
     ll = cli ll
     lc = cli lc
