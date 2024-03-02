@@ -18,6 +18,8 @@ test -d "/opt/homebrew/bin" && PATH0="/opt/homebrew/bin:$PATH0"
 
 test -d "$HOME/.local/bin" && PATH0="$HOME/.local/bin:$PATH0"
 
+test -d "$HOME/bin" && PATH0="$HOME/bin:$PATH0"
+
 if [ "$(uname -s)" = "Darwin" ]; then
     xcodepath=$(xcode-select -p 2>/dev/null)
 
