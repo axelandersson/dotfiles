@@ -1,3 +1,4 @@
 # lldb/lldbinit
 
 #settings set prompt "lldb> "
+#command script import /Users/axel/GitHub/package-data-model/LLDB/ordo.py

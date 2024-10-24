@@ -118,11 +118,11 @@
 
 [core]
     autocrlf = input
-    editor = vim
+    editor = vim -c startinsert
     pager = less
     symlinks = true
     attributesfile = ~/.gitattributes
-    excludesfile = /Users/axel/.gitignore_global
+    excludesfile = ~/.gitignore_global
 
 [credential]
     helper = cli

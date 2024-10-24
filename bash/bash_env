@@ -35,8 +35,4 @@ export GEM_PATH="$GEM_HOME"
 
 export PYTHONPATH="$HOME/.dotfiles/local/python/lib/python3.9/site-packages"
 
-if [ -d "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk" ]; then
-    export SDKROOT="/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk"
-fi
-
 export BASH_SILENCE_DEPRECATION_WARNING=1

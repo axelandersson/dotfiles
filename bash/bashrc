@@ -11,3 +11,9 @@ for i in "alias" "completion" "config" "env" "function" "path" "prompt"; do
         source "$HOME/.dotfiles/local/bash/bash_$i"
     fi
 done
+export REDPANDA_BROKERS="linux-dev:9092"
+export REDPANDA_API_ADMIN_ADDRS="linux-dev:9644"
+export NOMAD_ADDR="http://linux-dev:4646"
+export CONSUL_HTTP_ADDR="http://localhost:8500"
+export LOKI_ADDR="http://linux-dev:3100"
+source ~/.swift-package-complete.bash

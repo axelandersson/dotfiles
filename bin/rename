@@ -11,7 +11,7 @@ my $options = CLI::options("dryrun|n", "interactive|i", "color|c");
 my $command = shift @ARGV;
 my @files = @ARGV;
 
-CLI::usage("[--dryrun|-n] [--interactive|-i] <command> <file> [<file> ...]", "Commands: 's/foo/bar/g' 'uppercase' 'lowercase' 'titlecase'") if $options->{"help"} || !$command || @files == 0;
+CLI::usage("[--dryrun|-n] [--interactive|-i] <command> <file> [<file> ...]", "Commands: 's/foo/bar/g' 'uppercase|uc' 'lowercase|lc' 'titlecase|tc'") if $options->{"help"} || !$command || @files == 0;
 
 my $regexp;
 my $autoformatcase;
@@ -111,6 +111,7 @@ sub renamedpath {
         }
 
         $newname =~ s/\s+$//s;
+        $newname =~ s/\n//g;
         $newname =~ s/\b([A-Z])(\1+)\b/uc($1 . $2)/ei;
         $newname .= $oldextension;
     }

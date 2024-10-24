@@ -10,11 +10,11 @@ my @files = @ARGV;
 CLI::usage("[--all|--committed|--untracked|<file> ...]") if $options->{"help"} || (@files == 0 && !$options->{"all"} && !$options->{"committed"} && !$options->{"untracked"}) || (@files != 0 && ($options->{"all"} || $options->{"committed"} || $options->{"untracked"}));
 
 if($options->{"all"}) {
-    CLI::run(["git", "reset", "--hard"]);
+    CLI::run(["git", "reset", "--hard", "--recurse-submodules"]);
 } elsif($options->{"committed"}) {
-    CLI::run(["git", "reset", "--hard", CLI::Git::remotebranch()]);
+    CLI::run(["git", "reset", "--hard", "--recurse-submodules", CLI::Git::remotebranch()]);
 } elsif($options->{"untracked"}) {
-    CLI::run(["git", "reset", "--hard"]);
+    CLI::run(["git", "reset", "--hard", "--recurse-submodules"]);
     CLI::run(["git", "clean", "-f"]);
     CLI::run(["git", "submodule", "update", "--init", "--recursive"]);
 } else {

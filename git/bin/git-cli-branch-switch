@@ -14,9 +14,11 @@ CLI::usage("[--track] [<branch>|-]") if $options->{"help"};
 
 if($branch eq "-") {
     $branch = CLI::Git::configget("cli.branchswitch.lastbranch", $CLI::Git::CONFIGLOCAL);
-} else {
-    CLI::asserttrue(CLI::Git::isbranch($branch), "$branch is not a branch");
+} elsif(!CLI::Git::isbranch($branch)) {
+    $branch = "origin/$branch";
 }
+
+CLI::asserttrue(CLI::Git::isbranch($branch), "$branch is not a branch");
 
 my $previousbranch = CLI::Git::branch();
 
@@ -31,7 +33,11 @@ if($options->{"track"}) {
 }
 
 if(CLI::Git::haschanges()) {
-    my $saveanswer = CLI::ask("There are changes on $previousbranch - merge/stash/abort? [msa]");
+    CLI::println("There are changes on $previousbranch:");
+
+    CLI::run(["git", "status"]);
+
+    my $saveanswer = CLI::ask("Merge/stash/abort? [msa]");
 
     if($saveanswer =~ /^(m|merge)$/i) {
         push(@arguments, "--merge");
