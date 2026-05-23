@@ -58,6 +58,8 @@ foreach my $stash (CLI::Git::stashes($branch)) {
 
         if($restoreanswer =~ /^(|y|yes)$/i) {
             CLI::run(["git", "stash", "pop", $stash->{"name"}]);
+        } else {
+            CLI::println("Run 'git stash pop $stash->{name}' to restore");
         }
 
         last;

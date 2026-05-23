@@ -499,7 +499,7 @@ sub branches {
     state @branches;
 
     if(!@branches) {
-        @branches = CLI::run(["git", "for-each-ref", "--format=%(refname:short)", "refs/heads", "refs/remotes"], { "assertonerror" => 1 });
+        @branches = CLI::run(["git", "for-each-ref", "--format=%(refname:short)", "--sort=-committerdate", "refs/heads", "refs/remotes"], { "assertonerror" => 1 });
     }
 
     if(defined($pattern)) {

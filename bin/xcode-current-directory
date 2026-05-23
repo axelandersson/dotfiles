@@ -14,4 +14,4 @@ my $path = CLI::run(["osascript", "-e", "tell application id \"com.apple.dt.Xcod
 
 CLI::assertdefined($path, "No file open in Xcode");
 
-println CLI::pathbydeletinglastpathcomponent($path);
+println $path;

@@ -16,7 +16,7 @@ CLI::usage("[--origin] [--squash] <branch>") if $options->{"help"} || !$branch;
 CLI::asserttrue(CLI::Git::isbranch($branch), "$branch is not a branch");
 
 if($options->{"squash"}) {
-    CLI::run(["git", "merge", "--edit", "--verbose", "--squash", $branch]);
+    CLI::run(["git", "merge", "--edit", "--verbose", "--squash", "--autostash", $branch]);
 } else {
     CLI::run(["git", "merge", "--no-ff", "--edit", "--verbose", $branch]);
 }

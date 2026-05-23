@@ -90,7 +90,7 @@ function ffx() {
 
 function grep() {
     if [ -x "$(which pcre2grep 2>/dev/null)" ]; then
-        command pcre2grep --buffer-size=1048576 --color=auto --binary-files=without-match "$@"
+        command pcre2grep --buffer-size=10485760 --color=auto --binary-files=without-match "$@"
     else
         command grep --extended-regexp --color=auto --binary-files=without-match "$@"
     fi

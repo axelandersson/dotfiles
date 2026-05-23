@@ -36,3 +36,5 @@ export GEM_PATH="$GEM_HOME"
 export PYTHONPATH="$HOME/.dotfiles/local/python/lib/python3.9/site-packages"
 
 export BASH_SILENCE_DEPRECATION_WARNING=1
+
+export CLAUDE_CODE_DISABLE_TERMINAL_TITLE=1
