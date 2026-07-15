@@ -522,15 +522,7 @@ sub branch {
 sub remotebranch {
     my $branch = shift || branch();
 
-    if($branch !~ /^origin/) {
-        my $remote = configget("branch.$branch.remote");
-
-        if($remote) {
-            return "$remote/$branch";
-        }
-    }
-
-    return undef;
+    return CLI::run(["git", "rev-parse", "--abbrev-ref", "--symbolic-full-name", $branch . '@{upstream}']) || undef;
 }
 
 sub defaultbranch {

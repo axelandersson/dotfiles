@@ -22,7 +22,7 @@ if($options->{"staged"}) {
 if($options->{"committed"}) {
     my $remotebranch = CLI::Git::remotebranch() || CLI::Git::defaultbranch();
 
-    $logoptions{"revision"} = "\@{push}..HEAD";
+    $logoptions{"revision"} = "$remotebranch..HEAD";
 }
 
 if($options->{"tool"}) {
