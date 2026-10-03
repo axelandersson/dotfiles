@@ -22,5 +22,5 @@ foreach my $file (@ARGV) {
         $number++;
     }
 
-    CLI::File::movepath($file, $destinationpath);
+    CLI::File::move($file, $destinationpath);
 }

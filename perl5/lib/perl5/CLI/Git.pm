@@ -4,6 +4,7 @@ package CLI::Git;
 
 use strict;
 use feature "state";
+use File::Copy;
 use Text::Glob;
 
 
@@ -480,7 +481,61 @@ sub diff {
         push(@flags, "--", $options->{"file"});
     }
 
-    return CLI::run(["git", "--no-pager", $command, @flags], { "assertonerror" => 1 });
+    # untracked files are invisible to git diff, so diff against a throwaway
+    # index where they have been marked with intent to add
+
+    my $index;
+
+    if(!$options->{"staged"} && !$options->{"revision"}) {
+        $index = temporaryindex(untrackedfiles());
+    }
+
+    local %ENV = %ENV;
+
+    $ENV{"GIT_INDEX_FILE"} = $index if $index;
+
+    my @output = CLI::run(["git", "--no-pager", $command, @flags], { "assertonerror" => 1 });
+
+    unlink($index) if $index;
+
+    return @output;
+}
+
+sub untrackedfiles {
+    # ":/" makes the listing cover the whole repository instead of just the
+    # current directory, quotePath keeps non ascii names unescaped
+
+    return CLI::run(["git", "-c", "core.quotePath=false", "ls-files", "--others", "--exclude-standard", "--", ":/"], { "assertonerror" => 1 });
+}
+
+sub temporaryindex {
+    my @files = @_;
+
+    return undef if !@files;
+
+    my $source = $ENV{"GIT_INDEX_FILE"} || gitdirectory() . "/index";
+    my $index = gitdirectory() . "/cli-index-" . $$;
+
+    if(-e $source) {
+        return undef if !copy($source, $index);
+    }
+    elsif(CLI::run(["git", "rev-parse", "--verify", "--quiet", "HEAD"])) {
+        # git creates a missing index empty, which is only safe to diff against
+        # as long as the repository has no commits to report as deleted
+
+        return undef;
+    }
+
+    local %ENV = %ENV;
+
+    $ENV{"GIT_INDEX_FILE"} = $index;
+
+    # the file names are passed as literal pathspecs on stdin to survive both
+    # glob characters and lists too long for a command line
+
+    CLI::run(["git", "add", "--intent-to-add", "--pathspec-from-file=-"], { "input" => [ map { ":(literal)" . $_ } @files ] });
+
+    return $index;
 }
 
 sub haschanges {
