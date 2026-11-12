@@ -60,9 +60,14 @@ if($options->{"long"}) {
 }
 
 if($options->{"committed"}) {
-    my $remotebranch = CLI::Git::remotebranch() || CLI::Git::defaultbranch();
+    my $base = CLI::Git::basebranch();
 
-    $logoptions{"branch"} = "$remotebranch..HEAD";
+    CLI::asserttrue($base, "Can't determine the branch to compare against");
+
+    # two dots, not the three "git dc" uses: in a log a three dot range is the
+    # symmetric difference, which would bring in the base branch's own commits
+
+    $logoptions{"branch"} = "$base..HEAD";
 }
 
 my @input = CLI::Git::log(\%logoptions);

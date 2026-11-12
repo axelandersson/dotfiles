@@ -20,9 +20,11 @@ if($options->{"staged"}) {
 }
 
 if($options->{"committed"}) {
-    my $remotebranch = CLI::Git::remotebranch() || CLI::Git::defaultbranch();
+    my $base = CLI::Git::basebranch();
 
-    $logoptions{"revision"} = "$remotebranch..HEAD";
+    CLI::asserttrue($base, "Can't determine the branch to compare against");
+
+    $logoptions{"revision"} = "$base...HEAD";
 }
 
 if($options->{"tool"}) {

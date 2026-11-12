@@ -580,6 +580,48 @@ sub remotebranch {
     return CLI::run(["git", "rev-parse", "--abbrev-ref", "--symbolic-full-name", $branch . '@{upstream}']) || undef;
 }
 
+sub basebranch {
+    my $branch = shift || branch();
+
+    # a branch created by "git bn" records the branch it was made from
+
+    my $base = configget("branch.$branch.base");
+
+    $base = defaultbranch() unless ($base && isbranch($base));
+
+    return remotebranch($branch) || undef unless $base;
+
+    # on the base branch itself there is nothing to compare against but its
+    # remote, which keeps "dc" showing unpushed commits there
+
+    return remotebranch($branch) || undef if ($base eq $branch);
+
+    my $remote = remotebranch($base);
+
+    return $base unless $remote;
+
+    # either the branch or its remote can be the more current one: a local
+    # master is usually stale, a local parent branch usually ahead of what has
+    # been pushed. take the one that shares more history with HEAD.
+
+    my $localbase = mergebase($base, "HEAD");
+    my $remotebase = mergebase($remote, "HEAD");
+
+    return $remote unless $localbase;
+    return $base unless $remotebase;
+
+    my $common = mergebase($localbase, $remotebase) || "";
+
+    return ($common eq $remotebase) ? $base : $remote;
+}
+
+sub mergebase {
+    my $one = shift;
+    my $two = shift;
+
+    return CLI::run(["git", "merge-base", $one, $two]) || undef;
+}
+
 sub defaultbranch {
     my @names = ("master", "main");
 
